@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+		{# Thêm css từ simple.css #}
+		{# <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"> {% block stylesheets %}{% endblock %} #}
+
+		<!-- Favicons -->
+		<link
+		href="{{asset('customer/assets/img/favicon.png')}}" rel="icon"> <!-- Bootstrap CSS -->
+		<link
+		rel="stylesheet" href="{{asset('customer/assets/css/bootstrap.min.css')}}">
+
+		<!-- Fontawesome CSS -->
+		<link rel="stylesheet" href="{{asset('customer/assets/plugins/fontawesome/css/fontawesome.min.css')}}">
+		<link
+		rel="stylesheet" href="{{asset('customer/assets/plugins/fontawesome/css/all.min.css')}}">
+
+		<!-- Main CSS -->
+		<link rel="stylesheet" href="{{asset('customer/assets/css/style.css')}}">
+
+
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body>
+		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
+		{% for message in app.flashes('notice') %}
+			<div class="notice">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+		{% block body %}{% endblock %}
+
+		<!-- jQuery -->
+		<script src="{{asset('customer/assets/js/jquery.min.js')}}"></script>
+
+		<!-- Bootstrap Core JS -->
+		<script src="{{asset('customer/assets/js/popper.min.js')}}"></script>
+		<script src="{{asset('customer/assets/js/bootstrap.min.js')}}"></script>
+
+		<!-- Custom JS -->
+		<script src="{{asset('customer/assets/js/script.js')}}"></script>
+	</body>
+</html>
