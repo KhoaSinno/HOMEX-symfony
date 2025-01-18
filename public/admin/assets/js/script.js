@@ -114,6 +114,25 @@ Version      : 1.0
     if ($('.datatable').length > 0) {
         $('.datatable').DataTable({
             "bFilter": false,
+			"language": {
+            "sEmptyTable": "Chưa có dữ liệu",
+            "sInfo": "Đang hiển thị _START_ đến _END_ của _TOTAL_ mục",
+            "sInfoEmpty": "Đang hiển thị 0 đến 0 của 0 mục",
+            "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+            "sLengthMenu": "Hiển thị _MENU_ mục",
+            "sLoadingRecords": "Đang tải...",
+            "sProcessing": "Đang xử lý...",
+            "sSearch": "Tìm kiếm:",
+            "sZeroRecords": "Không tìm thấy dữ liệu",
+            "oPaginate": {
+                "sFirst": "Đầu tiên",
+                "sLast": "Cuối cùng",
+                "sNext": ">",
+                "sPrevious": "<"
+            }
+        },
+        "info": false,    // Tắt thông báo "Showing 1 to 2 of 2 entries"
+		"searching": true // Bật tính năng tìm kiếm
         });
     }
 	
