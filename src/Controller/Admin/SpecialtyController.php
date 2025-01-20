@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/specialty')]
+#[Route('/admin/specialty')]
 final class SpecialtyController extends AbstractController
 {
     #[Route(name: 'app_specialty_index', methods: ['GET'])]
@@ -78,7 +78,7 @@ final class SpecialtyController extends AbstractController
                     // Update Image's name in Entity
                     $specialty->setImage($imageName);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    return new Response($e->getMessage());
                 }
             }
 
