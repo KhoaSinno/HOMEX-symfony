@@ -42,65 +42,101 @@ final class SpecialtyController extends AbstractController
             'addForm' => $addForm,
         ]);
     }
-    // public function index(SpecialtyRepository $specialtyRepository): Response
-    // {
-    //     $form = $this->createForm(SpecialtyType::class);
-    //     return $this->render('admin/specialty/index.html.twig', [
-    //         'specialties' => $specialtyRepository->findAll(),
-    //         'form' => $form->createView()
-    //     ]);
-    // }
 
-    #[Route('/new', name: 'app_specialty_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'app_specialty_new', methods: ['POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $specialty = new Specialty();
         $form = $this->createForm(SpecialtyType::class, $specialty);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // Take image from form
+            // Xử lý upload ảnh nếu có
             $image = $form->get('image')->getData();
-
-            // If image is not null
             if ($image) {
-                // Create a unique name for the image
                 $imageName = md5(uniqid()) . '.' . $image->guessExtension();
-
                 try {
-                    // Move the file to the directory where images are stored
                     $image->move(
                         $this->getParameter('uploads_directory'),
                         $imageName
                     );
-
-                    // Update Image's name in Entity
                     $specialty->setImage($imageName);
                 } catch (FileException $e) {
-                    return new Response($e->getMessage());
+                    return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
             }
-
+    
             $entityManager->persist($specialty);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_specialty_index', [], Response::HTTP_SEE_OTHER);
+    
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Chuyên khoa mới đã được thêm thành công!',
+                'data' => [
+                    'id' => $specialty->getId(),
+                    'name' => $specialty->getName(),
+                    'clinicNumber' => $specialty->getClinicNumber(),
+                    'image' => $specialty->getImage(),
+                ],
+            ]);
         }
-
-        return $this->render('admin/specialty/new.html.twig', [
-            'specialty' => $specialty,
-            'form' => $form,
-        ]);
+    
+        // Nếu form không hợp lệ, trả về lỗi
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+    
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Form không hợp lệ.',
+            'errors' => $errors,
+        ], Response::HTTP_BAD_REQUEST);
     }
+    
 
-    #[Route('/{id}', name: 'app_specialty_show', methods: ['GET'])]
-    public function show(Specialty $specialty): Response
-    {
-        return $this->render('admin/specialty/show.html.twig', [
-            'specialty' => $specialty,
-        ]);
-    }
+    // #[Route('/admin/specialty/new', name: 'app_specialty_new', methods: ['GET', 'POST'])]
+    // public function new(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $specialty = new Specialty();
+    //     $form = $this->createForm(SpecialtyType::class, $specialty);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+
+    //         // Take image from form
+    //         $image = $form->get('image')->getData();
+
+    //         // If image is not null
+    //         if ($image) {
+    //             // Create a unique name for the image
+    //             $imageName = md5(uniqid()) . '.' . $image->guessExtension();
+
+    //             try {
+    //                 // Move the file to the directory where images are stored
+    //                 $image->move(
+    //                     $this->getParameter('uploads_directory'),
+    //                     $imageName
+    //                 );
+
+    //                 // Update Image's name in Entity
+    //                 $specialty->setImage($imageName);
+    //             } catch (FileException $e) {
+    //                 return new Response($e->getMessage());
+    //             }
+    //         }
+
+    //         $entityManager->persist($specialty);
+    //         $entityManager->flush();
+
+    //         return $this->redirectToRoute('app_specialty_index', [], Response::HTTP_SEE_OTHER);
+    //     }
+
+    //     return $this->render('admin/specialty/new.html.twig', [
+    //         'specialty' => $specialty,
+    //         'form' => $form,
+    //     ]);
+    // }
 
     #[Route('/{id}/edit', name: 'app_specialty_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Specialty $specialty, EntityManagerInterface $entityManager): Response

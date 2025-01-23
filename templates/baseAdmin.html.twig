@@ -32,6 +32,7 @@
 		rel="stylesheet" href="{{asset('admin/assets/plugins/datatables/datatables.min.css')}}"> <!-- Main CSS -->
 		<link rel="stylesheet" href="{{asset('admin/assets/css/style.css')}}">
 
+
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -191,11 +192,10 @@
 					<!-- /Notifications -->
 
 						{% if app.user %}
-							<a type="button" href="/logout" class="btn btn-warning m-2"> Logout</a>
 						<!-- User Menu -->
 						<li class="nav-item dropdown has-arrow">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-								<span class="user-img"><img class="rounded-circle" src="{{asset('admin/assets/img/profiles/avatar-01.jpg')}}" width="31" alt="Ryan Taylor"></span>
+								<span class="user-img"><img class="rounded-circle" src="{{ asset('admin/assets/img/profiles/avatar-01.jpg')}}" width="31" alt="Ryan Taylor"></span>
 							</a>
 							<div class="dropdown-menu">
 								<div class="user-header">
@@ -203,13 +203,19 @@
 										<img src="{{asset('admin/assets/img/profiles/avatar-01.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
-										<h6>Ryan Taylor</h6>
-										<p class="text-muted mb-0">Administrator</p>
+										<h6>{{app.user.getFullname()}}</h6>
+										<p class="text-muted mb-0">
+										{% if _admin_role in app.user.roles %}
+											Admin
+										{% else %}
+											Invalid role
+										{% endif %}
+										</p>
 									</div>
 								</div>
 								<a class="dropdown-item" href="profile.html">My Profile</a>
 								<a class="dropdown-item" href="settings.html">Settings</a>
-								<a class="dropdown-item" href="login.html">Logout</a>
+								<a class="dropdown-item text-danger font-weight-bold" href="{{path('app_logout')}}">Logout</a>
 							</div>
 						</li>
 						<!-- /User Menu -->
@@ -247,12 +253,15 @@
 									<span>Chuyên khoa</span>
 								</a>
 							</li>
-							<li>
-								<a href="doctor-list.html">
-									<i class="fe fe-user-plus"></i>
-									<span>Bác sĩ</span>
-								</a>
+							{# Doctor #}
+							<li class="submenu">
+								<a href="#" class=""><i class="fe fe-user-plus"></i> <span>Bác sĩ</span> <span class="menu-arrow"></span></a>
+								<ul style="display: none;">
+									<li><a href="invoice-report.html">Danh sách Bác sĩ</a></li>
+									<li><a href="invoice-report.html">Tạo lịch khám</a></li>
+								</ul>
 							</li>
+
 							<li>
 								<a href="patient-list.html">
 									<i class="fe fe-user"></i>

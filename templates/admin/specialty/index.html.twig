@@ -64,7 +64,8 @@
 															<i class="fe fe-pencil"></i>
 															Sửa
 														</a>
-														<a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
+														<a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light"
+														data-target="#delete_modal_{{ specialty.id }}">
 															<i class="fe fe-trash"></i>
 															Xóa
 														</a>
@@ -101,12 +102,15 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				{{ form_start(addForm, {'action': path('app_specialty_new'), 'method': 'POST'}) }}
+				{{ form_start(addForm, {'action': path('app_specialty_new'), 'method': 'POST', 'attr': {'novalidate': 'novalidate', 'id': 'addSpecialtyForm'}}) }}
+
 				<div class="row form-row">
 					<div class="col-12 col-sm-6">
 						<div class="form-group">
 							{{ form_label(addForm.name) }}
 							{{ form_widget(addForm.name) }}
+							{{ form_errors(addForm.name) }}
+							<div id="nameError" class="invalid-feedback" style="display:none;"></div>
 						</div>
 					</div>
 					<div class="col-12 col-sm-6">
@@ -114,29 +118,95 @@
 							{{ form_label(addForm.image) }}
 							{{ form_widget(addForm.image, {'attr': {'onchange': 'previewImage(event)','data-preview-id': 'imagePreview-create'}}) }}
 							<small class="form-text text-muted">Chỉ chấp nhận file ảnh JPEG hoặc PNG, kích thước tối đa 2MB.</small>
+							<div id="imageError" class="invalid-feedback" style="display:none;"></div>
 						</div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-6">
-					<div class="form-group">
-						{{ form_label(addForm.clinicNumber) }}
-						{{ form_widget(addForm.clinicNumber) }}
+				<div class="row form-row">
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{{ form_label(addForm.clinicNumber) }}
+							{{ form_widget(addForm.clinicNumber) }}
+							{{ form_errors(addForm.clinicNumber) }}
+							<div id="clinicNumberError" class="invalid-feedback" style="display:none;"></div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{# <label>Preview hình ảnh</label> #}
+							<img id="imagePreview-create" src="#" alt="Preview" class="img-fluid d-none" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;"/>
+						</div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-6">
-					<div class="form-group">
-						<label>Preview hình ảnh</label>
-						<img id="imagePreview-create" src="#" alt="Preview" class="img-fluid d-none" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;"/>
-					</div>
-				</div>
-
-
+				<button type="submit" class="btn btn-primary btn-block">Tạo mới</button>
+				{{ form_end(addForm) }}
 			</div>
-			<button type="submit" class="btn btn-primary btn-block">Tạo mới</button>
-			{{ form_end(addForm) }}
 		</div>
 	</div>
 </div></div><!-- /ADD Modal -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$('#addSpecialtyForm').submit(function(e) {
+    e.preventDefault(); // Prevent form from submitting normally
+
+    var form = $(this);
+    var formData = new FormData(this);
+
+    // Reset previous error messages
+    $('.invalid-feedback').text('').hide();
+
+    $.ajax({
+        url: form.attr('action'),
+        type: form.attr('method'),
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: response.message
+            });
+
+            // Close modal and reset form
+            $('#Add_Specialities_details').modal('hide');
+            form[0].reset(); // Reset the form after successful submission
+        },
+        error: function(xhr) {
+           // If error, handle validation errors and display them
+              /*  var errors = xhr.responseJSON.errors;
+                if (errors) {
+                    // Show each error in the relevant field
+                    errors.forEach(function(error) {
+                        if (error.includes("Tên không được để trống")) {
+                            $('#nameError').text("Tên không được để trống").show();
+                        }
+                        if (error.includes("Số lượng phòng không được để trống")) {
+                            $('#clinicNumberError').text("Số lượng phòng không được để trống").show();
+                        }
+                    });
+                } */
+
+            if (xhr.responseJSON.message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Có lỗi xảy ra!',
+                    text: xhr.responseJSON.message
+                });
+            }
+			
+        }
+    });
+
+    return false;
+});
+
+
+
+</script>
 
 {% for specialty in specialties %}
 <!-- Edit Details Modal -->
@@ -207,10 +277,10 @@
 <!-- /Edit Details Modal -->
 
 <!-- Delete Modal -->
-	<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog"> <div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal fade" id="delete_modal_{{ specialty.id }}" aria-hidden="true" role="dialog"> <div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
-				<div class="form-content p-2">
+				<div class="form-content p-2 text-center">
 					<h4 class="modal-title">Xóa chuyên khoa</h4>
 					<p class="mb-4">Bạn có chắc muốn xóa không?</p>
 					<!-- Form Xóa -->
@@ -235,7 +305,7 @@
 		const formData = new FormData();
 		formData.append('_token', token); // Truyền token vào form data
 
-        fetch(`/specialty/${specialtyId}/delete-image`, {
+        fetch(`specialty/${specialtyId}/delete-image`, {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -258,30 +328,29 @@
     }
 }
 
-
 </script>
 {% endfor %}
 <script>
-function previewImage(event) {
-    const file = event.target.files[0]; // Lấy file từ input
-    const previewId = event.target.getAttribute('data-preview-id'); // Lấy id ảnh preview từ data-attribute
-    const preview = document.getElementById(previewId); // Lấy phần tử ảnh preview
-    if (!preview) {
-        console.error(`Không tìm thấy phần tử có id: ${previewId}`);
-        return; // Thoát nếu không tìm thấy
-    }
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            preview.src = e.target.result; // Hiển thị ảnh preview
-            preview.classList.remove('d-none'); // Hiện ảnh nếu có file
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.src = '#'; // Reset ảnh nếu không chọn file
-        preview.classList.add('d-none'); // Ẩn ảnh preview
-    }
-}
+	function previewImage(event) {
+		const file = event.target.files[0]; // Lấy file từ input
+		const previewId = event.target.getAttribute('data-preview-id'); // Lấy id ảnh preview từ data-attribute
+		const preview = document.getElementById(previewId); // Lấy phần tử ảnh preview
+		if (!preview) {
+			console.error(`Không tìm thấy phần tử có id: ${previewId}`);
+			return; // Thoát nếu không tìm thấy
+		}
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				preview.src = e.target.result; // Hiển thị ảnh preview
+				preview.classList.remove('d-none'); // Hiện ảnh nếu có file
+			};
+			reader.readAsDataURL(file);
+		} else {
+			preview.src = '#'; // Reset ảnh nếu không chọn file
+			preview.classList.add('d-none'); // Ẩn ảnh preview
+		}
+	}
 
 
 </script>
