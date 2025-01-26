@@ -33,6 +33,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    // Phương thức tìm kiếm người dùng theo role
+    public function findByRole(string $role): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.specialty', 's') // Join với Specialty
+            ->addSelect('s') // Lấy cả Specialty
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%"' . $role . '"%') // Tìm role trong mảng JSON
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

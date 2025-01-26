@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[Route('/admin/specialty')]
 final class SpecialtyController extends AbstractController
@@ -49,7 +50,7 @@ final class SpecialtyController extends AbstractController
         $specialty = new Specialty();
         $form = $this->createForm(SpecialtyType::class, $specialty);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             // Xử lý upload ảnh nếu có
             $image = $form->get('image')->getData();
@@ -65,10 +66,10 @@ final class SpecialtyController extends AbstractController
                     return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
             }
-    
+
             $entityManager->persist($specialty);
             $entityManager->flush();
-    
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Chuyên khoa mới đã được thêm thành công!',
@@ -80,20 +81,74 @@ final class SpecialtyController extends AbstractController
                 ],
             ]);
         }
-    
-        // Nếu form không hợp lệ, trả về lỗi
+
+        // Nếu form không hợp lệ, trả về lỗi chi tiết
         $errors = [];
-        foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
+        foreach ($form->all() as $fieldName => $formField) {
+            if ($formField->getErrors()->count() > 0) {
+                foreach ($formField->getErrors() as $error) {
+                    $errors[$fieldName][] = $error->getMessage();
+                }
+            }
         }
-    
+
         return new JsonResponse([
             'success' => false,
             'message' => 'Form không hợp lệ.',
-            'errors' => $errors,
+            'errors' => $errors, // Trả về lỗi chi tiết cho từng field
         ], Response::HTTP_BAD_REQUEST);
     }
-    
+
+    // public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    // {
+    //     $specialty = new Specialty();
+    //     $form = $this->createForm(SpecialtyType::class, $specialty);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         // Xử lý upload ảnh nếu có
+    //         $image = $form->get('image')->getData();
+    //         if ($image) {
+    //             $imageName = md5(uniqid()) . '.' . $image->guessExtension();
+    //             try {
+    //                 $image->move(
+    //                     $this->getParameter('uploads_directory'),
+    //                     $imageName
+    //                 );
+    //                 $specialty->setImage($imageName);
+    //             } catch (FileException $e) {
+    //                 return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //             }
+    //         }
+
+    //         $entityManager->persist($specialty);
+    //         $entityManager->flush();
+
+    //         return new JsonResponse([
+    //             'success' => true,
+    //             'message' => 'Chuyên khoa mới đã được thêm thành công!',
+    //             'data' => [
+    //                 'id' => $specialty->getId(),
+    //                 'name' => $specialty->getName(),
+    //                 'clinicNumber' => $specialty->getClinicNumber(),
+    //                 'image' => $specialty->getImage(),
+    //             ],
+    //         ]);
+    //     }
+
+    //     // Nếu form không hợp lệ, trả về lỗi
+    //     $errors = [];
+    //     foreach ($form->getErrors(true) as $error) {
+    //         $errors[] = $error->getMessage();
+    //     }
+
+    //     return new JsonResponse([
+    //         'success' => false,
+    //         'message' => 'Form không hợp lệ.',
+    //         'errors' => $errors,
+    //     ], Response::HTTP_BAD_REQUEST);
+    // }
+
 
     // #[Route('/admin/specialty/new', name: 'app_specialty_new', methods: ['GET', 'POST'])]
     // public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -144,7 +199,34 @@ final class SpecialtyController extends AbstractController
         $form = $this->createForm(SpecialtyType::class, $specialty);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+            // Kiểm tra xem có thay đổi gì trong form không
+            $isFormValid = false;
+
+            // Kiểm tra nếu form hợp lệ hoặc không có thay đổi gì
+            if ($form->isValid() || $form->isSubmitted()) {
+                $isFormValid = true;
+            }
+
+            // Nếu form không hợp lệ và không có thay đổi gì, trả về kết quả
+            if (!$isFormValid) {
+                $errors = [];
+                foreach ($form->all() as $fieldName => $formField) {
+                    if ($formField->getErrors()->count() > 0) {
+                        foreach ($formField->getErrors() as $error) {
+                            $errors[$fieldName][] = $error->getMessage();
+                        }
+                    }
+                }
+
+                // Trả về JSON lỗi nếu form không hợp lệ
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Form không hợp lệ.',
+                    'errors' => $errors, // Trả về lỗi chi tiết cho từng field
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
             // Lưu tên ảnh cũ để xóa sau khi thêm ảnh mới
             $oldImage = $specialty->getImage();
 
@@ -163,12 +245,26 @@ final class SpecialtyController extends AbstractController
                     // Gán tên ảnh mới cho thực thể
                     $specialty->setImage($imageName);
                 } catch (FileException $e) {
+                    // Nếu có lỗi khi tải ảnh lên, thêm thông báo lỗi vào flash
                     $this->addFlash('danger', 'Lỗi khi tải ảnh lên.');
+                    // Trả về lỗi JSON nếu có lỗi tải ảnh
+                    return new JsonResponse([
+                        'success' => false,
+                        'message' => 'Lỗi khi tải ảnh lên.'
+                    ], Response::HTTP_BAD_REQUEST);
                 }
             }
 
             // Lưu thông tin vào cơ sở dữ liệu
-            $entityManager->flush();
+            try {
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                // Nếu có lỗi khi lưu vào cơ sở dữ liệu
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Lỗi khi lưu dữ liệu vào cơ sở dữ liệu.',
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
 
             // Sau khi flush, xóa ảnh cũ nếu tồn tại và thêm ảnh mới thành công
             if ($image && $oldImage) {
@@ -178,12 +274,14 @@ final class SpecialtyController extends AbstractController
                 }
             }
 
+            // Trả về kết quả thành công sau khi sửa thông tin
             return $this->redirectToRoute('app_specialty_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Nếu form chưa được submit, trả về trang chỉnh sửa với form
         return $this->render('admin/specialty/edit.html.twig', [
             'specialty' => $specialty,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
