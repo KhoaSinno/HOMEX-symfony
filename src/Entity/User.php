@@ -39,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $fullname = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Specialty $specialty = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -134,6 +137,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullname(string $fullname): static
     {
         $this->fullname = $fullname;
+
+        return $this;
+    }
+
+    public function getSpecialty(): ?Specialty
+    {
+        return $this->specialty;
+    }
+
+    public function setSpecialty(?Specialty $specialty): static
+    {
+        $this->specialty = $specialty;
 
         return $this;
     }
