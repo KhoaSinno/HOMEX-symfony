@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ScheduleWork{% endblock %}
+
+{% block body %}
+    <h1>ScheduleWork</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ schedule_work.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ schedule_work.date ? schedule_work.date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>TimeStart</th>
+                <td>{{ schedule_work.timeStart ? schedule_work.timeStart|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>TimeEnd</th>
+                <td>{{ schedule_work.timeEnd ? schedule_work.timeEnd|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>MaxPatient</th>
+                <td>{{ schedule_work.maxPatient }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                {# <td>{{ schedule_work.status }}</td> #}
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_schedule_work_index') }}">back to list</a>
+
+    <a href="{{ path('app_schedule_work_edit', {'id': schedule_work.id}) }}">edit</a>
+
+    {{ include('admin/schedule_work/_delete_form.html.twig') }}
+{% endblock %}
