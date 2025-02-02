@@ -1,0 +1,23 @@
+<div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': path('create_schedule'), 
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+			{{ form_row(form.doctor) }}
+			{{ form_row(form.date) }}
+			{{ form_row(form.maxPatient) }}
+			{{ form_row(form.status) }}
+			<p>Status:
+				{{ form.status.vars.value }}</p>
+			{# Để in ra giá trị chuỗi của status #}
+
+
+			{{ form_row(form.timeSlots) }}
+			<button type="submit">Tạo lịch làm việc</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>

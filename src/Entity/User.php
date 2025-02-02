@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Specialty $specialty = null;
+
+    /**
+     * @var Collection<int, ScheduleWork>
+     */
+    #[ORM\OneToMany(targetEntity: ScheduleWork::class, mappedBy: 'doctor')]
+    private Collection $scheduleWorks;
+
+    public function __construct()
+    {
+        $this->scheduleWorks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -149,6 +162,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSpecialty(?Specialty $specialty): static
     {
         $this->specialty = $specialty;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScheduleWork>
+     */
+    public function getScheduleWorks(): Collection
+    {
+        return $this->scheduleWorks;
+    }
+
+    public function addScheduleWork(ScheduleWork $scheduleWork): static
+    {
+        if (!$this->scheduleWorks->contains($scheduleWork)) {
+            $this->scheduleWorks->add($scheduleWork);
+            $scheduleWork->setDoctor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScheduleWork(ScheduleWork $scheduleWork): static
+    {
+        if ($this->scheduleWorks->removeElement($scheduleWork)) {
+            // set the owning side to null (unless already changed)
+            if ($scheduleWork->getDoctor() === $this) {
+                $scheduleWork->setDoctor(null);
+            }
+        }
 
         return $this;
     }
