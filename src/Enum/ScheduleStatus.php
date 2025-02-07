@@ -13,5 +13,12 @@ enum ScheduleStatus: string
     // {
     //     return array_column(self::cases(), 'value');
     // }
+
+    public static function getChoices(): array {
+        return array_combine(
+            array_map(fn($case) => $case->value, self::cases()),
+            self::cases()
+        );
+    }
     
 }

@@ -31,12 +31,6 @@ class ScheduleWorkType extends AbstractType
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
-            ->add('timeStart', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('timeEnd', null, [
-                'widget' => 'single_text',
-            ])
             ->add('maxPatient')
             ->add('timeSlots', ChoiceType::class, [
                 'choices' => array_combine($options['time_slots'], $options['time_slots']),
@@ -44,18 +38,25 @@ class ScheduleWorkType extends AbstractType
                 'multiple' => true,
                 'label' => 'Chọn khung giờ làm việc',
             ])
-
             ->add('status', ChoiceType::class, [
-                'choices' => [
-                    'Available' => ScheduleStatus::AVAILABLE->value,
-                    'Full' => ScheduleStatus::FULL->value,
-                    'Canceled' => ScheduleStatus::CANCELED->value,
-                ],
+                'choices' => ScheduleStatus::getChoices(),
                 'expanded' => true,
                 'multiple' => false,
                 'label' => 'Trạng thái',
-                'data' => $schedule->getStatus()->value, // Đảm bảo giá trị mặc định là chuỗi từ enum
+                'data' => $schedule->getStatus() ?? ScheduleStatus::AVAILABLE, // Gán Enum thay vì string
             ])
+
+            // ->add('status', ChoiceType::class, [
+            //     'choices' => [
+            //         'Available' => ScheduleStatus::AVAILABLE->value,
+            //         'Full' => ScheduleStatus::FULL->value,
+            //         'Canceled' => ScheduleStatus::CANCELED->value,
+            //     ],
+            //     'expanded' => true,
+            //     'multiple' => false,
+            //     'label' => 'Trạng thái',
+            //     'data' => $schedule->getStatus()->value, // Đảm bảo giá trị mặc định là chuỗi từ enum
+            // ])
 
         ;
     }

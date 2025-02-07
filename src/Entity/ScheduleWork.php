@@ -18,12 +18,6 @@ class ScheduleWork
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $timeStart = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $timeEnd = null;
-
     #[ORM\Column]
     private ?int $maxPatient = null;
 
@@ -49,30 +43,6 @@ class ScheduleWork
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getTimeStart(): ?\DateTimeInterface
-    {
-        return $this->timeStart;
-    }
-
-    public function setTimeStart(\DateTimeInterface $timeStart): static
-    {
-        $this->timeStart = $timeStart;
-
-        return $this;
-    }
-
-    public function getTimeEnd(): ?\DateTimeInterface
-    {
-        return $this->timeEnd;
-    }
-
-    public function setTimeEnd(\DateTimeInterface $timeEnd): static
-    {
-        $this->timeEnd = $timeEnd;
 
         return $this;
     }

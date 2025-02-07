@@ -241,18 +241,28 @@
 									<span>Dashboard</span>
 								</a>
 							</li>
-							<li>
-								<a href="appointment-list.html">
-									<i class="fe fe-layout"></i>
-									<span>Cuộc hẹn</span>
-								</a>
+
+							{# Appointment #}
+							<li class="submenu">
+								<a href="#" class=" {{ app.request.uri matches '/\\/admin\\/schedule_work/' ? 'activeA' : '' }}"><i class="fe fe-user-plus"></i> <span>Lịch khám bác sĩ</span> <span class="menu-arrow"></span></a>
+								<ul style="display: none;">
+									<li><a class="{{ app.request.attributes.get('_route') == 'app_schedule_work_index' ? 'active' : '' }}" href="{{path('app_schedule_work_index')}}">Danh sách Lịch khám</a></li>
+
+									<li><a class="{{ app.request.attributes.get('_route') == 'app_create_schedule' ? 'active' : '' }}" href="{{path('app_create_schedule')}}">Tạo mới Lịch khám</a></li>
+
+									<li><a class="{{ app.request.attributes.get('_route') == 'app_schedule_work_edit' ? 'active' : '' }}" href="#">Cập nhật Lịch khám</a></li>
+
+								</ul>
 							</li>
+
+							{# Specialty #}
 							<li class="{{ app.request.uri matches '/\\/admin\\/specialty/' ? 'active' : '' }}">
 								<a href="{{path('app_specialty_index')}}">
 									<i class="fe fe-users"></i>
 									<span>Chuyên khoa</span>
 								</a>
 							</li>
+
 							{# Doctor #}
 							<li class="submenu">
 								<a href="#" class=" {{ app.request.uri matches '/\\/admin\\/doctor/' ? 'activeA' : '' }}"><i class="fe fe-user-plus"></i> <span>Bác sĩ</span> <span class="menu-arrow"></span></a>
@@ -261,7 +271,6 @@
 
 									<li><a class="{{ app.request.attributes.get('_route') == 'app_doctor_new' ? 'active' : '' }}" href="{{path('app_doctor_new')}}">Tạo mới Bác sĩ</a></li>
 
-									<li><a href="invoice-report.html">Tạo lịch khám</a></li>
 								</ul>
 							</li>
 
