@@ -1,8 +1,8 @@
-<div class="common-form">
+{# <div class="common-form">
 	<div class="row">
 		<div class="col-sm">
 			{{ form_start(form, {
-                'action': path('create_schedule'), 
+                'action': path('app_create_schedule'), 
                 'method': 'POST',
                 'attr': {'novalidate': 'novalidate'}
             }) }}
@@ -12,11 +12,33 @@
 			{{ form_row(form.status) }}
 			<p>Status:
 				{{ form.status.vars.value }}</p>
-			{# Để in ra giá trị chuỗi của status #}
+		
 
 
 			{{ form_row(form.timeSlots) }}
 			<button type="submit">Tạo lịch làm việc</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div> #}
+<div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': schedule_work.id is defined ? path('app_schedule_work_edit', {'id': schedule_work.id}) : path('app_create_schedule'), 
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+			{{ form_row(form.doctor) }}
+			{{ form_row(form.date) }}
+			{{ form_row(form.maxPatient) }}
+			{{ form_row(form.status) }}
+			{# <p>Status:
+				{{ form.status.vars.value }}</p> #}
+			{# Để in ra giá trị chuỗi của status #}
+
+			{{ form_row(form.timeSlots) }}
+			<button type="submit">{{ schedule_work.id is defined ? 'Cập nhật lịch làm việc' : 'Tạo lịch làm việc' }}</button>
 			{{ form_end(form) }}
 		</div>
 	</div>
