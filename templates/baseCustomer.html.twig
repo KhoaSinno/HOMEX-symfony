@@ -23,9 +23,7 @@
 		rel="stylesheet" href="{{asset('customer/assets/plugins/fontawesome/css/all.min.css')}}">
 
 		<!-- Main CSS -->
-		<link rel="stylesheet" href="{{asset('customer/assets/css/style.css')}}">
-
-		{% block styles %}{% endblock %}
+		<link rel="stylesheet" href="{{asset('customer/assets/css/style.css')}}"> {% block styles %}{% endblock %}
 
 
 		{% block javascripts %}
@@ -37,16 +35,15 @@
 	<body>
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{# {% for message in app.flashes('notice') %}
-			<div class="notice">
-				{{ message }}
-			</div>
-		{% endfor %} #}
+					<div class="notice">
+						{{ message }}
+					</div>
+				{% endfor %} #}
 
 
 		<!-- Main Wrapper -->
-		<div class="main-wrapper">
-		
-			<!-- Header -->
+			<div
+			class="main-wrapper"> <!-- Header -->
 			<header class="header">
 				<nav class="navbar navbar-expand-lg header-nav">
 					<div class="navbar-header">
@@ -76,20 +73,20 @@
 							</li>
 							<li>
 								<a href="
-									{% if app.user %}
-										{% if _admin_role in app.user.roles %}
-											{{ path('app_specialty_index') }}
-										{% elseif _doctor_role in app.user.roles %}
-											{{ path('app_doctor_dashboard') }}
-										{% elseif _patient_role in app.user.roles %}
-											{{ path('app_patient_dashboard') }}
-										{% else %}
-											{{ path('app_home') }}
-										{% endif %}
-									{% else %}
-											{{ path('app_home') }}
-									{% endif %}
-								">
+																			{% if app.user %}
+																				{% if _admin_role in app.user.roles %}
+																					{{ path('app_specialty_index') }}
+																				{% elseif _doctor_role in app.user.roles %}
+																					{{ path('app_doctor_dashboard') }}
+																				{% elseif _patient_role in app.user.roles %}
+																					{{ path('app_patient_dashboard') }}
+																				{% else %}
+																					{{ path('app_home') }}
+																				{% endif %}
+																			{% else %}
+																					{{ path('app_home') }}
+																			{% endif %}
+																		">
 									{% if app.user %}
 										{% if _admin_role in app.user.roles %}
 											Admin
@@ -106,147 +103,150 @@
 							</li>
 						</ul>
 
-					</div>		 
+					</div>
 					<ul class="nav header-navbar-rht">
 						<li class="nav-item contact-item">
 							<div class="header-contact-img">
-								<i class="far fa-hospital"></i>							
+								<i class="far fa-hospital"></i>
 							</div>
 							<div class="header-contact-detail">
 								<p class="contact-header">Liên hệ</p>
-								<p class="contact-info-header"> +84 1900 8080</p>
+								<p class="contact-info-header">
+									+84 1900 8080</p>
 							</div>
 						</li>
 						{% if app.user %}
-						<!-- User Menu -->
-						<li class="nav-item dropdown has-arrow logged-item">
-							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-								<span class="user-img">
-									<img class="rounded-circle" src="{{app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" width="31" alt="Darren Elder">
-								</span>
-							</a>
-							<div class="dropdown-menu dropdown-menu-right">
-								<div class="user-header">
-									<div class="avatar avatar-sm">
-										<img src="{{ app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
+							<!-- User Menu -->
+							<li class="nav-item dropdown has-arrow logged-item">
+								<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+									<span class="user-img">
+										<img class="rounded-circle" src="{{app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" width="31" alt="Darren Elder">
+									</span>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<div class="user-header">
+										<div class="avatar avatar-sm">
+											<img src="{{ app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
+										</div>
+										<div class="user-text">
+											<h6>{{app.user.getEmail()}}</h6>
+											<p class="text-muted mb-0">
+												{% if _admin_role in app.user.roles %}
+													Admin
+												{% elseif _doctor_role in app.user.roles %}
+													Doctor
+												{% elseif _patient_role in app.user.roles %}
+													Patient
+												{% endif %}
+											</p>
+										</div>
 									</div>
-									<div class="user-text">
-										<h6>{{app.user.getEmail()}}</h6>
-										 <p class="text-muted mb-0">
-											{% if _admin_role in app.user.roles %}
-												Admin
-											{% elseif _doctor_role in app.user.roles %}
-												Doctor
-											{% elseif _patient_role in app.user.roles %}
-												Patient
-											{% endif %}
-										</p>
-									</div>
+									{# <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
+									            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
+									<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
 								</div>
-								{# <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
-            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
-								<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
-							</div>
-						</li>
-						<!-- /User Menu -->
-						
+							</li>
+							<!-- /User Menu -->
+
 						{% else %}
 							<li class="nav-item">
-							<a class="nav-link header-login" href="{{path('app_login')}}">login / Signup </a>
-						</li>
+								<a class="nav-link header-login" href="{{path('app_login')}}">login / Signup
+								</a>
+							</li>
 						{% endif %}
-						
+
 					</ul>
 				</nav>
 			</header>
 			<!-- /Header -->
-			
-				{% block body %}{% endblock %}
-   
+
+			{% block body %}{% endblock %}
+
 			<!-- Footer -->
-			<footer class="footer">
-				
+			<footer
+				class="footer">
+
 				<!-- Footer Top -->
 				<div class="footer-top">
 					<div class="container-fluid">
 						<div class="row">
-							<div class="col-lg-3 col-md-6">
-							
+							<div
+								class="col-lg-3 col-md-6">
+
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-about">
 									<div class="footer-logo">
 										<img src="{{asset('customer/assets/img/footer-logo.png')}}" alt="logo">
 									</div>
 									<div class="footer-about-content">
-										<p>HOMEX là hệ thống y tế không vì lợi nhuận do Tập đoàn Holino đầu tư phát triển, với tầm nhìn trở thành một hệ thống y tế hàn lâm vươn tầm quốc tế nhằm mang lại chất lượng điều trị xuất sắc và dịch vụ chăm sóc hoàn hảo. </p>
+										<p>HOMEX là hệ thống y tế không vì lợi nhuận do Tập đoàn Holino đầu tư phát triển, với tầm nhìn trở thành một hệ thống y tế hàn lâm vươn tầm quốc tế nhằm mang lại chất lượng điều trị xuất sắc và dịch vụ chăm sóc hoàn hảo.
+										</p>
 										<div class="social-icon">
 											<ul>
-												<li>
-													<a href="#" target="_blank"><i class="fab fa-facebook-f"></i> </a>
-												</li>
-												<li>
-													<a href="#" target="_blank"><i class="fab fa-twitter"></i> </a>
-												</li>
-												<li>
-													<a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-												</li>
-												<li>
-													<a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-												</li>
-												<li>
-													<a href="#" target="_blank"><i class="fab fa-dribbble"></i> </a>
-												</li>
+												<li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
 											</ul>
 										</div>
 									</div>
 								</div>
 								<!-- /Footer Widget -->
-								
+
 							</div>
-							
-							<div class="col-lg-3 col-md-6">
-							
+
+							<div
+								class="col-lg-3 col-md-6">
+
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-menu">
 									<h2 class="footer-title">For Patients</h2>
 									<ul>
-										<li><a href="search.html"><i class="fas fa-angle-double-right"></i> Search for Doctors</a></li>
-										<li><a href="login.html"><i class="fas fa-angle-double-right"></i> Login</a></li>
-										<li><a href="register.html"><i class="fas fa-angle-double-right"></i> Register</a></li>
-										<li><a href="booking.html"><i class="fas fa-angle-double-right"></i> Booking</a></li>
-										<li><a href="patient-dashboard.html"><i class="fas fa-angle-double-right"></i> Patient Dashboard</a></li>
+										<li><a href="search.html"><i class="fas fa-angle-double-right"></i>Search for Doctors</a></li>
+										<li><a href="login.html"><i class="fas fa-angle-double-right"></i>Login</a></li>
+										<li><a href="register.html"><i class="fas fa-angle-double-right"></i>Register</a></li>
+										<li><a href="booking.html"><i class="fas fa-angle-double-right"></i>Booking</a></li>
+										<li><a href="patient-dashboard.html"><i class="fas fa-angle-double-right"></i>Patient Dashboard</a></li>
 									</ul>
 								</div>
 								<!-- /Footer Widget -->
-								
+
 							</div>
-							
-							<div class="col-lg-3 col-md-6">
-							
+
+							<div
+								class="col-lg-3 col-md-6">
+
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-menu">
 									<h2 class="footer-title">For Doctors</h2>
 									<ul>
-										<li><a href="appointments.html"><i class="fas fa-angle-double-right"></i> Appointments</a></li>
-										<li><a href="chat.html"><i class="fas fa-angle-double-right"></i> Chat</a></li>
-										<li><a href="login.html"><i class="fas fa-angle-double-right"></i> Login</a></li>
-										<li><a href="doctor-register.html"><i class="fas fa-angle-double-right"></i> Register</a></li>
-										<li><a href="doctor-dashboard.html"><i class="fas fa-angle-double-right"></i> Doctor Dashboard</a></li>
+										<li><a href="appointments.html"><i class="fas fa-angle-double-right"></i>Appointments</a></li>
+										<li><a href="chat.html"><i class="fas fa-angle-double-right"></i>Chat</a></li>
+										<li><a href="login.html"><i class="fas fa-angle-double-right"></i>Login</a></li>
+										<li><a href="doctor-register.html"><i class="fas fa-angle-double-right"></i>Register</a></li>
+										<li><a href="doctor-dashboard.html"><i class="fas fa-angle-double-right"></i>Doctor Dashboard</a></li>
 									</ul>
 								</div>
 								<!-- /Footer Widget -->
-								
+
 							</div>
-							
-							<div class="col-lg-3 col-md-6">
-							
+
+							<div
+								class="col-lg-3 col-md-6">
+
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-contact">
 									<h2 class="footer-title">Contact Us</h2>
 									<div class="footer-contact-info">
 										<div class="footer-address">
-											<span><i class="fas fa-map-marker-alt"></i></span>
-											<p> 3556  Beech Street, San Francisco,<br> California, CA 94108 </p>
+											<span>
+												<i class="fas fa-map-marker-alt"></i>
+											</span>
+											<p>
+												3556  Beech Street, San Francisco,<br>
+												California, CA 94108
+											</p>
 										</div>
 										<p>
 											<i class="fas fa-phone-alt"></i>
@@ -259,49 +259,57 @@
 									</div>
 								</div>
 								<!-- /Footer Widget -->
-								
+
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 				<!-- /Footer Top -->
-				
+
 				<!-- Footer Bottom -->
-                <div class="footer-bottom">
-					<div class="container-fluid">
-					
+				<div class="footer-bottom">
+					<div
+						class="container-fluid">
+
 						<!-- Copyright -->
 						<div class="copyright">
 							<div class="row">
 								<div class="col-md-6 col-lg-6">
 									<div class="copyright-text">
-										<p class="mb-0"><a href="templateshub.net">Templates Hub</a></p>
+										<p class="mb-0">
+											<a href="templateshub.net">Templates Hub</a>
+										</p>
 									</div>
 								</div>
-								<div class="col-md-6 col-lg-6">
-								
+								<div
+									class="col-md-6 col-lg-6">
+
 									<!-- Copyright Menu -->
 									<div class="copyright-menu">
 										<ul class="policy-menu">
-											<li><a href="term-condition.html">Terms and Conditions</a></li>
-											<li><a href="privacy-policy.html">Policy</a></li>
+											<li>
+												<a href="term-condition.html">Terms and Conditions</a>
+											</li>
+											<li>
+												<a href="privacy-policy.html">Policy</a>
+											</li>
 										</ul>
 									</div>
 									<!-- /Copyright Menu -->
-									
+
 								</div>
 							</div>
 						</div>
 						<!-- /Copyright -->
-						
+
 					</div>
 				</div>
 				<!-- /Footer Bottom -->
-				
+
 			</footer>
 			<!-- /Footer -->
-		   
+
 		</div>
 		<!-- /Main Wrapper -->
 
@@ -312,12 +320,20 @@
 		<script src="{{asset('customer/assets/js/popper.min.js')}}"></script>
 		<script src="{{asset('customer/assets/js/bootstrap.min.js')}}"></script>
 
- 		 <!-- Slick JS -->
+		<!-- Slick JS -->
 		<script src="{{asset('customer/assets/js/slick.js')}}"></script>
+
+		<!-- Sticky Sidebar JS -->
+		<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"></script>
+		<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js')}}"></script>
+
+		{# Sweat Alert #}
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		{% block JSCustom %}{% endblock %}
 
 		<!-- Custom JS -->
 		<script src="{{asset('customer/assets/js/script.js')}}"></script>
 
-		{% block JSCustom %}{% endblock %}
 	</body>
 </html>

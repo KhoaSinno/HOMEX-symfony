@@ -1,0 +1,72 @@
+<!-- Profile Sidebar -->
+<div class="profile-sidebar">
+	<div class="widget-profile pro-widget-content">
+		<div class="profile-info-widget">
+			<a href="#" class="booking-doc-img">
+				<img src="{{ asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" alt="User Image">
+			</a>
+			<div class="profile-det-info">
+				<h3>{{ app.user.fullname }}</h3>
+				<div class="patient-details">
+					<h5 class="mb-0">{{ app.user.specialty }}</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="dashboard-widget">
+		<nav class="dashboard-menu">
+			<ul>
+				<li class="{% if app.request.get('_route') == 'app_doctor_dashboard' %}active{% endif %}">
+					<a href="{{ path('app_doctor_dashboard') }}">
+						<i class="fas fa-columns"></i>
+						<span>Dashboard</span>
+					</a>
+				</li>
+
+				<li class="{% if app.request.get('_route') == 'app_doctor_schedule_index' %}active{% endif %}">
+					<a href="{{ path('app_doctor_schedule_index') }}">
+						<i class="fas fa-hourglass-start"></i>
+						<span>Lịch khám</span>
+					</a>
+				</li>
+				{# <li class="{% if app.request.get('_route') == 'doctor_appointments' %}active{% endif %}">
+					<a href="{{ path('doctor_appointments') }}">
+						<i class="fas fa-calendar-check"></i>
+						<span>Appointments</span>
+					</a>
+				</li>
+				<li class="{% if app.request.get('_route') == 'doctor_patients' %}active{% endif %}">
+					<a href="{{ path('doctor_patients') }}">
+						<i class="fas fa-user-injured"></i>
+						<span>My Patients</span>
+					</a>
+				</li>
+				<li class="{% if app.request.get('_route') == 'doctor_invoices' %}active{% endif %}">
+					<a href="{{ path('doctor_invoices') }}">
+						<i class="fas fa-file-invoice"></i>
+						<span>Invoices</span>
+					</a>
+				</li>
+				<li class="{% if app.request.get('_route') == 'doctor_profile_settings' %}active{% endif %}">
+					<a href="{{ path('doctor_profile_settings') }}">
+						<i class="fas fa-user-cog"></i>
+						<span>Profile Settings</span>
+					</a>
+				</li>
+				<li class="{% if app.request.get('_route') == 'doctor_change_password' %}active{% endif %}">
+					<a href="{{ path('doctor_change_password') }}">
+						<i class="fas fa-lock"></i>
+						<span>Change Password</span>
+					</a>
+				</li> #}
+				<li>
+					<a href="{{ path('app_logout') }}">
+						<i class="fas fa-sign-out-alt"></i>
+						<span>Logout</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>
+<!-- /Profile Sidebar -->
