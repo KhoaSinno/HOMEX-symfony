@@ -50,6 +50,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ScheduleWork::class, mappedBy: 'doctor')]
     private Collection $scheduleWorks;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phoneNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $bio = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $consultationFee = null;
+
     public function __construct()
     {
         $this->scheduleWorks = new ArrayCollection();
@@ -192,6 +204,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $scheduleWork->setDoctor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): static
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getConsultationFee(): ?float
+    {
+        return $this->consultationFee;
+    }
+
+    public function setConsultationFee(?float $consultationFee): static
+    {
+        $this->consultationFee = $consultationFee;
 
         return $this;
     }

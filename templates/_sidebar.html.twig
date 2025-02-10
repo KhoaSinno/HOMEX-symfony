@@ -6,9 +6,9 @@
 				<img src="{{ asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" alt="User Image">
 			</a>
 			<div class="profile-det-info">
-				<h3>{{ app.user.fullname }}</h3>
+				<h3>{{ app.user.fullname ?? '' }}</h3>
 				<div class="patient-details">
-					<h5 class="mb-0">{{ app.user.specialty }}</h5>
+					<h5 class="mb-0">{{ app.user.specialty ?? '' }}</h5>
 				</div>
 			</div>
 		</div>
@@ -22,13 +22,14 @@
 						<span>Dashboard</span>
 					</a>
 				</li>
-
-				<li class="{% if app.request.get('_route') == 'app_doctor_schedule_index' %}active{% endif %}">
-					<a href="{{ path('app_doctor_schedule_index') }}">
-						<i class="fas fa-hourglass-start"></i>
-						<span>Lịch khám</span>
-					</a>
-				</li>
+				{% if is_granted(_doctor_role) %}
+					<li class="{% if app.request.get('_route') == 'app_doctor_schedule_index' %}active{% endif %}">
+						<a href="{{ path('app_doctor_schedule_index') }}">
+							<i class="fas fa-hourglass-start"></i>
+							<span>Lịch khám</span>
+						</a>
+					</li>
+				{% endif %}
 				{# <li class="{% if app.request.get('_route') == 'doctor_appointments' %}active{% endif %}">
 					<a href="{{ path('doctor_appointments') }}">
 						<i class="fas fa-calendar-check"></i>
@@ -47,18 +48,19 @@
 						<span>Invoices</span>
 					</a>
 				</li>
-				<li class="{% if app.request.get('_route') == 'doctor_profile_settings' %}active{% endif %}">
-					<a href="{{ path('doctor_profile_settings') }}">
+				#}
+				<li class="{% if app.request.get('_route') == 'user_profile_settings' %}active{% endif %}">
+					<a href="{{ path('user_profile_settings') }}">
 						<i class="fas fa-user-cog"></i>
 						<span>Profile Settings</span>
 					</a>
 				</li>
-				<li class="{% if app.request.get('_route') == 'doctor_change_password' %}active{% endif %}">
-					<a href="{{ path('doctor_change_password') }}">
+				<li class="{% if app.request.get('_route') == 'user_change_password' %}active{% endif %}">
+					<a href="{{ path('user_change_password') }}">
 						<i class="fas fa-lock"></i>
 						<span>Change Password</span>
 					</a>
-				</li> #}
+				</li> 
 				<li>
 					<a href="{{ path('app_logout') }}">
 						<i class="fas fa-sign-out-alt"></i>
