@@ -1,0 +1,180 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}
+	Lịch làm việc
+{% endblock %}
+
+{% block body %}
+	<!-- Main Wrapper -->
+	<div
+		class="main-wrapper">
+		<!-- Breadcrumb -->
+		<div class="breadcrumb-bar">
+			<div class="container-fluid">
+				<div class="row align-items-center">
+					<div class="col-md-12 col-12">
+						<nav aria-label="breadcrumb" class="page-breadcrumb">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item">
+									<a href="index-2.html">Home</a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">Lịch làm việc</li>
+							</ol>
+						</nav>
+						<h2 class="breadcrumb-title">Lịch làm việc</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Breadcrumb -->
+
+		<!-- Page Content -->
+		<div class="content">
+			<div class="container-fluid">
+
+				<div class="row">
+					<div
+						class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+
+						<!-- Profile Sidebar -->
+						{% include '_sidebar.html.twig' %}
+						<!-- /Profile Sidebar -->
+
+					</div>
+
+					<div class="col-md-7 col-lg-8 col-xl-9">
+
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="card p-2 text-right">
+									<div>
+										<a class="btn btn-outline-info font-weight-bold" href="{{path('doctor_add_schedule_slot')}}">
+											<i class="fa fa-plus-circle"></i>
+											Thêm lịch hẹn</a>
+									</div>
+								</div>
+								<div class="card p-4">
+
+									<form method="GET" id="filterForm">
+										<div class="row justify-content-center align-items-center">
+											<div class="form-group col-3">
+												<label for="month">Chọn tháng:</label>
+												<select id="month" name="month" class="form-control">
+													{% for i in 1..12 %}
+														<option value="{{ i }}" {{ i == currentMonth ? 'selected' : '' }}>Tháng
+															{{ i }}</option>
+													{% endfor %}
+												</select>
+											</div>
+
+											<div class="form-group col-3">
+												<label for="week">Chọn tuần:</label>
+												<select id="week" name="week" class="form-control">
+													{% for i in 1..totalWeeks %}
+														<option value="{{ i }}" {{ i == currentWeek ? 'selected' : '' }}>Tuần
+															{{ i }}</option>
+													{% endfor %}
+												</select>
+											</div>
+
+											<div class="form-group col-3">
+												<label class="text-warning">
+													<i>Thực hiện lọc điều kiện</i>
+												</label>
+												<button type="submit" class="btn btn-primary m-0">Lọc</button>
+											</div>
+										</div>
+									</form>
+									<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
+
+									{% set daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'] %}
+
+									{% for schedule in schedules %}
+										{% set dateObject = (schedule.date|date('U')|date('w'))|number_format(0, '', '') %}
+										{% set dayOfWeek = daysOfWeek[dateObject] %}
+
+										<div id="slot_{{ dateObject }}" class="tab-pane my-4">
+											<h4 class="card-title d-flex justify-content-between">
+												<span>{{ dayOfWeek }}
+													-
+													{{ schedule.date|date('d/m/Y') }}</span>
+											</h4>
+
+											{% if schedule.timeslots is not empty %}
+												<div class="doc-times">
+													{% for slot in schedule.timeslots %}
+														<div class="doc-slot-list" id="schedule_{{ loop.index }}">
+															{{ slot }}
+															<a href="javascript:void(0)" class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
+																<i class="fa fa-times"></i>
+															</a>
+														</div>
+													{% endfor %}
+												</div>
+											{% else %}
+												<p class="text-muted mb-0">Không có lịch hẹn</p>
+											{% endif %}
+										</div>
+
+										<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
+
+									{% endfor %}
+
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+		document.querySelectorAll(".delete_schedule").forEach(button => {
+        button.addEventListener("click", function () {
+            let scheduleId = this.getAttribute("data-id");
+            let slot = this.getAttribute("data-slot");
+
+            Swal.fire({
+                title: "Xác nhận xóa?",
+                text: "Bạn có chắc muốn xóa khung giờ này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/doctor/schedule/delete-slot/${scheduleId}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: JSON.stringify({ slot: slot })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Đã xóa!", "Khung giờ đã được xóa.", "success");
+                            location.reload(); // Hoặc xóa phần tử mà không cần reload
+                        } else {
+                            Swal.fire("Lỗi!", data.message, "error");
+                        }
+                    })
+                    .catch(error => console.error("Lỗi:", error));
+                }
+            });
+        });
+    });
+});
+	</script>
+{% endblock %}

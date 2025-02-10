@@ -8,6 +8,7 @@ use App\Form\ScheduleWorkType;
 use App\Enum\ScheduleStatus;
 use App\Repository\ScheduleWorkRepository;
 use App\Repository\UserRepository;
+use App\Service\ScheduleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,12 +20,15 @@ final class ScheduleWorkController extends AbstractController
 {
     private $userRepository;
     private $em;
-
-    function __construct(UserRepository $userRepository, EntityManagerInterface $em)
+    private ScheduleService $scheduleService;
+    
+    function __construct(UserRepository $userRepository, EntityManagerInterface $em, ScheduleService $scheduleService)
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->scheduleService = $scheduleService;
     }
+   
 
     #[Route(name: 'app_schedule_work_index', methods: ['GET'])]
     public function index(ScheduleWorkRepository $scheduleWorkRepository): Response
@@ -56,7 +60,7 @@ final class ScheduleWorkController extends AbstractController
     #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
     public function createSchedule(Request $request): Response
     {
-        $timeSlots = $this->generateTimeSlots('07:00', '17:00', 30);
+        $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
         $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
         $scheduleWork = new ScheduleWork();
 
@@ -125,26 +129,27 @@ final class ScheduleWorkController extends AbstractController
     //         'time_slots' => $this->generateTimeSlots('07:00', '17:00', 30),
     //     ]);
     // }
-    private function generateTimeSlots(string $startTime, string $endTime, int $intervalMinutes): array
-    {
-        $timeSlots = [];
 
-        // Đảm bảo sử dụng múi giờ cụ thể (ví dụ: 'Asia/Ho_Chi_Minh')
-        $timezone = new \DateTimeZone('Asia/Ho_Chi_Minh');
+    // private function generateTimeSlots(string $startTime, string $endTime, int $intervalMinutes): array
+    // {
+    //     $timeSlots = [];
 
-        // Cung cấp múi giờ khi tạo DateTime
-        $currentTime = new \DateTime($startTime, $timezone);
-        $endTime = new \DateTime($endTime, $timezone);
+    //     // Đảm bảo sử dụng múi giờ cụ thể (ví dụ: 'Asia/Ho_Chi_Minh')
+    //     $timezone = new \DateTimeZone('Asia/Ho_Chi_Minh');
 
-        while ($currentTime < $endTime) {
-            $slotStart = clone $currentTime;
-            $slotEnd = (clone $currentTime)->modify("+$intervalMinutes minutes");
-            $timeSlots[] = $slotStart->format('H:i') . '-' . $slotEnd->format('H:i');
-            $currentTime = $slotEnd;
-        }
+    //     // Cung cấp múi giờ khi tạo DateTime
+    //     $currentTime = new \DateTime($startTime, $timezone);
+    //     $endTime = new \DateTime($endTime, $timezone);
 
-        return $timeSlots;
-    }
+    //     while ($currentTime < $endTime) {
+    //         $slotStart = clone $currentTime;
+    //         $slotEnd = (clone $currentTime)->modify("+$intervalMinutes minutes");
+    //         $timeSlots[] = $slotStart->format('H:i') . '-' . $slotEnd->format('H:i');
+    //         $currentTime = $slotEnd;
+    //     }
+
+    //     return $timeSlots;
+    // }
 
     // private function generateTimeSlots(string $startTime, string $endTime, int $intervalMinutes): array
     // {
@@ -194,8 +199,12 @@ final class ScheduleWorkController extends AbstractController
     #[Route('/{id}/edit', name: 'app_schedule_work_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ScheduleWork $scheduleWork, EntityManagerInterface $entityManager): Response
     {
+        if (!$scheduleWork) {
+            throw $this->createNotFoundException('Không tìm thấy lịch khám.');
+        }
+
         // Tạo danh sách thời gian
-        $timeSlots = $this->generateTimeSlots('07:00', '17:00', 30);
+        $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
 
         // Tạo form và truyền thời gian vào
         $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [

@@ -59,8 +59,8 @@
 									<span class="badge badge-secondary">Không có</span>
 								{% endif %}
 							</td>
-							<td>{{ s.timeStart ? s.timeStart|date('H:i:s') : '' }}</td>
-							<td>{{ s.timeEnd ? s.timeEnd|date('H:i:s') : '' }}</td>
+							{# <td>{{ s.timeStart ? s.timeStart|date('H:i:s') : '' }}</td>
+							<td>{{ s.timeEnd ? s.timeEnd|date('H:i:s') : '' }}</td> #}
 							<td>
 								{% if s.status.value == 'Available' %}
 									<span class="badge badge-success p-2">Còn trống</span>
