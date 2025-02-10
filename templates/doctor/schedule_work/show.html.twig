@@ -1,0 +1,39 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}ScheduleWork
+{% endblock %}
+
+{% block body %}
+	<h1>ScheduleWork</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ schedule_work.id }}</td>
+			</tr>
+			<tr>
+				<th>Date</th>
+				<td>{{ schedule_work.date ? schedule_work.date|date('Y-m-d') : '' }}</td>
+			</tr>
+			<tr>
+				<th>MaxPatient</th>
+				<td>{{ schedule_work.maxPatient }}</td>
+			</tr>
+			{# <tr>
+			                <th>Status</th>
+			                <td>{{ schedule_work.status }}</td>
+			            </tr> #}
+			<tr>
+				<th>TimeSlots</th>
+				<td>{{ schedule_work.timeSlots ? schedule_work.timeSlots|json_encode : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_doctor_schedule_index') }}">back to list</a>
+
+	<a href="{{ path('app_doctor_schedule_edit', {'id': schedule_work.id}) }}">edit</a>
+
+	{{ include('doctor/schedule_work/_delete_form.html.twig') }}
+{% endblock %}

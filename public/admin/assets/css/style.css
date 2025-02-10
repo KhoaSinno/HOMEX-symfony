@@ -4141,3 +4141,9 @@ table.table-inbox tbody tr.checked {
 		display: none;
 	}
 }
+
+/* =========================================== My Config ============================================== */
+.activeA{
+	background-color: #19c1dc;
+    color: #fff;
+}

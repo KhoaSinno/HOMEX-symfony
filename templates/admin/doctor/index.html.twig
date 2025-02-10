@@ -1,0 +1,97 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Danh sách bác sĩ
+{% endblock %}
+
+{% block body %}
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">Bác sĩ</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Bác sĩ</li>
+						</ul>
+					</div>
+					<div class="col-sm-5 col">
+						<a href="{{ path('app_doctor_new') }}" class="btn btn-primary float-right mt-2">Thêm mới</a>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr class="text-center">
+											<th>Mã BS</th>
+											<th>Ảnh</th>
+											<th>Phòng khám</th>
+											<th>Chuyên khoa</th>
+											<th>Giới tính</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for doctor in doctors %}
+											<tr class="text-center">
+												<td>{{ doctor.id }}</td>
+
+												<td>
+													<h2 class="table-avatar">
+														<a href="profile.html" class="avatar avatar-sm mr-2">
+															<img class="avatar-img" src="{{ doctor.image ? asset('uploads/' ~ doctor.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ doctor.fullName }}">
+														</a>
+														<a href="profile.html">{{ doctor.fullName }}</a>
+													</h2>
+												</td>
+
+												<td>{{ doctor.specialty.name ?? 0 }}</td>
+												<td>{{ doctor.specialty.clinicNumber ?? 0 }}</td>
+												<td>{{doctor.gender ?? 'Trống'}}</td>
+
+												<td class="text-center">
+													<div class="actions">
+														<a class="btn btn-sm bg-info-light" href="{{ path('app_doctor_show', {'id': doctor.id}) }}">
+															<i class="fa fa-info-circle" aria-hidden="true"></i>
+															Xem
+														</a>
+														<a class="btn btn-sm bg-success-light" href="{{ path('app_doctor_edit', {'id': doctor.id}) }}">
+															<i class="fe fe-pencil"></i>
+															Sửa
+														</a>
+														<a class="btn btn-sm bg-danger-light">
+															<i class="fe fe-trash"></i>
+															Xóa
+														</a>
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td class="text-center" colspan="6">Chưa có dữ liệu</td>
+											</tr>
+										{% endfor %}
+
+									</tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Page Wrapper -->{% endblock %}

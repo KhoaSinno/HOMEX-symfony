@@ -1,0 +1,68 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %} 
+    Chi tiết lịch làm việc
+{% endblock %}
+
+{% block body %}
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">Tạo lịch làm việc</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
+						</ul>
+					</div>
+					<div class="col-sm-5 col">
+						<a href="{{ path('app_create_schedule') }}" class="btn btn-primary float-right mt-2">Thêm mới</a>
+					</div>
+				</div>
+			</div>
+			<!-- Page Header -->
+
+			<table class="table">
+				<tbody>
+					<tr>
+						<th>Id</th>
+						<td>{{ schedule_work.id }}</td>
+					</tr>
+					<tr>
+						<th>Date</th>
+						<td>{{ schedule_work.date ? schedule_work.date|date('Y-m-d') : '' }}</td>
+					</tr>
+					<tr>
+						<th>TimeStart</th>
+						<td>{{ schedule_work.timeStart ? schedule_work.timeStart|date('H:i:s') : '' }}</td>
+					</tr>
+					<tr>
+						<th>TimeEnd</th>
+						<td>{{ schedule_work.timeEnd ? schedule_work.timeEnd|date('H:i:s') : '' }}</td>
+					</tr>
+					<tr>
+						<th>MaxPatient</th>
+						<td>{{ schedule_work.maxPatient }}</td>
+					</tr>
+					<tr>
+						<th>Status</th>
+						{# <td>{{ schedule_work.status }}</td> #}
+					</tr>
+				</tbody>
+			</table>
+
+			<a href="{{ path('app_schedule_work_index') }}">back to list</a>
+
+			<a href="{{ path('app_schedule_work_edit', {'id': schedule_work.id}) }}">edit</a>
+
+			{{ include('admin/schedule_work/_delete_form.html.twig') }}
+		</div>
+	</div>
+{% endblock %}
