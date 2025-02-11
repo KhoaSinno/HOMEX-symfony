@@ -24,7 +24,7 @@ class SpecialtyType extends AbstractType
                 'label' => 'Hình ảnh',
                 'mapped' => false,
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                // 'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new File([
                         'maxSize' => '2M', // Dung lượng tối đa 2MB

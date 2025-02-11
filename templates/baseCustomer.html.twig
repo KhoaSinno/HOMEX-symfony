@@ -120,13 +120,13 @@
 							<li class="nav-item dropdown has-arrow logged-item">
 								<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 									<span class="user-img">
-										<img class="rounded-circle" src="{{app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" width="31" alt="Darren Elder">
+										<img class="rounded-circle" src="{{app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" width="31" alt="Darren Elder">
 									</span>
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<div class="user-header">
 										<div class="avatar avatar-sm">
-											<img src="{{ app.user.image ? asset('uploads/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
+											<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
 										</div>
 										<div class="user-text">
 											<h6>{{app.user.getEmail()}}</h6>
