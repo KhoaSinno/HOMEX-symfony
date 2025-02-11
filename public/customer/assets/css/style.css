@@ -2310,11 +2310,12 @@ html.menu-opened body {
 	background: #fff url(../img/location.png) no-repeat 10px center;
 }
 .search-box .search-info {
-    -ms-flex: 0 0 490px;
-    flex: 0 0 490px;
+	/* 490px -> 240px */
+    -ms-flex: 0 0 240px; 
+    flex: 0 0 240px;
     margin-right: 12px;
     position: relative;
-    width: 490px;
+    width: 240px;
 }
 .search-info .form-control {
 	background: #fff url(../img/search.png) no-repeat 10px center;
@@ -6069,9 +6070,10 @@ html.menu-opened body {
 		max-width: 720px;
 	}
 	.search-box .search-info {
-		-ms-flex: 0 0 410px;
-		flex: 0 0 410px;
-		width: 410px;
+		/* 410px -> 230px */
+		-ms-flex: 0 0 230px;
+		flex: 0 0 230px;
+		width: 230px;
 	}
 	.banner-wrapper .banner-header h1 {
 		font-size: 2.125rem;

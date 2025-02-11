@@ -45,6 +45,38 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * Tìm bác sĩ theo các tiêu chí (name, address, specialty)
+     */
+    public function findDoctorsByCriteria(array $criteria)
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm kiếm chỉ những bác sĩ
+
+        // Kiểm tra nếu 'fullname' tồn tại và không rỗng
+        if (!empty($criteria['name'])) {
+            $qb->andWhere('u.fullname LIKE :name')
+                ->setParameter('name', '%' . $criteria['name'] . '%');
+        }
+
+        // Kiểm tra nếu 'address' tồn tại và không rỗng
+        if (!empty($criteria['address'])) {
+            $qb->andWhere('u.address LIKE :address')
+                ->setParameter('address', '%' . $criteria['address'] . '%');
+        }
+
+        // Kiểm tra nếu 'specialty' tồn tại và không rỗng
+        if (!empty($criteria['specialty'])) {
+            $qb->andWhere('u.specialty LIKE :specialty')
+                ->setParameter('specialty', '%' . $criteria['specialty'] . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
