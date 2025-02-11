@@ -19,22 +19,14 @@
 							<li class="breadcrumb-item active" aria-current="page">Tìm kiếm</li>
 						</ol>
 					</nav>
-					<h2 class="breadcrumb-title">2245 matches found for : Dentist In Bangalore</h2>
+					<h3 class="breadcrumb-title">{{ count }}
+						kết quả được tìm thấy cho:
+						{{ search_specialty|capitalize|default('Tất cả chuyên khoa') }}
+						tại
+						{{ search_address|capitalize|default('Tất cả địa điểm') }}
+					</h3>
 				</div>
-				<div class="col-md-4 col-12 d-md-block d-none">
-					<div class="sort-by">
-						<span class="sort-title">Sort by</span>
-						<span class="sortby-fliter">
-							<select class="select">
-								<option>Select</option>
-								<option class="sorting">Rating</option>
-								<option class="sorting">Popular</option>
-								<option class="sorting">Latest</option>
-								<option class="sorting">Free</option>
-							</select>
-						</span>
-					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>
@@ -60,19 +52,19 @@
 								</div>
 							</div>
 							<div class="filter-widget">
-								<h4>Gender</h4>
+								<h4>Giới tính</h4>
 								<div>
 									<label class="custom_check">
 										<input type="checkbox" name="gender_type" checked>
 										<span class="checkmark"></span>
-										Male Doctor
+										Bác sĩ nam
 									</label>
 								</div>
 								<div>
 									<label class="custom_check">
 										<input type="checkbox" name="gender_type">
 										<span class="checkmark"></span>
-										Female Doctor
+										Bác sĩ nữ
 									</label>
 								</div>
 							</div>
@@ -130,56 +122,67 @@
 
 				</div>
 
-				<div
-					class="col-md-12 col-lg-8 col-xl-9">
+				<div class="col-md-12 col-lg-8 col-xl-9">
 
-					<!-- Doctor Widget -->
-					<div class="card">
-						<div class="card-body">
-							<div class="doctor-widget">
-								<div class="doc-info-left">
-									<div class="doctor-img">
-										<a href="doctor-profile.html">
-											<img src="assets/img/doctors/doctor-thumb-01.jpg" class="img-fluid" alt="User Image">
-										</a>
-									</div>
-									<div class="doc-info-cont">
-										<h4 class="doc-name">
-											<a href="doctor-profile.html">Dr. Ruby Perrin</a>
-										</h4>
-										<p class="doc-speciality">MDS - Periodontology and Oral Implantology, BDS</p>
-										<h5 class="doc-department"><img src="assets/img/specialities/specialities-05.png" class="img-fluid" alt="Speciality">Dentist</h5>
+					{% for doctor in doctors %}
+						<!-- Doctor Widget -->
+						<div class="card">
+							<div class="card-body">
+								<div class="doctor-widget">
+									<div class="doc-info-left">
+										<div class="doctor-img">
+											<a href="doctor-profile.html">
+												<img src="{{app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-01.jpg')}}" class="img-fluid" alt="User Image">
+											</a>
+										</div>
+										<div class="doc-info-cont">
+											<h4 class="doc-name">
+												<a href="doctor-profile.html">{{doctor.fullname}}</a>
+											</h4>
+											<p class="doc-speciality">
+												{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</p>
+											<h5 class="doc-department">
+												<img src="{{ doctor.specialty ? (doctor.specialty.image ? asset('uploads/users/' ~ doctor.specialty.image) : asset('admin/assets/img/specialities/specialities-05.png')) : asset('admin/assets/img/specialities/default.png') }}" class="img-fluid" alt="Speciality">
 
-										<div class="clinic-details">
-											<p class="doc-location">
-												<i class="fas fa-map-marker-alt"></i>
-												Florida, USA</p>
+												{{doctor.specialty ?? 'Chưa xác định'}}
+											</h5>
+
+											<div class="clinic-details">
+												<p class="doc-location">
+													<i class="fas fa-map-marker-alt"></i>
+													{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</p>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="doc-info-right">
-									<div class="clini-infos">
-										<ul>
-											<li>
-												<i class="fas fa-map-marker-alt"></i>
-												Florida, USA</li>
-											<li>
-												<i class="far fa-money-bill-alt"></i>
-												$300 - $1000
-												<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
-											</li>
-										</ul>
-									</div>
-									<div class="clinic-booking">
-										<a class="view-pro-btn" href="doctor-profile.html">View Profile</a>
-										<a class="apt-btn" href="booking.html">Book Appointment</a>
+									<div class="doc-info-right">
+										<div class="clini-infos">
+											<ul>
+												<li>
+													<i class="fas fa-map-marker-alt"></i>
+													{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</li>
+												<li>
+													<i class="far fa-money-bill-alt"></i>
+													{{doctor.consultationFee}}
+													<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám"></i>
+												</li>
+											</ul>
+										</div>
+										<div class="clinic-booking">
+											<a class="view-pro-btn" href="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
+												Thông tin BS
+											</a>
+
+											<a class="apt-btn" href="booking.html">Đặt lịch</a>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<!-- /Doctor Widget -->
+						<!-- /Doctor Widget -->
 
+					{% else %}
+						<p>No doctors found.</p>
+					{% endfor %}
 
 					<div class="load-more text-center">
 						<a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>
@@ -191,4 +194,16 @@
 
 	</div>
 	<!-- /Page Content -->
+{% endblock %}
+
+{% block JSCustom %}
+	<!-- Select2 JS -->
+	<script src="{{asset('customer/assets/plugins/select2/js/select2.min.js')}}"></script>
+
+	<!-- Datetimepicker JS -->
+	<script src="{{asset('customer/assets/js/moment.min.js')}}"></script>
+	<script src="{{asset('customer/assets/js/bootstrap-datetimepicker.min.js')}}"></script>
+
+	<!-- Fancybox JS -->
+	<script src="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.js')}}"></script>
 {% endblock %}

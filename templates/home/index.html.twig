@@ -17,14 +17,18 @@
 
 				<!-- Search -->
 				<div class="search-box">
-					<form action="templateshub.net">
+					<form action="{{ path('app_search_doctor') }}" method="get">
 						<div class="form-group search-location">
-							<input type="text" class="form-control" placeholder="Search Location">
-							<span class="form-text">Based on your Location</span>
+							<input type="text" name="address" class="form-control" placeholder="Search Location">
+							<span class="form-text">Địa chỉ của bạn</span>
 						</div>
 						<div class="form-group search-info">
-							<input type="text" class="form-control" placeholder="Search Doctors, Clinics, Hospitals, Diseases Etc">
-							<span class="form-text">Ex : Dental or Sugar Check up etc</span>
+							<input type="text" name="fullname" class="form-control" placeholder="Dr. Joh Etc">
+							<span class="form-text">Ex: Dr. Joh, etc.</span>
+						</div>
+						<div class="form-group search-info">
+							<input type="text" name="specialty" class="form-control" placeholder="Urology, Neurology Etc">
+							<span class="form-text">Ex: Urology, Neurology etc.</span>
 						</div>
 						<button type="submit" class="btn btn-primary search-btn">
 							<i class="fas fa-search"></i>
@@ -33,6 +37,7 @@
 					</form>
 				</div>
 				<!-- /Search -->
+
 
 			</div>
 		</div>
@@ -95,13 +100,13 @@
 				</div>
 				<div class="col-lg-8">
 					<div class="doctor-slider slider">
-					
+
 						{% for doctor in doctors %}
 							<!-- Doctor Widget -->
 							<div class="profile-widget">
 								<div class="doc-img">
 									<a href="doctor-profile.html">
-										<img class="img-fluid" alt="User Image" src="{{doctor.image ? asset('uploads/doctor' ~ doctor.image) : asset('customer/assets/img/doctors/doctor-01.jpg')}}">
+										<img class="img-fluid" alt="User Image" src="{{doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('customer/assets/img/doctors/doctor-01.jpg')}}">
 									</a>
 								</div>
 								<div class="pro-content">
@@ -117,12 +122,13 @@
 											{{doctor.address ?? 'Newyork, USA'}}
 										</li>
 										{# <li>
-											<i class="far fa-clock"></i>
-											Available on Fri, 22 Mar
-										</li> #}
+																					<i class="far fa-clock"></i>
+																					Available on Fri, 22 Mar
+																				</li> #}
 										<li>
 											<i class="far fa-money-bill-alt"></i>
-											{{doctor.consultationFee ?? '500'}} VNĐ
+											{{doctor.consultationFee ?? '500'}}
+											VNĐ
 											<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
 										</li>
 									</ul>
