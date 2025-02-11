@@ -51,6 +51,22 @@
 									{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 									<div class="row justify-content-center align-items-center">
 
+										<div class="col-md-12 text-center">
+											<div class="form-group">
+												{{ form_label(form.image, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+
+												<!-- Hiển thị ảnh -->
+												<div class="mb-3">
+													<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+												</div>
+
+												<!-- Input file -->
+												{{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+												{{ form_errors(form.image) }}
+											</div>
+										</div>
+
+
 										<div class="col-md-6">
 											<div class="form-group">
 												{{ form_label(form.fullname, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
@@ -80,6 +96,24 @@
 												{{ form_errors(form.address) }}
 											</div>
 										</div>
+										{% if is_granted(_doctor_role) %}
+											<div class="col-md-4">
+												<div class="form-group">
+													{{ form_label(form.consultationFee, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+													{{ form_widget(form.consultationFee, {'attr': {'class': 'form-control'}}) }}
+													{{ form_errors(form.consultationFee) }}
+												</div>
+											</div>
+
+											<div class="col-md-12">
+											<div class="form-group">
+												{{ form_label(form.bio, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+												{{ form_widget(form.bio, {'attr': {'class': 'form-control'}}) }}
+												{{ form_errors(form.bio) }}
+											</div>
+										</div>
+										{% endif %}
+
 
 										<button type="submit" class="btn btn-primary btn-block">Lưu thông tin</button>
 
@@ -101,3 +135,15 @@
 	<!-- /Page Content -->
 {% endblock %}
 
+{% block JSCustom %}
+	<!-- Script hiển thị ảnh ngay khi chọn file -->
+	<script>
+		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
+let reader = new FileReader();
+reader.onload = function (e) {
+document.getElementById("preview-image").src = e.target.result;
+};
+reader.readAsDataURL(event.target.files[0]);
+});
+	</script>
+{% endblock %}
