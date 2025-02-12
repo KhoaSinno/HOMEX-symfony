@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Constraints\File;
@@ -21,6 +22,17 @@ class ProfileType extends AbstractType
             ->add('fullname', TextType::class, ['label' => 'Họ tên'])
             ->add('email', EmailType::class, ['label' => 'Email'])
             ->add('phoneNumber', TextType::class, ['label' => 'Số điện thoại'])
+            ->add('gender', ChoiceType::class, [
+                'label' => 'Giới tính',
+                'choices' => [
+                    'Nam' => 'male',
+                    'Nữ' => 'female',
+                    'Khác' => 'other', // Nếu bạn muốn thêm lựa chọn khác
+                ],
+                'expanded' => false, // false: dạng dropdown, true: radio button
+                'multiple' => false, // Chỉ chọn 1 giá trị
+                'attr' => ['class' => 'form-control'], // Thêm class Bootstrap
+            ])
             ->add('address', TextType::class, ['label' => 'Địa chỉ'])
             ->add('image', FileType::class, [
                 'label' => 'Ảnh đại diện',

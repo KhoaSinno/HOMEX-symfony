@@ -84,6 +84,14 @@
 
 										<div class="col-md-6">
 											<div class="form-group">
+												{{ form_label(form.gender, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+												{{ form_widget(form.gender, {'attr': {'class': 'form-control'}}) }}
+												{{ form_errors(form.gender) }}
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<div class="form-group">
 												{{ form_label(form.phoneNumber, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 												{{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
 												{{ form_errors(form.phoneNumber) }}
@@ -106,12 +114,12 @@
 											</div>
 
 											<div class="col-md-12">
-											<div class="form-group">
-												{{ form_label(form.bio, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-												{{ form_widget(form.bio, {'attr': {'class': 'form-control'}}) }}
-												{{ form_errors(form.bio) }}
+												<div class="form-group">
+													{{ form_label(form.bio, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+													{{ form_widget(form.bio, {'attr': {'class': 'form-control'}}) }}
+													{{ form_errors(form.bio) }}
+												</div>
 											</div>
-										</div>
 										{% endif %}
 
 

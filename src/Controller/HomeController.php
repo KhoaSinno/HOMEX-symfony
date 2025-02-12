@@ -46,6 +46,8 @@ class HomeController extends AbstractController
         $name = $request->query->get('fullname');
         $address = $request->query->get('address');
         $specialty = $request->query->get('specialty');
+        $specialty = $request->query->all('select_specialist'); // Lấy danh sách chuyên khoa (mảng)
+        $gender = $request->query->all('gender_type'); // Lấy danh sách giới tính (mảng)
 
         $criteria = [];
         if ($name) {
@@ -54,12 +56,36 @@ class HomeController extends AbstractController
         if ($address) {
             $criteria['address'] = $address;
         }
-        if ($specialty) {
-            $criteria['specialty'] = $specialty;
+        // if ($specialty) {
+        //     $criteria['specialty'] = $specialty;
+        // }
+        if (!empty($specialty)) {
+            $criteria['specialty'] = $specialty; // Lọc danh sách chuyên khoa
+        }
+        if (!empty($gender)) {
+            $criteria['gender'] = $gender; // Lọc theo giới tính
         }
 
         // Tìm bác sĩ theo các tiêu chí
         $doctors = $userRepository->findDoctorsByCriteria($criteria);
+
+      // Lấy giá trị ngày từ request
+    $date = $request->query->get('date');
+
+    if ($date) {
+        // Chuyển đổi giá trị ngày thành đối tượng DateTime
+        $dateObj = \DateTime::createFromFormat('d/m/Y', $date);
+        if ($dateObj) {
+            // Nếu chuyển đổi thành công, tìm bác sĩ theo ngày
+            $doctors = $userRepository->findDoctorsByDate($dateObj);
+        } else {
+            // Nếu không thể chuyển đổi ngày, trả về thông báo lỗi hoặc không tìm bác sĩ
+            $doctors = [];
+        }
+    } else {
+        // Nếu không có ngày, tìm bác sĩ theo các tiêu chí đã cho
+        $doctors = $userRepository->findDoctorsByCriteria($criteria);
+    }
 
         // Render kết quả tìm kiếm
         return $this->render('home/search_doctor.html.twig', [
@@ -67,25 +93,28 @@ class HomeController extends AbstractController
             'count' => count($doctors), // Đếm số lượng bác sĩ tìm được
             'search_address' => $address, // Lưu địa chỉ tìm kiếm
             'search_specialty' => $specialty, // Lưu chuyên khoa tìm kiếm
+            'search_gender' => $gender, // Lưu giới tính tìm kiếm
+            'selected_date' => $date,
         ]);
     }
 
+
     #[Route('/home/doctor_profile', name: 'app_doctor_profile')]
     public function doctorProfile(
-        Request $request, 
-        UserRepository $userRepository, 
+        Request $request,
+        UserRepository $userRepository,
         ScheduleWorkRepository $scheduleWorkRepository
     ): Response {
         $id = $request->query->get('id');
         $doctor = $userRepository->find($id);
-    
+
         if (!$doctor) {
             throw $this->createNotFoundException('Bác sĩ không tồn tại');
         }
-    
+
         // Lấy tất cả các ngày có lịch khám của bác sĩ
         $availableDates = $scheduleWorkRepository->getAvailableDatesByDoctor($doctor);
-    
+
         // Kiểm tra xem có ngày nào được chọn không
         $selectedDate = $request->query->get('date');
         if ($selectedDate) {
@@ -94,10 +123,10 @@ class HomeController extends AbstractController
             // Nếu không có ngày chọn, mặc định lấy ngày đầu tiên có trong lịch bác sĩ
             $selectedDate = !empty($availableDates) ? new \DateTime($availableDates[0]) : null;
         }
-    
+
         // Lấy các khung giờ làm việc của bác sĩ
         $timeSlots = $selectedDate ? $scheduleWorkRepository->getTimeSlotsByDoctorAndDate($doctor, $selectedDate) : [];
-    
+
         return $this->render('home/doctor_profile.html.twig', [
             'doctor' => $doctor,
             'availableDates' => $availableDates,
@@ -105,7 +134,7 @@ class HomeController extends AbstractController
             'timeSlots' => $timeSlots,
         ]);
     }
-    
+
 
 
 

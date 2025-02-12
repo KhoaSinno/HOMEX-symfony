@@ -45,37 +45,62 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    /**
-     * Tìm bác sĩ theo các tiêu chí (name, address, specialty)
-     */
     public function findDoctorsByCriteria(array $criteria)
     {
         $qb = $this->createQueryBuilder('u')
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm kiếm chỉ những bác sĩ
 
-        // Kiểm tra nếu 'fullname' tồn tại và không rỗng
         if (!empty($criteria['name'])) {
             $qb->andWhere('u.fullname LIKE :name')
                 ->setParameter('name', '%' . $criteria['name'] . '%');
         }
 
-        // Kiểm tra nếu 'address' tồn tại và không rỗng
         if (!empty($criteria['address'])) {
             $qb->andWhere('u.address LIKE :address')
                 ->setParameter('address', '%' . $criteria['address'] . '%');
         }
 
-        // Kiểm tra nếu 'specialty' tồn tại và không rỗng
+        // if (!empty($criteria['specialty'])) {
+        //     $qb->andWhere('u.specialty LIKE :specialty')
+        //         ->setParameter('specialty', '%' . $criteria['specialty'] . '%');
+        // }
+
         if (!empty($criteria['specialty'])) {
-            $qb->andWhere('u.specialty LIKE :specialty')
-                ->setParameter('specialty', '%' . $criteria['specialty'] . '%');
+            $qb->andWhere('u.specialty IN (:specialty)')
+                ->setParameter('specialty', $criteria['specialty']);
+        }
+
+        if (!empty($criteria['gender'])) {
+            $qb->andWhere('u.gender IN (:gender)')
+                ->setParameter('gender', $criteria['gender']);
         }
 
         return $qb->getQuery()->getResult();
     }
-
-
+    public function findDoctorsByDate(\DateTime $date)
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_DOCTOR%') // Chỉ lấy bác sĩ
+    
+            // Truy vấn vào ScheduleWork và lọc theo ngày
+        ->leftJoin('u.scheduleWorks', 's')  // Thực hiện left join vào scheduleWorks
+        ->andWhere('s.date = :date') // Lọc theo ngày của lịch làm việc
+        ->setParameter('date', $date->format('Y-m-d')); // Chuyển đổi đối tượng DateTime sang định dạng Y-m-d
+    
+        return $qb->getQuery()->getResult();
+    }
+    
+    // public function findDoctorsByDate(string $date)
+    // {
+    //     return $this->createQueryBuilder('d')
+    //         ->innerJoin('d.scheduleWorks', 's') // Giả sử Doctor có quan hệ với ScheduleWork
+    //         ->where('s.date = :date')
+    //         ->setParameter('date', new \DateTime($date)) // Chuyển đổi sang DateTime
+    //         ->getQuery()
+    //         ->getResult();
+    // }
 
     //    /**
     //     * @return User[] Returns an array of User objects
