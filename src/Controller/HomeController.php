@@ -69,23 +69,23 @@ class HomeController extends AbstractController
         // Tìm bác sĩ theo các tiêu chí
         $doctors = $userRepository->findDoctorsByCriteria($criteria);
 
-      // Lấy giá trị ngày từ request
-    $date = $request->query->get('date');
+        // Lấy giá trị ngày từ request
+        $date = $request->query->get('date');
 
-    if ($date) {
-        // Chuyển đổi giá trị ngày thành đối tượng DateTime
-        $dateObj = \DateTime::createFromFormat('d/m/Y', $date);
-        if ($dateObj) {
-            // Nếu chuyển đổi thành công, tìm bác sĩ theo ngày
-            $doctors = $userRepository->findDoctorsByDate($dateObj);
+        if ($date) {
+            // Chuyển đổi giá trị ngày thành đối tượng DateTime
+            $dateObj = \DateTime::createFromFormat('d/m/Y', $date);
+            if ($dateObj) {
+                // Nếu chuyển đổi thành công, tìm bác sĩ theo ngày
+                $doctors = $userRepository->findDoctorsByDate($dateObj);
+            } else {
+                // Nếu không thể chuyển đổi ngày, trả về thông báo lỗi hoặc không tìm bác sĩ
+                $doctors = [];
+            }
         } else {
-            // Nếu không thể chuyển đổi ngày, trả về thông báo lỗi hoặc không tìm bác sĩ
-            $doctors = [];
+            // Nếu không có ngày, tìm bác sĩ theo các tiêu chí đã cho
+            $doctors = $userRepository->findDoctorsByCriteria($criteria);
         }
-    } else {
-        // Nếu không có ngày, tìm bác sĩ theo các tiêu chí đã cho
-        $doctors = $userRepository->findDoctorsByCriteria($criteria);
-    }
 
         // Render kết quả tìm kiếm
         return $this->render('home/search_doctor.html.twig', [
@@ -105,6 +105,7 @@ class HomeController extends AbstractController
         UserRepository $userRepository,
         ScheduleWorkRepository $scheduleWorkRepository
     ): Response {
+
         $id = $request->query->get('id');
         $doctor = $userRepository->find($id);
 
