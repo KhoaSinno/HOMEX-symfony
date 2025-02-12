@@ -62,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $consultationFee = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $gender = null;
+
     public function __construct()
     {
         $this->scheduleWorks = new ArrayCollection();
@@ -252,6 +255,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setConsultationFee(?float $consultationFee): static
     {
         $this->consultationFee = $consultationFee;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?string $gender): static
+    {
+        $this->gender = $gender;
 
         return $this;
     }
