@@ -40,6 +40,7 @@
 											<th>Phòng khám</th>
 											<th>Chuyên khoa</th>
 											<th>Giới tính</th>
+											<th>Phí khám</th>
 											<th></th>
 										</tr>
 									</thead>
@@ -51,7 +52,7 @@
 												<td>
 													<h2 class="table-avatar">
 														<a href="profile.html" class="avatar avatar-sm mr-2">
-															<img class="avatar-img" src="{{ doctor.image ? asset('uploads/' ~ doctor.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ doctor.fullName }}">
+															<img class="avatar-img" src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ doctor.fullName }}">
 														</a>
 														<a href="profile.html">{{ doctor.fullName }}</a>
 													</h2>
@@ -60,6 +61,7 @@
 												<td>{{ doctor.specialty.name ?? 0 }}</td>
 												<td>{{ doctor.specialty.clinicNumber ?? 0 }}</td>
 												<td>{{doctor.gender ?? 'Trống'}}</td>
+												<td>{{doctor.consultationFee ?? 'Trống'}}</td>
 
 												<td class="text-center">
 													<div class="actions">
