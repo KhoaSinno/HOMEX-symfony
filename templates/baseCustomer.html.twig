@@ -6,11 +6,13 @@
 			{% block title %}Welcome HOMEX
 			{% endblock %}
 		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+		<link
+		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
 		<!-- Favicons -->
 		<link
-		href="{{asset('customer/assets/img/favicon.png')}}" rel="icon"> <!-- Bootstrap CSS -->
+		href="{{asset('customer/assets/img/favicon.png')}}" rel="icon">
+		<!-- Bootstrap CSS -->
 		<link
 		rel="stylesheet" href="{{asset('customer/assets/css/bootstrap.min.css')}}">
 
@@ -32,10 +34,10 @@
 	<body>
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{# {% for message in app.flashes('notice') %}
-					<div class="notice">
-						{{ message }}
-					</div>
-				{% endfor %} #}
+									<div class="notice">
+										{{ message }}
+									</div>
+								{% endfor %} #}
 
 
 		<!-- Main Wrapper -->
@@ -70,20 +72,20 @@
 							</li>
 							<li>
 								<a href="
-																			{% if app.user %}
-																				{% if _admin_role in app.user.roles %}
-																					{{ path('app_specialty_index') }}
-																				{% elseif _doctor_role in app.user.roles %}
-																					{{ path('app_doctor_dashboard') }}
-																				{% elseif _patient_role in app.user.roles %}
-																					{{ path('app_patient_dashboard') }}
-																				{% else %}
-																					{{ path('app_home') }}
-																				{% endif %}
-																			{% else %}
-																					{{ path('app_home') }}
-																			{% endif %}
-																		">
+																																							{% if app.user %}
+																																								{% if _admin_role in app.user.roles %}
+																																									{{ path('app_specialty_index') }}
+																																								{% elseif _doctor_role in app.user.roles %}
+																																									{{ path('app_doctor_dashboard') }}
+																																								{% elseif _patient_role in app.user.roles %}
+																																									{{ path('app_patient_dashboard') }}
+																																								{% else %}
+																																									{{ path('app_home') }}
+																																								{% endif %}
+																																							{% else %}
+																																									{{ path('app_home') }}
+																																							{% endif %}
+																																						">
 									{% if app.user %}
 										{% if _admin_role in app.user.roles %}
 											Admin
@@ -139,7 +141,7 @@
 										</div>
 									</div>
 									{# <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
-									            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
+																											            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
 									<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
 								</div>
 							</li>
@@ -195,54 +197,50 @@
 
 							<div
 								class="col-lg-3 col-md-6">
-
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-menu">
-									<h2 class="footer-title">For Patients</h2>
+									<h2 class="footer-title">Chính Sách & Hỗ Trợ</h2>
 									<ul>
-										<li><a href="search.html"><i class="fas fa-angle-double-right"></i>Search for Doctors</a></li>
-										<li><a href="login.html"><i class="fas fa-angle-double-right"></i>Login</a></li>
-										<li><a href="register.html"><i class="fas fa-angle-double-right"></i>Register</a></li>
-										<li><a href="booking.html"><i class="fas fa-angle-double-right"></i>Booking</a></li>
-										<li><a href="patient-dashboard.html"><i class="fas fa-angle-double-right"></i>Patient Dashboard</a></li>
+										<li><a href="privacy-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách bảo mật</a></li>
+										<li><a href="terms.html"><i class="fas fa-angle-double-right"></i>Điều khoản sử dụng</a></li>
+										<li><a href="refund-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách hoàn tiền</a></li>
+										<li><a href="faq.html"><i class="fas fa-angle-double-right"></i>Câu hỏi thường gặp</a></li>
+										<li><a href="contact.html"><i class="fas fa-angle-double-right"></i>Liên hệ hỗ trợ</a></li>
 									</ul>
 								</div>
 								<!-- /Footer Widget -->
-
 							</div>
 
 							<div
 								class="col-lg-3 col-md-6">
-
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-menu">
-									<h2 class="footer-title">For Doctors</h2>
+									<h2 class="footer-title">Thông Tin & Điều Khoản</h2>
 									<ul>
-										<li><a href="appointments.html"><i class="fas fa-angle-double-right"></i>Appointments</a></li>
-										<li><a href="chat.html"><i class="fas fa-angle-double-right"></i>Chat</a></li>
-										<li><a href="login.html"><i class="fas fa-angle-double-right"></i>Login</a></li>
-										<li><a href="doctor-register.html"><i class="fas fa-angle-double-right"></i>Register</a></li>
-										<li><a href="doctor-dashboard.html"><i class="fas fa-angle-double-right"></i>Doctor Dashboard</a></li>
+										<li><a href="about.html"><i class="fas fa-angle-double-right"></i>Giới thiệu về chúng tôi</a></li>
+										<li><a href="data-protection.html"><i class="fas fa-angle-double-right"></i>Bảo vệ dữ liệu cá nhân</a></li>
+										<li><a href="service-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách dịch vụ</a></li>
+										<li><a href="partnership.html"><i class="fas fa-angle-double-right"></i>Hợp tác với chúng tôi</a></li>
+										<li><a href="support.html"><i class="fas fa-angle-double-right"></i>Trung tâm trợ giúp</a></li>
 									</ul>
 								</div>
 								<!-- /Footer Widget -->
-
 							</div>
+
 
 							<div
 								class="col-lg-3 col-md-6">
 
 								<!-- Footer Widget -->
 								<div class="footer-widget footer-contact">
-									<h2 class="footer-title">Contact Us</h2>
+									<h2 class="footer-title">Liên Hệ</h2>
 									<div class="footer-contact-info">
 										<div class="footer-address">
 											<span>
 												<i class="fas fa-map-marker-alt"></i>
 											</span>
 											<p>
-												3556  Beech Street, San Francisco,<br>
-												California, CA 94108
+												256 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ
 											</p>
 										</div>
 										<p>
@@ -275,7 +273,7 @@
 								<div class="col-md-6 col-lg-6">
 									<div class="copyright-text">
 										<p class="mb-0">
-											<a href="templateshub.net">Templates Hub</a>
+											<a href="#"> HTTT2211026 | Nguyễn Trần Anh Khoa</a>
 										</p>
 									</div>
 								</div>
@@ -286,10 +284,10 @@
 									<div class="copyright-menu">
 										<ul class="policy-menu">
 											<li>
-												<a href="term-condition.html">Terms and Conditions</a>
+												<a href="term-condition.html">Điều khoản và Điều kiện</a>
 											</li>
 											<li>
-												<a href="privacy-policy.html">Policy</a>
+												<a href="privacy-policy.html">Chính sách bảo mật</a>
 											</li>
 										</ul>
 									</div>

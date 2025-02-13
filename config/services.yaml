@@ -6,6 +6,8 @@
 parameters:
     uploads_directory: '%kernel.project_dir%/public/uploads'
     uploads_user: '%kernel.project_dir%/public/uploads/users'
+    uploads_specialty: '%kernel.project_dir%/public/uploads/specialty'
+
 services:
     # default configuration for services in *this* file
     _defaults:
