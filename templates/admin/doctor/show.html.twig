@@ -1,42 +1,51 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}Thông tin Bác sĩ{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <div class="page-wrapper">
+        <div class="content container-fluid">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ user.image }}</td>
-            </tr>
-            <tr>
-                <th>Fullname</th>
-                <td>{{ user.fullname }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 class="page-title">Thông tin Bác sĩ</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_doctor_dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active">Thông tin Bác sĩ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
 
-    <a href="{{ path('app_doctor_index') }}">back to list</a>
+            <div class="doctor-info">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ asset('uploads/users/' ~ user.image) }}" alt="Ảnh Bác sĩ" class="img-fluid rounded-circle" style="max-width: 100%; height: auto;">
+                    </div>
+                    <div class="col-md-8">
+                        <h4>{{ user.fullname }}</h4>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Số điện thoại:</strong> {{ user.phoneNumber }}</p>
+                        <p><strong>Địa chỉ:</strong> {{ user.address }}</p>
+                        <p><strong>Giới tính:</strong> {{ user.gender }}</p>
+                        <p><strong>Ngày sinh:</strong> {{ user.dateOfBirth|date('d/m/Y') }}</p>
+                        <p><strong>Chuyên khoa:</strong> {{ user.specialty.name }}</p>
+                        <p><strong>Giới thiệu:</strong> {{ user.bio }}</p>
+                        <p><strong>Phí khám:</strong> {{ user.consultationFee | currency_vnd }}</p>
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ path('app_doctor_edit', {'id': user.id}) }}">edit</a>
-
-    {{ include('admin/doctor/_delete_form.html.twig') }}
+            <!-- Action buttons -->
+            <div class="action-links">
+                <a href="{{ path('app_doctor_edit', {'id': user.id}) }}" class="btn btn-primary">Chỉnh sửa</a>
+                <a href="{{ path('app_doctor_delete', {'id': user.id}) }}" class="btn btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

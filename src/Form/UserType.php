@@ -2,10 +2,13 @@
 
 namespace App\Form;
 
+use App\Entity\Specialty;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,13 +20,13 @@ class UserType extends AbstractType
     {
         $builder
             ->add('fullname', TextType::class, [
-                'label' => 'Tên bác sĩ',
+                'label' => 'Họ tên',
                 'required' => true,
                 'attr' => ['class' => 'form-control']
             ])
 
             ->add('image', FileType::class, [
-                'label' => 'Hình ảnh',
+                'label' => 'Tải ảnh đại diện lên',
                 'mapped' => false,
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
@@ -43,23 +46,71 @@ class UserType extends AbstractType
                 'label' => 'Email',
                 'required' => true,
                 'attr' => ['class' => 'form-control']
-            ]) 
-            // ->add('roles', ChoiceType::class, [
-            //     'choices' => [
-            //         'Admin' => 'ROLE_ADMIN',
-            //         'Doctor' => 'ROLE_DOCTOR',
-            //         'Patient' => 'ROLE_PATIENT',
-            //     ],
-            //     'multiple' => true, // Cho phép chọn nhiều giá trị
-            //     'expanded' => true, // Sử dụng checkbox hoặc radio button
-            // ])
+            ])
+
+            ->add('phoneNumber', TextType::class, [
+                'label' => 'Số điện thoại',
+                'required' => true,
+                'attr' => ['class' => 'form-control']
+            ])
+
+            ->add('address', TextType::class, [
+                'label' => 'Địa chỉ',
+                'required' => true,
+                'attr' => ['class' => 'form-control']
+            ])
+
+            ->add('gender', ChoiceType::class, [
+                'label' => 'Giới tính',
+                'required' => true,
+                'choices' => [
+                    'Nam' => 'Nam',
+                    'Nữ' => 'Nữ',
+                    'Khác' => 'Khác',
+                ],
+                'attr' => ['class' => 'form-control']
+            ])
+
+            ->add('dateOfBirth', TextType::class, [
+                'label' => 'Ngày sinh',
+                'required' => true,
+                'attr' => ['class' => 'form-control']
+            ])
         ;
+
+        if ($options['is_doctor']) {
+            $builder
+                ->add('specialty', EntityType::class, [
+                    'class' => Specialty::class,
+                    'choice_label' => 'name',
+                    'label' => 'Chuyên khoa',
+                    'placeholder' => 'Chọn chuyên khoa',
+                    'required' => true,
+                    'attr' => ['class' => 'form-control']
+                ])
+
+                ->add('bio', TextareaType::class, [
+                    'label' => 'Giới thiệu',
+                    'attr' => [
+                        'class' => 'form-control',
+                        'rows' => 5, // Số dòng hiển thị mặc định
+                        'placeholder' => 'Nhập giới thiệu về bản thân...',
+                    ],
+                ])
+
+                ->add('consultationFee', TextType::class, [
+                    'label' => 'Phí khám',
+                    'required' => true,
+                    'attr' => ['class' => 'form-control']
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'is_doctor' => false,
         ]);
     }
 }

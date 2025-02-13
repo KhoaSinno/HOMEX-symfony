@@ -1,14 +1,10 @@
-{# {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }} #}
-
-
 <div class="common-form">
 	<div class="row">
 		<div class="col-sm">
 			{{ form_start(form, {
-                'action': path('app_doctor_new'), 
+                'action': (user is defined and user.id is not null) 
+					? path('app_doctor_edit', {'id': user.id}) 
+					: path('app_doctor_new'),
                 'method': 'POST',
                 'attr': {'novalidate': 'novalidate'}
             }) }}
@@ -21,6 +17,15 @@
 						{{ form_errors(form.fullname) }}
 					</div>
 				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.phoneNumber) }}
+					{{ form_widget(form.phoneNumber) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.phoneNumber) }}
+					</div>
+				</div>
+
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.email) }}
 					{{ form_widget(form.email) }}
@@ -28,6 +33,17 @@
 				</div>
 
 			</div>
+
+			<div class="form-row">
+				<div class="col-12 mb-3">
+					{{ form_label(form.address) }}
+					{{ form_widget(form.address) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.address) }}
+					</div>
+				</div>
+			</div>
+
 			<div class="form-row">
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.image) }}
@@ -41,24 +57,68 @@
 						{{ form_errors(form.image) }}
 					</div>
 				</div>
-				<div class="col-md-3 mb-3">
-					<label for="validationCustom04">Preview hình ảnh</label>
 
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.dateOfBirth) }}
+					{{ form_widget(form.dateOfBirth) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.dateOfBirth) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.gender) }}
+					{{ form_widget(form.gender) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.gender) }}
+					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="form-check">
-					<input class="form-check-input" type="checkbox" value="" id="invalidCheck" required="">
-					<label class="form-check-label" for="invalidCheck">
-						Agree to terms and conditions
-					</label>
-					<div class="invalid-feedback">
-						You must agree before submitting.
+			<div class="form-row">
+				<div class="col-md-3 mb-3">
+					<label for="validationCustom04">Ảnh đại diện</label>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.specialty) }}
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="inputGroupPrepend">
+								<i class="fa fa-briefcase" aria-hidden="true"></i>
+							</span>
+						</div>
+						{{ form_widget(form.specialty) }}
+						{{ form_errors(form.specialty) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.consultationFee) }}
+					<div class="input-group-append">
+						{{ form_widget(form.consultationFee) }}
+						<span class="input-group-text" id="basic-addon2">VNĐ</span>
+					</div>
+					<div class="valid-feedback">
+						{{ form_errors(form.consultationFee) }}
+					</div>
+				</div>
+
+				<div class="col-12 mb-3">
+					{{ form_label(form.bio) }}
+					{{ form_widget(form.bio) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.bio) }}
 					</div>
 				</div>
 			</div>
 			{# Button submit #}
-			<button class="btn btn-primary" type="submit">Tạo mới</button>
+			<div class="form-row">
+				<button class="btn btn-primary" type="submit">
+					{{user.id is defined ? 'Cập nhật thông tin' : 'Tạo mới' }}</button>
+			</div>
+
 			{{ form_end(form) }}
 		</div>
 	</div>
