@@ -58,7 +58,7 @@ final class SpecialtyController extends AbstractController
                 $imageName = md5(uniqid()) . '.' . $image->guessExtension();
                 try {
                     $image->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('uploads_specialty'),
                         $imageName
                     );
                     $specialty->setImage($imageName);
@@ -98,100 +98,6 @@ final class SpecialtyController extends AbstractController
             'errors' => $errors, // Trả về lỗi chi tiết cho từng field
         ], Response::HTTP_BAD_REQUEST);
     }
-
-    // public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    // {
-    //     $specialty = new Specialty();
-    //     $form = $this->createForm(SpecialtyType::class, $specialty);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         // Xử lý upload ảnh nếu có
-    //         $image = $form->get('image')->getData();
-    //         if ($image) {
-    //             $imageName = md5(uniqid()) . '.' . $image->guessExtension();
-    //             try {
-    //                 $image->move(
-    //                     $this->getParameter('uploads_directory'),
-    //                     $imageName
-    //                 );
-    //                 $specialty->setImage($imageName);
-    //             } catch (FileException $e) {
-    //                 return new JsonResponse(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //             }
-    //         }
-
-    //         $entityManager->persist($specialty);
-    //         $entityManager->flush();
-
-    //         return new JsonResponse([
-    //             'success' => true,
-    //             'message' => 'Chuyên khoa mới đã được thêm thành công!',
-    //             'data' => [
-    //                 'id' => $specialty->getId(),
-    //                 'name' => $specialty->getName(),
-    //                 'clinicNumber' => $specialty->getClinicNumber(),
-    //                 'image' => $specialty->getImage(),
-    //             ],
-    //         ]);
-    //     }
-
-    //     // Nếu form không hợp lệ, trả về lỗi
-    //     $errors = [];
-    //     foreach ($form->getErrors(true) as $error) {
-    //         $errors[] = $error->getMessage();
-    //     }
-
-    //     return new JsonResponse([
-    //         'success' => false,
-    //         'message' => 'Form không hợp lệ.',
-    //         'errors' => $errors,
-    //     ], Response::HTTP_BAD_REQUEST);
-    // }
-
-
-    // #[Route('/admin/specialty/new', name: 'app_specialty_new', methods: ['GET', 'POST'])]
-    // public function new(Request $request, EntityManagerInterface $entityManager): Response
-    // {
-    //     $specialty = new Specialty();
-    //     $form = $this->createForm(SpecialtyType::class, $specialty);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         // Take image from form
-    //         $image = $form->get('image')->getData();
-
-    //         // If image is not null
-    //         if ($image) {
-    //             // Create a unique name for the image
-    //             $imageName = md5(uniqid()) . '.' . $image->guessExtension();
-
-    //             try {
-    //                 // Move the file to the directory where images are stored
-    //                 $image->move(
-    //                     $this->getParameter('uploads_directory'),
-    //                     $imageName
-    //                 );
-
-    //                 // Update Image's name in Entity
-    //                 $specialty->setImage($imageName);
-    //             } catch (FileException $e) {
-    //                 return new Response($e->getMessage());
-    //             }
-    //         }
-
-    //         $entityManager->persist($specialty);
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute('app_specialty_index', [], Response::HTTP_SEE_OTHER);
-    //     }
-
-    //     return $this->render('admin/specialty/new.html.twig', [
-    //         'specialty' => $specialty,
-    //         'form' => $form,
-    //     ]);
-    // }
 
     #[Route('/{id}/edit', name: 'app_specialty_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Specialty $specialty, EntityManagerInterface $entityManager): Response
@@ -239,7 +145,7 @@ final class SpecialtyController extends AbstractController
                 try {
                     // Lưu ảnh vào thư mục uploads
                     $image->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('uploads_specialty'),
                         $imageName
                     );
                     // Gán tên ảnh mới cho thực thể
@@ -268,7 +174,7 @@ final class SpecialtyController extends AbstractController
 
             // Sau khi flush, xóa ảnh cũ nếu tồn tại và thêm ảnh mới thành công
             if ($image && $oldImage) {
-                $imagePath = $this->getParameter('uploads_directory') . '/' . $oldImage;
+                $imagePath = $this->getParameter('uploads_specialty') . '/' . $oldImage;
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
@@ -311,7 +217,7 @@ final class SpecialtyController extends AbstractController
         }
 
         if ($specialty->getImage()) {
-            $imagePath = $this->getParameter('uploads_directory') . '/' . $specialty->getImage();
+            $imagePath = $this->getParameter('uploads_specialty') . '/' . $specialty->getImage();
             if (file_exists($imagePath)) {
                 unlink($imagePath); // Xóa file từ thư mục
             }
