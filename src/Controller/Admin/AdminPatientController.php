@@ -5,10 +5,13 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\ImageUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('admin/patient')]
@@ -16,10 +19,14 @@ class AdminPatientController extends AbstractController
 {
     private EntityManagerInterface $em;
     private UserRepository $userRepo;
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepo)
+    private UserPasswordHasherInterface $passHasher;
+    private ImageUploader $imageUploader;
+    public function __construct(EntityManagerInterface $em, UserRepository $userRepo, UserPasswordHasherInterface $passHasher, ImageUploader $imageUploader)
     {
         $this->em = $em;
         $this->userRepo = $userRepo;
+        $this->passHasher = $passHasher;
+        $this->imageUploader = $imageUploader;
     }
 
     #[Route(name: 'app_admin_patient', methods: ['GET'])]
@@ -45,10 +52,26 @@ class AdminPatientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setRoles(['ROLE_PATIENT']);
+            $temPass = "pt" . $user->getPhoneNumber() || "pt" . $user->getDateOfBirth();
+            $user->setPassword($this->passHasher->hashPassword($user, $temPass));
+
+              /** @var UploadedFile $imageFile */
+              $imageFile = $form->get('image')->getData();
+              $oldImage = $user->getImage();
+  
+              // Xử lý ảnh
+              if ($imageFile) {
+                  $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                  if ($newImage) {
+                      $user->setImage($newImage);
+                  }
+              }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_patient_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin_patient', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/patient/new.html.twig', [
@@ -75,9 +98,20 @@ class AdminPatientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+              /** @var UploadedFile $imageFile */
+              $imageFile = $form->get('image')->getData();
+              $oldImage = $user->getImage();
+  
+              // Xử lý ảnh
+              if ($imageFile) {
+                  $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                  if ($newImage) {
+                      $user->setImage($newImage);
+                  }
+              }
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_patient_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_admin_patient', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/patient/edit.html.twig', [
@@ -90,10 +124,10 @@ class AdminPatientController extends AbstractController
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($user);
+            $user->setDel(true);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_admin_patient_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_admin_patient', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -71,8 +72,9 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-control']
             ])
 
-            ->add('dateOfBirth', TextType::class, [
+            ->add('dateOfBirth', DateType::class, [
                 'label' => 'Ngày sinh',
+                'widget' => 'single_text', // Hiển thị input dạng date
                 'required' => true,
                 'attr' => ['class' => 'form-control']
             ])

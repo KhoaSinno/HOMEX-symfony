@@ -147,11 +147,11 @@
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
-let reader = new FileReader();
-reader.onload = function (e) {
-document.getElementById("preview-image").src = e.target.result;
-};
-reader.readAsDataURL(event.target.files[0]);
-});
+			let reader = new FileReader();
+			reader.onload = function (e) {
+			document.getElementById("preview-image").src = e.target.result;
+			};
+			reader.readAsDataURL(event.target.files[0]);
+			});
 	</script>
 {% endblock %}
