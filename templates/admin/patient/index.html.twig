@@ -57,7 +57,8 @@
 													</h2>
 												</td>
 
-												<td>{{ patient.dateOfBirth ?? 'Trống' }}</td>
+												<td>{{ patient.dateOfBirth ? patient.dateOfBirth|date('d/m/Y') : 'Trống' }}</td>
+
 												<td>{{patient.gender ?? 'Trống'}}</td>
 
 												<td class="text-center">

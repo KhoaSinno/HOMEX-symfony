@@ -75,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isDel = null;
+
     public function __construct()
     {
         $this->scheduleWorks = new ArrayCollection();
@@ -320,6 +323,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
+    }
+
+    public function isDel(): ?bool
+    {
+        return $this->isDel;
+    }
+
+    public function setDel(?bool $isDel): static
+    {
+        $this->isDel = $isDel;
 
         return $this;
     }

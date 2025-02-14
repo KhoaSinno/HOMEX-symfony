@@ -26,5 +26,12 @@ services:
     # Register the AppExtension class as a Twig extension
     App\Twig\AppExtension:
         tags: ['twig.extension']
+
+    # config upload service
+    App\Service\ImageUploader:
+        arguments:
+            $uploadDirs:
+                user: '%uploads_user%'
+                specialty: '%uploads_specialty%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

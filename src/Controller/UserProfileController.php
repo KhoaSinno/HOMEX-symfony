@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\ChangePasswordType;
+use App\Service\ImageUploader;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,6 +19,11 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserProfileController extends AbstractController
 {
+    private $imageUploader;
+    public function __construct(ImageUploader $imageUploader)
+    {
+        $this->imageUploader = $imageUploader;
+    }
     #[Route('/profile', name: 'user_profile_settings')]
     public function profile(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
@@ -29,43 +35,51 @@ class UserProfileController extends AbstractController
 
         $isDoctor = in_array('ROLE_DOCTOR', $user->getRoles());
 
-        $form = $this->createForm(ProfileType::class, $user,[
+        $form = $this->createForm(ProfileType::class, $user, [
             'is_doctor' => $isDoctor,
         ]);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
+            $oldImage = $user->getImage();
 
+            // Xử lý ảnh
             if ($imageFile) {
-                // Đặt tên file duy nhất
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                // Lưu ảnh vào thư mục `public/uploads/users`
-                try {
-                    $imageFile->move(
-                        $this->getParameter('uploads_user'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Có lỗi khi tải ảnh lên!');
+                $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                if ($newImage) {
+                    $user->setImage($newImage);
                 }
-
-                // Xóa ảnh cũ nếu có
-                if ($user->getImage()) {
-                    $oldImagePath = $this->getParameter('uploads_user') . '/' . $user->getImage();
-                    if (file_exists($oldImagePath)) {
-                        unlink($oldImagePath);
-                    }
-                }
-
-                // Lưu tên file mới vào database
-                $user->setImage($newFilename);
             }
+            // if ($imageFile) {
+            //     // Đặt tên file duy nhất
+            //     $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            //     $safeFilename = $slugger->slug($originalFilename);
+            //     $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+            //     // Lưu ảnh vào thư mục `public/uploads/users`
+            //     try {
+            //         $imageFile->move(
+            //             $this->getParameter('uploads_user'),
+            //             $newFilename
+            //         );
+            //     } catch (FileException $e) {
+            //         $this->addFlash('error', 'Có lỗi khi tải ảnh lên!');
+            //     }
+
+            //     // Xóa ảnh cũ nếu có
+            //     if ($user->getImage()) {
+            //         $oldImagePath = $this->getParameter('uploads_user') . '/' . $user->getImage();
+            //         if (file_exists($oldImagePath)) {
+            //             unlink($oldImagePath);
+            //         }
+            //     }
+
+            //     // Lưu tên file mới vào database
+            //     $user->setImage($newFilename);
+            // }
 
             $em->persist($user);
             $em->flush();
