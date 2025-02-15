@@ -5,10 +5,11 @@ namespace App\DataFixtures;
 use App\Entity\Specialty;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
 
     private UserPasswordHasherInterface $passwordHasher;
@@ -42,6 +43,8 @@ class UserFixtures extends Fixture
         $specialty = $this->getReference('specialty-cardiology', Specialty::class);
         $doctor->setSpecialty($specialty);
         $manager->persist($doctor);
+
+        $this->addReference('doctor-doe', $doctor);
         
         // Patient
         $patient = new User();
@@ -52,11 +55,12 @@ class UserFixtures extends Fixture
         $hashedPassword = $this->passwordHasher->hashPassword($patient, '123456');
         $patient->setPassword($hashedPassword);
         $manager->persist($patient);
+        $this->addReference('patient-mary', $patient);
 
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             SpecialtyFixtures::class,

@@ -92,38 +92,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $qb->getQuery()->getResult();
     }
     
-    // public function findDoctorsByDate(string $date)
-    // {
-    //     return $this->createQueryBuilder('d')
-    //         ->innerJoin('d.scheduleWorks', 's') // Giả sử Doctor có quan hệ với ScheduleWork
-    //         ->where('s.date = :date')
-    //         ->setParameter('date', new \DateTime($date)) // Chuyển đổi sang DateTime
-    //         ->getQuery()
-    //         ->getResult();
-    // }
-
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findUserByRole(string $role): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%"' . $role . '"%')
+            ->orderBy('u.fullname', 'ASC') // Sắp xếp theo tên
+            ->getQuery()
+            ->getResult();
+    }
+    
 }
