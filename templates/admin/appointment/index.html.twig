@@ -1,0 +1,233 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Cuộc hẹn
+{% endblock %}
+
+{% block body %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">Cuộc hẹn</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Cuộc hẹn</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr class="text-center">
+											<th>Mã cuộc hẹn</th>
+											<th>Mã bệnh nhân</th>
+											<th>Tên bệnh nhân</th>
+											<th>Tổng tiền</th>
+											<th>Trạng thái</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for ap in appointments %}
+											<tr class="text-center">
+												<td>
+													<a href="invoice.html">{{ap.id}}</a>
+												</td>
+												<td>{{ap.patient.id}}</td>
+												<td>
+													<h2 class="table-avatar">
+														<a href="profile.html" class="avatar avatar-sm mr-2">
+															<img class="avatar-img rounded-circle" src="{{ap.patient.image ? asset('uploads/users/' ~ ap.patient.image) : asset('uploads/users/default.png')}}" alt="Hình ảnh bệnh nhân">
+														</a>
+														<a href="profile.html">{{ap.patient.fullname}}</a>
+													</h2>
+												</td>
+												<td>{{ap.price | currency_vnd}}</td>
+												<td class="text-center">
+													<span class="badge badge-pill bg-success inv-badge">{{ap.paymentStatus}}</span>
+												</td>
+												<td>
+													<div class="actions">
+														<a class="btn btn-sm bg-info-light" href="{{ path('app_admin_appointment_show', {'id': ap.id}) }}">
+															<i class="fa fa-info-circle" aria-hidden="true"></i>
+															Xem
+														</a>
+
+														<a class="btn btn-sm bg-success-light" href="{{ path('app_admin_appointment_edit', {'id': ap.id}) }}">
+															<i class="fe fe-pencil"></i>
+															Sửa
+														</a>
+
+														<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ ap.id }}" data-token="{{ csrf_token('delete' ~ ap.id) }}" data-toggle="modal" data-target="#delete_modal">
+															<i class="fe fe-trash"></i>
+															Xóa
+														</a>
+
+
+														{# 
+																																																								<a class="btn btn-sm bg-danger-light" data-toggle="modal" href="#delete_modal">
+																																																									<i class="fe fe-trash"></i>
+																																																									Xóa
+																																																								</a> #}
+
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td colspan="6">Không có cuộc hẹn nào</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="form-content p-2">
+						<h4 class="modal-title">Xác nhận xóa</h4>
+						<p class="mb-4">Bạn có chắc chắn muốn xóa lịch hẹn này?</p>
+						<form id="delete_form" method="post">
+							<input
+							type="hidden" name="_method" value="DELETE">
+							{# Giả lập DELETE #}
+							<input
+							type="hidden" name="_token" id="delete_token">
+							{# Chứa CSRF Token #}
+							<button type="submit" class="btn btn-primary">Xóa</button>
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+						</form>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# <!-- Delete Modal -->
+						<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-body">
+										<div class="form-content p-2">
+											<h4 class="modal-title">Delete</h4>
+											<p class="mb-4">Are you sure want to delete?</p>
+											<button type="button" class="btn btn-primary">Save
+											</button>
+											<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Delete Modal --> #}
+
+	{# <h1>Appointment index</h1>
+											
+											    <table class="table">
+											        <thead>
+											            <tr>
+											                <th>Id</th>
+											                <th>AppointmentDate</th>
+											                <th>AppointmentTime</th>
+											                <th>Note</th>
+											                <th>Status</th>
+											                <th>Price</th>
+											                <th>Result</th>
+											                <th>ResultStatus</th>
+											                <th>ForWho</th>
+											                <th>Reason</th>
+											                <th>PatientFullname</th>
+											                <th>PatientDateOfBirth</th>
+											                <th>PatientPhoneNumber</th>
+											                <th>PatientAddress</th>
+											                <th>PatientGender</th>
+											                <th>PatientEmail</th>
+											                <th>PaymentStatus</th>
+											                <th>actions</th>
+											            </tr>
+											        </thead>
+											        <tbody>
+											        {% for appointment in appointments %}
+											            <tr>
+											                <td>{{ appointment.id }}</td>
+											                <td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+											                <td>{{ appointment.appointmentTime }}</td>
+											                <td>{{ appointment.note }}</td>
+											                <td>{{ appointment.status }}</td>
+											                <td>{{ appointment.price }}</td>
+											                <td>{{ appointment.result }}</td>
+											                <td>{{ appointment.forWho }}</td>
+											                <td>{{ appointment.reason }}</td>
+											                <td>{{ appointment.patientFullname }}</td>
+											                <td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+											                <td>{{ appointment.patientPhoneNumber }}</td>
+											                <td>{{ appointment.patientAddress }}</td>
+											                <td>{{ appointment.patientGender }}</td>
+											                <td>{{ appointment.patientEmail }}</td>
+											                <td>{{ appointment.paymentStatus }}</td>
+											                <td>
+											                    <a href="{{ path('app_admin_appointment_show', {'id': appointment.id}) }}">show</a>
+											                    <a href="{{ path('app_admin_appointment_edit', {'id': appointment.id}) }}">edit</a>
+											                </td>
+											            </tr>
+											        {% else %}
+											            <tr>
+											                <td colspan="18">no records found</td>
+											            </tr>
+											        {% endfor %}
+											        </tbody>
+											    </table>
+											
+											    <a href="{{ path('app_admin_appointment_new') }}">Create new</a> #}
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function () {
+let appointmentId = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+let form = document.getElementById("delete_form");
+
+// Cập nhật action đúng URL
+form.action = "/admin/appointment/" + appointmentId + "/delete";
+
+// Thêm CSRF Token vào input
+document.getElementById("delete_token").value = token;
+});
+});
+});
+	</script>
+
+
+{% endblock %}
