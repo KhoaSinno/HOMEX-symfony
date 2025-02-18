@@ -61,14 +61,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->setParameter('address', '%' . $criteria['address'] . '%');
         }
 
-        // if (!empty($criteria['specialty'])) {
-        //     $qb->andWhere('u.specialty LIKE :specialty')
-        //         ->setParameter('specialty', '%' . $criteria['specialty'] . '%');
-        // }
-
         if (!empty($criteria['specialty'])) {
-            $qb->andWhere('u.specialty IN (:specialty)')
-                ->setParameter('specialty', $criteria['specialty']);
+            if (is_array($criteria['specialty'])) {
+                // Nếu specialty là mảng, dùng IN
+                $qb->andWhere('u.specialty IN (:specialty)')
+                    ->setParameter('specialty', $criteria['specialty']);
+            } else {
+                // Nếu specialty không phải mảng, dùng LIKE
+                $qb->innerJoin('u.specialty', 's') // Thực hiện join với bảng specialty
+                    ->andWhere('s.name LIKE :specialty') // So sánh tên của specialty
+                    ->setParameter('specialty', '%' . $criteria['specialty'] . '%');
+            }
         }
 
         if (!empty($criteria['gender'])) {
@@ -83,15 +86,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb = $this->createQueryBuilder('u')
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_DOCTOR%') // Chỉ lấy bác sĩ
-    
+
             // Truy vấn vào ScheduleWork và lọc theo ngày
-        ->leftJoin('u.scheduleWorks', 's')  // Thực hiện left join vào scheduleWorks
-        ->andWhere('s.date = :date') // Lọc theo ngày của lịch làm việc
-        ->setParameter('date', $date->format('Y-m-d')); // Chuyển đổi đối tượng DateTime sang định dạng Y-m-d
-    
+            ->leftJoin('u.scheduleWorks', 's')  // Thực hiện left join vào scheduleWorks
+            ->andWhere('s.date = :date') // Lọc theo ngày của lịch làm việc
+            ->setParameter('date', $date->format('Y-m-d')); // Chuyển đổi đối tượng DateTime sang định dạng Y-m-d
+
         return $qb->getQuery()->getResult();
     }
-    
+
     public function findUserByRole(string $role): array
     {
         return $this->createQueryBuilder('u')
@@ -101,5 +104,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
-    
 }

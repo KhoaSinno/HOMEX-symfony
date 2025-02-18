@@ -11,24 +11,24 @@
 		<div class="container-fluid">
 			<div class="banner-wrapper">
 				<div class="banner-header text-center">
-					<h1>Search Doctor, Make an Appointment</h1>
-					<p>Discover the best doctors, clinic & hospital the city nearest to you.</p>
+					<h1>Tìm kiếm bác sĩ, Đặt lịch hẹn</h1>
+					<p>Khám phá các bác sĩ, bệnh viện tốt nhất gần bạn trong thành phố.</p>
 				</div>
 
 				<!-- Search -->
 				<div class="search-box">
 					<form action="{{ path('app_search_doctor') }}" method="get">
 						<div class="form-group search-location">
-							<input type="text" name="address" class="form-control" placeholder="Search Location">
-							<span class="form-text">Địa chỉ của bạn</span>
+							<input type="text" name="address" class="form-control" placeholder="Địa chỉ của bạn">
+							<span class="form-text">Vd: Cần Thơ</span>
 						</div>
 						<div class="form-group search-info">
-							<input type="text" name="fullname" class="form-control" placeholder="Dr. Joh Etc">
-							<span class="form-text">Ex: Dr. Joh, etc.</span>
+							<input type="text" name="fullname" class="form-control" placeholder="Tên bác sĩ">
+							<span class="form-text">Vd: Dr. Joh</span>
 						</div>
 						<div class="form-group search-info">
-							<input type="text" name="specialty" class="form-control" placeholder="Urology, Neurology Etc">
-							<span class="form-text">Ex: Urology, Neurology etc.</span>
+							<input type="text" name="specialty" class="form-control" placeholder="Chọn khoa muốn tìm">
+							<span class="form-text">Vd: Tim mạch</span>
 						</div>
 						<button type="submit" class="btn btn-primary search-btn">
 							<i class="fas fa-search"></i>
@@ -94,7 +94,7 @@
 					<div class="about-content">
 						<p>Chúng tôi cung cấp dịch vụ đặt lịch khám bệnh trực tuyến, giúp bạn dễ dàng kết nối với các bác sĩ chuyên khoa hàng đầu. Với hệ thống đặt lịch đơn giản, bạn có thể chọn thời gian và bác sĩ phù hợp với nhu cầu của mình một cách nhanh chóng và thuận tiện.</p>
 						<p>Đội ngũ bác sĩ của chúng tôi là những chuyên gia giàu kinh nghiệm trong các lĩnh vực y tế khác nhau. Họ luôn sẵn sàng hỗ trợ và tư vấn cho bạn, giúp bạn có được sự chăm sóc sức khỏe tốt nhất.</p>
-						<a href="javascript:;">Xem Thêm</a>
+						<a href="{{path('app_search_doctor')}}">Xem Thêm</a>
 					</div>
 
 				</div>
@@ -127,17 +127,17 @@
 																				</li> #}
 										<li>
 											<i class="far fa-money-bill-alt"></i>
-											{{doctor.consultationFee ?? '500'}}
+											{{doctor.consultationFee | currency_vnd}}
 											VNĐ
 											<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
 										</li>
 									</ul>
 									<div class="row row-sm">
-										<div class="col-6">
-											<a href="{{path('app_search_doctor')}}" class="btn view-btn">Xem thông tin</a>
-										</div>
-										<div class="col-6">
-											<a href="booking.html" class="btn book-btn">Đặt ngay</a>
+										{# <div class="col-6">
+											<a href="{{path('app_doctor_profile')}}" class="btn view-btn">Xem thông tin</a>
+										</div> #}
+										<div class="col-12">
+											<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}" class="btn book-btn">Đặt ngay</a>
 										</div>
 									</div>
 								</div>

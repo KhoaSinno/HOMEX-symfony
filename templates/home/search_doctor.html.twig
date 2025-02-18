@@ -45,7 +45,7 @@
 					<!-- Search Filter -->
 					<div class="card search-filter">
 						<div class="card-header">
-							<h4 class="card-title mb-0">Search Filter</h4>
+							<h4 class="card-title mb-0">Bộ lọc tìm kiếm</h4>
 						</div>
 						<div class="card-body">
 							<form method="GET" action="{{ path('app_search_doctor') }}">
@@ -62,20 +62,20 @@
 										<label class="custom_check">
 											<input type="checkbox" name="gender_type[]" value="male" {{ 'male' in app.request.get('gender_type', []) ? 'checked' : '' }}>
 											<span class="checkmark"></span>
-											Bác sĩ nam
+											Nam
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
 											<input type="checkbox" name="gender_type[]" value="female" {{ 'female' in app.request.get('gender_type', []) ? 'checked' : '' }}>
 											<span class="checkmark"></span>
-											Bác sĩ nữ
+											Nữ
 										</label>
 									</div>
 								</div>
 
 								<div class="filter-widget">
-									<h4>Select Specialist</h4>
+									<h4>Chuyên khoa</h4>
 									{% set selected_specialists = app.request.get('select_specialist', []) %}
 									{% for specialist in ['Urology', 'Neurology', 'Dentist', 'Orthopedic', 'Cardiologist'] %}
 										<div>
@@ -89,7 +89,7 @@
 								</div>
 
 								<div class="btn-search">
-									<button type="submit" class="btn btn-block">Search</button>
+									<button type="submit" class="btn btn-block">Tiềm kiếm</button>
 								</div>
 							</form>
 						</div>
@@ -108,19 +108,19 @@
 								<div class="doctor-widget">
 									<div class="doc-info-left">
 										<div class="doctor-img">
-											<a href="doctor-profile.html">
-												<img src="{% if app.user and app.user.image %}{{ asset('uploads/users/' ~ app.user.image) }}{% else %}{{ asset('customer/assets/img/doctors/doctor-thumb-01.jpg') }}{% endif %}" class="img-fluid" alt="User Image">
+											<a href="{{path('app_doctor_profile', {'id': doctor.id})}}">
+												<img src="{{doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('uploads/users/defaultUser.png') }}" class="img-fluid" alt="User Image">
 
 											</a>
 										</div>
 										<div class="doc-info-cont">
 											<h4 class="doc-name">
-												<a href="doctor-profile.html">{{doctor.fullname}}</a>
+												<a href="{{path('app_doctor_profile', {'id': doctor.id})}}">{{doctor.fullname}}</a>
 											</h4>
 											<p class="doc-speciality">
-												{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</p>
+												{{doctor.address}}</p>
 											<h5 class="doc-department">
-												<img src="{{ doctor.specialty ? (doctor.specialty.image ? asset('uploads/users/' ~ doctor.specialty.image) : asset('admin/assets/img/specialities/specialities-05.png')) : asset('admin/assets/img/specialities/default.png') }}" class="img-fluid" alt="Speciality">
+													<img src="{{ doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
 
 												{{doctor.specialty ?? 'Chưa xác định'}}
 											</h5>
@@ -128,7 +128,7 @@
 											<div class="clinic-details">
 												<p class="doc-location">
 													<i class="fas fa-map-marker-alt"></i>
-													{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</p>
+													{{doctor.address}}</p>
 											</div>
 										</div>
 									</div>
@@ -140,17 +140,18 @@
 													{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</li>
 												<li>
 													<i class="far fa-money-bill-alt"></i>
-													{{doctor.consultationFee}}
+													{{doctor.consultationFee | currency_vnd}}
 													<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám"></i>
 												</li>
 											</ul>
 										</div>
-										<div class="clinic-booking">
-											<a class="view-pro-btn" href="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
-												Thông tin BS
-											</a>
+										<div
+											class="clinic-booking">
+											{# <a class="view-pro-btn" href="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
+																																													Thông tin BS
+																																												</a> #}
 
-											<a class="apt-btn" href="booking.html">Đặt lịch</a>
+											<a class="apt-btn" href="{{path('app_doctor_profile', {'id': doctor.id})}}">Đặt lịch</a>
 										</div>
 									</div>
 								</div>

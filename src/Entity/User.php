@@ -57,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio = null;
 
     #[ORM\Column(nullable: true)]
@@ -77,6 +77,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?bool $isDel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $qualification = null;
 
     public function __construct()
     {
@@ -335,6 +338,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDel(?bool $isDel): static
     {
         $this->isDel = $isDel;
+
+        return $this;
+    }
+
+    public function getQualification(): ?string
+    {
+        return $this->qualification;
+    }
+
+    public function setQualification(?string $qualification): static
+    {
+        $this->qualification = $qualification;
 
         return $this;
     }
