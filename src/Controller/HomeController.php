@@ -45,8 +45,8 @@ class HomeController extends AbstractController
         // Lấy các tham số tìm kiếm từ yêu cầu
         $name = $request->query->get('fullname');
         $address = $request->query->get('address');
-        $specialty = $request->query->get('specialty');
-        $specialty = $request->query->all('select_specialist'); // Lấy danh sách chuyên khoa (mảng)
+        // $specialty = $request->query->get('specialty');
+        $specialty = $request->query->get('specialty') ??  $request->query->all('select_specialist'); // Lấy danh sách chuyên khoa (mảng)
         $gender = $request->query->all('gender_type'); // Lấy danh sách giới tính (mảng)
 
         $criteria = [];
@@ -62,6 +62,8 @@ class HomeController extends AbstractController
         if (!empty($specialty)) {
             $criteria['specialty'] = $specialty; // Lọc danh sách chuyên khoa
         }
+
+        
         if (!empty($gender)) {
             $criteria['gender'] = $gender; // Lọc theo giới tính
         }
