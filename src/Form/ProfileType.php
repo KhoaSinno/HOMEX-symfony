@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Constraints\File;
@@ -27,11 +28,11 @@ class ProfileType extends AbstractType
                 'choices' => [
                     'Nam' => 'male',
                     'Nữ' => 'female',
-                    'Khác' => 'other', // Nếu bạn muốn thêm lựa chọn khác
+                    'Khác' => 'other', 
                 ],
                 'expanded' => false, // false: dạng dropdown, true: radio button
                 'multiple' => false, // Chỉ chọn 1 giá trị
-                'attr' => ['class' => 'form-control'], // Thêm class Bootstrap
+                'attr' => ['class' => 'form-control'], 
             ])
             ->add('address', TextType::class, ['label' => 'Địa chỉ'])
             ->add('image', FileType::class, [
@@ -49,6 +50,11 @@ class ProfileType extends AbstractType
                         'mimeTypesMessage' => 'Vui lòng upload file ảnh hợp lệ (JPEG hoặc PNG).',
                     ])
                 ],
+            ])
+            ->add('dateOfBirth', DateType::class, [ 
+                'widget' => 'single_text',
+                'label' => 'Ngày sinh',
+                'required' => false, 
             ]);
 
         // Nếu user là Doctor thì thêm các trường bio và consultationFee

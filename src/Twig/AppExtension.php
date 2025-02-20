@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Constants\AppointmentConstants;
+use Composer\XdebugHandler\Status;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -15,6 +16,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('translateForWho', [$this, 'translateForWho']),
             new TwigFilter('convertAppointStatus', [$this, 'convertAppointStatus']),
             new TwigFilter('convertPaymentStatus', [$this, 'convertPaymentStatus']),
+            // Status badge cho Appoinment
+            new TwigFilter('status_badge', [$this, 'statusBadge'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -41,5 +44,15 @@ class AppExtension extends AbstractExtension
     {
         return AppointmentConstants::getPaymentStatusLabel($status);
     }
-    
+
+    // Status badge cho Appoinment
+    public function statusBadge(string $status): string
+    {
+        return match ($status) {
+            'pending' => '<span class="badge badge-pill bg-warning-light">Chờ xác nhận</span>',
+            'cancelled' => '<span class="badge badge-pill bg-danger-light">Đã hủy</span>',
+            'confirmed' => '<span class="badge badge-pill bg-success-light">Xác nhận</span>',
+            default => '<span class="badge badge-pill bg-secondary-light">Không xác định</span>',
+        };
+    }
 }

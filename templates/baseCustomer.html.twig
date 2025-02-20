@@ -23,7 +23,9 @@
 
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="{{asset('customer/assets/css/style.css')}}"> {% block styles %}{% endblock %}
-
+		
+		{# My style #}
+		{% block styleCustom %}{% endblock %}
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -34,10 +36,10 @@
 	<body>
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{# {% for message in app.flashes('notice') %}
-									<div class="notice">
-										{{ message }}
-									</div>
-								{% endfor %} #}
+											<div class="notice">
+												{{ message }}
+											</div>
+										{% endfor %} #}
 
 
 		<!-- Main Wrapper -->
@@ -72,20 +74,20 @@
 							</li>
 							<li>
 								<a href="
-																																							{% if app.user %}
-																																								{% if _admin_role in app.user.roles %}
-																																									{{ path('app_specialty_index') }}
-																																								{% elseif _doctor_role in app.user.roles %}
-																																									{{ path('app_doctor_dashboard') }}
-																																								{% elseif _patient_role in app.user.roles %}
-																																									{{ path('app_patient_dashboard') }}
-																																								{% else %}
-																																									{{ path('app_home') }}
-																																								{% endif %}
-																																							{% else %}
-																																									{{ path('app_home') }}
-																																							{% endif %}
-																																						">
+																																																	{% if app.user %}
+																																																		{% if _admin_role in app.user.roles %}
+																																																			{{ path('app_specialty_index') }}
+																																																		{% elseif _doctor_role in app.user.roles %}
+																																																			{{ path('app_doctor_dashboard') }}
+																																																		{% elseif _patient_role in app.user.roles %}
+																																																			{{ path('app_patient_dashboard') }}
+																																																		{% else %}
+																																																			{{ path('app_home') }}
+																																																		{% endif %}
+																																																	{% else %}
+																																																			{{ path('app_home') }}
+																																																	{% endif %}
+																																																">
 									{% if app.user %}
 										{% if _admin_role in app.user.roles %}
 											Admin
@@ -141,7 +143,7 @@
 										</div>
 									</div>
 									{# <a class="dropdown-item" href="{{ path('dashboard') }}">Dashboard</a>
-																											            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
+																																				            					<a class="dropdown-item" href="{{ path('profile_settings') }}">Cài đặt cá nhân</a> #}
 									<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
 								</div>
 							</li>
@@ -273,7 +275,8 @@
 								<div class="col-md-6 col-lg-6">
 									<div class="copyright-text">
 										<p class="mb-0">
-											<a href="#"> HTTT2211026 | Nguyễn Trần Anh Khoa</a>
+											<a href="#">
+												HTTT2211026 | Nguyễn Trần Anh Khoa</a>
 										</p>
 									</div>
 								</div>
