@@ -13,7 +13,8 @@ This document provides a comprehensive guide to commonly used Symfony commands f
 ### Display Data (Debugging Purpose)
 
 ```bash
-dump()
+dump(your data)
+die()
 ```
 
 > Use `dump()` to print data for debugging.
@@ -120,4 +121,16 @@ After import dummy data in this fixture `run`:
 
 ```bash
 symfony console doctrine:fixtures:load
+```
+
+## How to translation in system
+
+`config/packages/translation.yaml`
+
+en -> vi
+
+- Check messages
+
+```bash
+php bin/console debug:translation vi messages
 ```

@@ -46,13 +46,24 @@ class DoctorScheduleWorkType extends AbstractType
                 'multiple' => true,
                 'label' => 'Chọn khung giờ làm việc',
             ])
-            // ->add('status', ChoiceType::class, [
-            //     'choices' => ScheduleStatus::getChoices(),
-            //     'expanded' => true,
-            //     'multiple' => false,
-            //     'label' => 'Trạng thái',
-            //     'data' => $schedule->getStatus() ?? ScheduleStatus::AVAILABLE, // Gán Enum thay vì string
-            // ])
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    'Available' => ScheduleStatus::AVAILABLE,
+                    'Full' => ScheduleStatus::FULL,
+                    'Canceled' => ScheduleStatus::CANCELED,
+                ],
+                'choice_label' => fn (ScheduleStatus $choice) => $choice->value, // Hiển thị tên Enum
+                'choice_value' => fn (?ScheduleStatus $choice) => $choice?->value, // Lưu Enum dưới dạng string
+                'expanded' => false,
+                'multiple' => false,
+                'label' => 'Trạng thái',
+                'data' => ScheduleStatus::AVAILABLE, // Mặc định là Available
+            ])
+            
+            
+            
+            
+            
         ;
     }
 

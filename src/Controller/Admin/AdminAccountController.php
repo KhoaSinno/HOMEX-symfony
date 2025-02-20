@@ -12,6 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\User; // Ensure this is the correct path to your User entity
+use Symfony\Component\Form\FormError;
 
 class AdminAccountController extends AbstractController
 {
@@ -36,8 +37,18 @@ class AdminAccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $newPassword = $passwordHasher->hashPassword($user, $data['newPassword']);
+            // $data = $form->getData();
+            $oldPassword = $form->get('oldPassword')->getData();
+            $newPassword = $form->get('newPassword')->getData();
+
+            if(!$passwordHasher->isPasswordValid($user, $oldPassword)) {
+                $form->get('oldPassword')->addError(new FormError('Mật khẩu hiện tại không đúng.'));
+                
+                return $this->render('admin/account/changePass.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+            $newPassword = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPassword($newPassword);
             $em->persist($user);
             $em->flush();
