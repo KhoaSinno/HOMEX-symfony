@@ -99,11 +99,19 @@
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
+												{{ form_label(form.dateOfBirth, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+												{{ form_widget(form.dateOfBirth, {'attr': {'class': 'form-control'}}) }}
+												{{ form_errors(form.dateOfBirth) }}
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
 												{{ form_label(form.address, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 												{{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
 												{{ form_errors(form.address) }}
 											</div>
 										</div>
+										{# Cho Doctor #}
 										{% if is_granted(_doctor_role) %}
 											<div class="col-md-4">
 												<div class="form-group">

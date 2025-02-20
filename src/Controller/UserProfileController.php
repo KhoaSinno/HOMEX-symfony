@@ -26,7 +26,7 @@ class UserProfileController extends AbstractController
         $this->imageUploader = $imageUploader;
     }
     #[Route('/profile', name: 'user_profile_settings')]
-    public function profile(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function profile(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser(); // Lấy thông tin user hiện tại
 
