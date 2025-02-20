@@ -1,6 +1,6 @@
 {% extends 'baseCustomer.html.twig' %}
 
-{% block title %}New ScheduleWork
+{% block title %}Tạo mới lịch
 {% endblock %}
 
 {% block body %}
@@ -17,10 +17,10 @@
 								<li class="breadcrumb-item">
 									<a href="index-2.html">Home</a>
 								</li>
-								<li class="breadcrumb-item active" aria-current="page">Schedule Timings</li>
+								<li class="breadcrumb-item active" aria-current="page">Lịch làm việc</li>
 							</ol>
 						</nav>
-						<h2 class="breadcrumb-title">Schedule Timings</h2>
+						<h2 class="breadcrumb-title">Lịch làm việc</h2>
 					</div>
 				</div>
 			</div>
@@ -46,8 +46,7 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="card">
-									<div
-										class="card-body">
+									<div class="card-body">
 										{{ include('doctor/schedule_work/_form.html.twig') }}
 
 										<div></div>
@@ -64,4 +63,8 @@
 			<!-- /Page Content -->
 
 
+		{% endblock %}
+
+		{% block JSCustom %}
+	
 		{% endblock %}

@@ -95,9 +95,6 @@ final class ScheduleWorkController extends AbstractController
     #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
     public function createSchedule(Request $request): Response
     {
-        
-
-
         $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
         $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
         $scheduleWork = new ScheduleWork();
@@ -108,18 +105,6 @@ final class ScheduleWorkController extends AbstractController
             'doctors' => $doctors,
         ]);
         $form->handleRequest($request);
-
-        // if ($form->isSubmitted()) {
-        //     dump($form->isValid(), $form->getErrors(true, false));
-        // }
-
-        // if ($form->isSubmitted()) {
-        //     dump($form->isValid(), $form->getErrors(true, false));
-        //     dump($form->getData());
-        //     dump($request->request->all());
-        //     die();
-        // }
-        
         
         if ($form->isSubmitted() && $form->isValid()) {
             // Lấy status từ form
@@ -136,7 +121,6 @@ final class ScheduleWorkController extends AbstractController
             return $this->redirectToRoute('app_schedule_work_index');
         }
         
-
         return $this->render('admin/schedule_work/create_schedule.html.twig', [
             'form' => $form->createView(),
         ]);
