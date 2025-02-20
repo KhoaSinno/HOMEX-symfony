@@ -34,18 +34,16 @@ class DoctorScheduleWorkType extends AbstractType
             //     'widget' => 'single_text',
             // ])
             ->add('maxPatient')
-            ->add('date', DateType::class, [
-                'widget' => 'choice',
-                'format' => 'yyyy-MM-dd',
-                'years' => range(date('Y'), date('Y') + 2),
-                'label' => 'Chọn ngày làm việc',
+            ->add('date', null, [
+                'widget' => 'single_text',
             ])
             ->add('timeSlots', ChoiceType::class, [
-                'choices' => array_combine($options['time_slots'], $options['time_slots']),
+                'choices' => array_unique(array_combine($options['time_slots'], $options['time_slots'])), // Loại bỏ trùng
                 'expanded' => true,
                 'multiple' => true,
                 'label' => 'Chọn khung giờ làm việc',
             ])
+            
             ->add('status', ChoiceType::class, [
                 'choices' => [
                     'Available' => ScheduleStatus::AVAILABLE,

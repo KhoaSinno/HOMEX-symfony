@@ -134,3 +134,12 @@ en -> vi
 ```bash
 php bin/console debug:translation vi messages
 ```
+
+
+- Gợi ý lịch hẹn thông minh: AI có thể phân tích lịch trống của bác sĩ và thói quen đặt lịch của bệnh nhân để gợi ý khung giờ phù hợp nhất.
+
+- Chatbot hỗ trợ đặt lịch: Tích hợp chatbot AI để hỗ trợ bệnh nhân đặt lịch, hủy lịch hoặc thay đổi thời gian một cách nhanh chóng.
+
+- Phân tích xu hướng & dự báo: AI có thể phân tích dữ liệu lịch sử để dự đoán các khung giờ cao điểm hoặc thời gian có khả năng bị hủy cao.
+
+- Nhắc nhở tự động: AI có thể cá nhân hóa nhắc nhở lịch hẹn dựa trên thói quen của bệnh nhân để giảm tỷ lệ vắng mặt.
