@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\ChangePasswordType;
 use App\Service\ImageUploader;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -96,29 +97,41 @@ class UserProfileController extends AbstractController
 
     #[Route('/profile/change-password', name: 'user_change_password')]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
-    {
-        $user = $this->getUser();
+{
+    $user = $this->getUser();
 
-        if (!$user instanceof User) {
-            throw new \LogicException('Người dùng không hợp lệ.');
-        }
-
-        $form = $this->createForm(ChangePasswordType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $newPassword = $passwordHasher->hashPassword($user, $data['newPassword']);
-            $user->setPassword($newPassword);
-            $em->persist($user);
-            $em->flush();
-
-            $this->addFlash('success', 'Thay đổi mật khẩu thành công!');
-            return $this->redirectToRoute('user_profile_settings');
-        }
-
-        return $this->render('user_profile/change_password.html.twig', [
-            'form' => $form->createView(),
-        ]);
+    if (!$user instanceof User) {
+        throw new \LogicException('Người dùng không hợp lệ.');
     }
+
+    $form = $this->createForm(ChangePasswordType::class);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Lấy dữ liệu từ form đúng cách
+        $oldPassword = $form->get('oldPassword')->getData();
+        $newPassword = $form->get('newPassword')->getData(); 
+
+        // Kiểm tra mật khẩu hiện tại
+        if (!$passwordHasher->isPasswordValid($user, $oldPassword)) {
+            $this->addFlash('error', 'Mật khẩu hiện tại không đúng.');
+            
+            return $this->redirectToRoute('user_change_password');
+        }
+
+        // Cập nhật mật khẩu mới
+        $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashedPassword);
+        $em->persist($user);
+        $em->flush();
+
+        $this->addFlash('success', 'Thay đổi mật khẩu thành công!');
+        return $this->redirectToRoute('user_profile_settings');
+    }
+
+    return $this->render('user_profile/change_password.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
 }

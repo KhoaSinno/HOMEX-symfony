@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>
-			{% block title %}Homex
+			{% block title %}HOMEX Admin
 			{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
@@ -21,14 +21,13 @@
 		<!-- Feathericon CSS -->
 		<link rel="stylesheet" href="{{asset('admin/assets/css/feathericon.min.css')}}">
 
-		<!-- Morris CSS -->
-		{# <link rel="stylesheet" href="{{asset('admin/assets/plugins/morris/morris.css')}}"> #}
 
 		<!-- Datatables CSS -->
 		<link
 		rel="stylesheet" href="{{asset('admin/assets/plugins/datatables/datatables.min.css')}}"> <!-- Main CSS -->
 		<link rel="stylesheet" href="{{asset('admin/assets/css/style.css')}}">
 
+		{% block StyleCustom %}{% endblock %}
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -234,7 +233,7 @@
 								<span>Menu chức năng</span>
 							</li>
 							<li>
-								<a href="index.html">
+								<a href="{{path('app_admin_dashboard')}}" class="{{ app.request.attributes.get('_route') == 'app_admin_dashboard' ? 'activeA' : '' }}">
 									<i class="fe fe-home"></i>
 									<span>Dashboard</span>
 								</a>
@@ -301,7 +300,6 @@
 									<li>
 										<a class="{{ app.request.attributes.get('_route') == 'app_admin_patient_new' ? 'active' : '' }}" href="{{path('app_admin_patient_new')}}">Tạo mới Bệnh nhân</a>
 									</li>
-
 								</ul>
 							</li>
 
@@ -312,7 +310,7 @@
 								</a>
 							</li>
 
-							<li>
+							<li class="mt-5">
 								<a class=" bg-warning text-danger font-weight-bold" href="{{path('app_logout')}}">
 									<i class="fa fa-sign-out" aria-hidden="true"></i>
 									<span>Logout</span>
@@ -340,9 +338,7 @@
 		<!-- Slimscroll JS -->
 		<script src="{{asset('admin/assets/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
 
-		{# <script src="{{asset('admin/assets/plugins/raphael/raphael.min.js')}}"></script>
-																						<script src="{{asset('admin/assets/plugins/morris/morris.min.js')}}"></script>
-																						<script src="{{asset('admin/assets/js/chart.morris.js')}}"></script> #}
+
 
 		<!-- Datatables JS -->
 		<script src="{{asset('admin/assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>

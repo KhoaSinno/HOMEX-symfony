@@ -21,14 +21,14 @@ final class ScheduleWorkController extends AbstractController
     private $userRepository;
     private $em;
     private ScheduleService $scheduleService;
-    
+
     function __construct(UserRepository $userRepository, EntityManagerInterface $em, ScheduleService $scheduleService)
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->scheduleService = $scheduleService;
     }
-   
+
 
     #[Route(name: 'app_schedule_work_index', methods: ['GET'])]
     public function index(ScheduleWorkRepository $scheduleWorkRepository): Response
@@ -58,11 +58,50 @@ final class ScheduleWorkController extends AbstractController
 
     // create schedule work
     #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
+    // public function createSchedule(Request $request): Response
+    // {
+    //     $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
+    //     $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
+    //     $scheduleWork = new ScheduleWork();
+    //     $scheduleWork->setStatus(ScheduleStatus::AVAILABLE); // Không cần chuyển đổi nữa
+
+    //     $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
+    //         'time_slots' => $timeSlots,
+    //         'doctors' => $doctors,
+    //     ]);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $scheduleWork = $form->getData();
+
+    //         $status = $form->get('status')->getData(); // Lấy giá trị status
+    //         if (!$status instanceof ScheduleStatus) {
+    //             throw new \RuntimeException('Giá trị status không hợp lệ'); // Debug lỗi
+    //         }
+
+    //         $scheduleWork->setStatus($status); // Không cần gọi ScheduleStatus::from($status)
+
+    //         $this->em->persist($scheduleWork);
+    //         $this->em->flush();
+
+    //         return $this->redirectToRoute('app_schedule_work_index');
+    //     }
+
+
+    //     return $this->render('admin/schedule_work/create_schedule.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
+    #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
     public function createSchedule(Request $request): Response
     {
+        
+
+
         $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
         $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
         $scheduleWork = new ScheduleWork();
+        $scheduleWork->setStatus(ScheduleStatus::AVAILABLE); // Đảm bảo mặc định
 
         $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
             'time_slots' => $timeSlots,
@@ -70,25 +109,39 @@ final class ScheduleWorkController extends AbstractController
         ]);
         $form->handleRequest($request);
 
+        // if ($form->isSubmitted()) {
+        //     dump($form->isValid(), $form->getErrors(true, false));
+        // }
+
+        // if ($form->isSubmitted()) {
+        //     dump($form->isValid(), $form->getErrors(true, false));
+        //     dump($form->getData());
+        //     dump($request->request->all());
+        //     die();
+        // }
+        
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            $scheduleWork = $form->getData();
-            // Chuyển đổi chuỗi status thành enum
-            // $status = $form->get('status')->getData();
-            // $scheduleWork->setStatus(ScheduleStatus::from($status));
-
-            $status = $form->get('status')->getData(); // Trả về Enum nếu form được thiết lập đúng
-            $scheduleWork->setStatus($status); // Không cần chuyển đổi nữa
-
+            // Lấy status từ form
+            $status = $form->get('status')->getData();
+        
+            if (!$status instanceof ScheduleStatus) {
+                $status = ScheduleStatus::from($status); // Chuyển đổi nếu cần
+            }
+        
+            $scheduleWork->setStatus($status);
             $this->em->persist($scheduleWork);
             $this->em->flush();
-
+        
             return $this->redirectToRoute('app_schedule_work_index');
         }
+        
 
         return $this->render('admin/schedule_work/create_schedule.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
     // public function createSchedule(Request $request, EntityManagerInterface $em): Response
     // {
     //     // $doctors = $em->getRepository(User::class)->findBy(['role' => 'doctor']);

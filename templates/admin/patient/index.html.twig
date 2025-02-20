@@ -37,7 +37,6 @@
 										<tr class="text-center">
 											<th>Mã BN</th>
 											<th>Ảnh</th>
-											<th>Tên</th>
 											<th>Ngày sinh</th>
 											<th>Giới tính</th>
 											<th></th>
@@ -53,7 +52,7 @@
 														<a href="profile.html" class="avatar avatar-sm mr-2">
 															<img class="avatar-img" src="{{ patient.image ? asset('uploads/users/' ~ patient.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ patient.fullName }}">
 														</a>
-														<a href="profile.html">{{ patient.fullName }}</a>
+														<a href="profile.html">{{ patient.fullname }}</a>
 													</h2>
 												</td>
 
@@ -80,7 +79,7 @@
 											</tr>
 										{% else %}
 											<tr>
-												<td class="text-center" colspan="6">Chưa có dữ liệu</td>
+												<td class="text-center" colspan="5">Chưa có dữ liệu</td>
 											</tr>
 										{% endfor %}
 

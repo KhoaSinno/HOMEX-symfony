@@ -4147,3 +4147,42 @@ table.table-inbox tbody tr.checked {
 	background-color: #19c1dc;
     color: #fff;
 }
+
+.time-slot-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.time-slot-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    transition: 0.2s ease-in-out;
+    font-size: 18px;
+}
+
+.time-slot-item:hover {
+    background: #e9ecef;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.time-slot-item input {
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.time-slot-item label {
+    margin: 0;
+    font-weight: 600;
+    cursor: pointer;
+}
