@@ -135,7 +135,6 @@ en -> vi
 php bin/console debug:translation vi messages
 ```
 
-
 - Gợi ý lịch hẹn thông minh: AI có thể phân tích lịch trống của bác sĩ và thói quen đặt lịch của bệnh nhân để gợi ý khung giờ phù hợp nhất.
 
 - Chatbot hỗ trợ đặt lịch: Tích hợp chatbot AI để hỗ trợ bệnh nhân đặt lịch, hủy lịch hoặc thay đổi thời gian một cách nhanh chóng.
@@ -143,3 +142,17 @@ php bin/console debug:translation vi messages
 - Phân tích xu hướng & dự báo: AI có thể phân tích dữ liệu lịch sử để dự đoán các khung giờ cao điểm hoặc thời gian có khả năng bị hủy cao.
 
 - Nhắc nhở tự động: AI có thể cá nhân hóa nhắc nhở lịch hẹn dựa trên thói quen của bệnh nhân để giảm tỷ lệ vắng mặt.
+
+# 📖 Hướng dẫn Kỹ thuật - Hệ thống Đặt lịch Khám bệnh Online  
+
+## **🔍 Cách Khách hàng Tìm kiếm Thông tin trên Trang chủ**  
+
+Khách hàng có thể tiếp cận thông tin qua **4 cách**:  
+
+1️⃣ **Tìm kiếm (Search)**: Nhập từ khóa vào thanh tìm kiếm để tìm nhanh thông tin mong muốn.  
+
+2️⃣ **Bấm vào Danh mục chuyên khoa**: Lọc thông tin theo từng chuyên khoa cụ thể.  
+
+3️⃣ **Bấm vào bác sĩ**: Xem danh sách bác sĩ và lựa chọn bác sĩ phù hợp.  
+
+4️⃣ **Bấm vào "Xem thêm"**: Xem thêm thông tin chi tiết về chuyên khoa, bác sĩ, hoặc các dịch vụ liên quan.  
