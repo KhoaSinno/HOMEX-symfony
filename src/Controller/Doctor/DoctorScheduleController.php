@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Service\ScheduleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,47 +28,36 @@ final class DoctorScheduleController extends AbstractController
         $this->scheduleService = $scheduleService;
     }
 
-
     #[Route(name: 'app_doctor_schedule_index', methods: ['GET'])]
     public function index(ScheduleWorkRepository $scheduleWorkRepository, Request $request): Response
     {
-        $daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-
         $doctor = $this->getUser();
 
-        // Lấy tháng từ request, mặc định là tháng hiện tại
-        $month = $request->query->getInt('month', (int) date('m'));
-        $week = $request->query->getInt('week', 1);
+        // Tạo form chọn ngày
+        $form = $this->createFormBuilder(null, ['method' => 'GET'])
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+                'required' => true,
+            ])
+            ->getForm();
 
-        // Xác định ngày đầu tiên và cuối cùng của tháng
-        $firstDayOfMonth = new \DateTimeImmutable(date('Y') . '-' . $month . '-01');
-        $lastDayOfMonth = $firstDayOfMonth->modify('last day of this month');
+        // Xử lý request
+        $form->handleRequest($request);
 
-        // Xác định Thứ Hai đầu tiên của tháng
-        $firstMonday = $firstDayOfMonth;
-        if ($firstMonday->format('N') != 1) { // N: 1 = Monday, 7 = Sunday
-            $firstMonday = $firstMonday->modify('next Monday');
+        // Lấy ngày từ form hoặc query string (Tránh lỗi input non-scalar)
+        $formData = $request->query->all('form');
+        $selectedDate = isset($formData['date']) ? new \DateTime($formData['date']) : new \DateTime();
+
+        // Xác định ngày đầu tuần (Thứ Hai)
+        $startDate = clone $selectedDate;
+        if ($startDate->format('N') != 1) { // Nếu không phải Thứ Hai
+            $startDate->modify('last Monday');
         }
+        $endDate = clone $startDate;
+        $endDate->modify('+6 days'); // Kết thúc vào Chủ Nhật
 
-        // Tính tổng số ngày từ Thứ Hai đầu tiên đến hết tháng
-        $daysFromFirstMonday = (int) $firstMonday->diff($lastDayOfMonth)->days + 1;
-
-        // Số tuần thực tế (tính tròn lên)
-        $totalWeeks = (int) ceil($daysFromFirstMonday / 7);
-
-        // Đảm bảo giá trị tuần không vượt quá tổng số tuần thực tế
-        $week = max(1, min($week, $totalWeeks));
-
-        // Xác định khoảng thời gian của tuần được chọn
-        $startDate = $firstMonday->modify('+' . (($week - 1) * 7) . ' days');
-        $endDate = $startDate->modify('+6 days');
-
-        // Giới hạn endDate không vượt quá ngày cuối tháng
-        if ($endDate > $lastDayOfMonth) {
-            $endDate = $lastDayOfMonth;
-        }
-
-        // Truy vấn lịch làm việc
+        // Lấy lịch làm việc của bác sĩ trong tuần đó
         $schedules = $scheduleWorkRepository->createQueryBuilder('s')
             ->where('s.doctor = :doctor')
             ->andWhere('s.date BETWEEN :startDate AND :endDate')
@@ -78,14 +68,77 @@ final class DoctorScheduleController extends AbstractController
             ->getQuery()
             ->getResult();
 
-
         return $this->render('doctor/schedule_work/index.html.twig', [
             'schedules' => $schedules,
-            'currentMonth' => $month,
-            'currentWeek' => $week,
-            'totalWeeks' => $totalWeeks, // Truyền số tuần thực tế sang view
+            'form' => $form->createView(),
+            'selectedDate' => $selectedDate,
         ]);
     }
+
+
+
+
+
+
+
+    // #[Route(name: 'app_doctor_schedule_index', methods: ['GET'])]
+    // public function index(ScheduleWorkRepository $scheduleWorkRepository, Request $request): Response
+    // {
+    //     $daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+    //     $doctor = $this->getUser();
+
+    //     // Lấy tháng từ request, mặc định là tháng hiện tại
+    //     $month = $request->query->getInt('month', (int) date('m'));
+    //     $week = $request->query->getInt('week', 1);
+
+    //     // Xác định ngày đầu tiên và cuối cùng của tháng
+    //     $firstDayOfMonth = new \DateTimeImmutable(date('Y') . '-' . $month . '-01');
+    //     $lastDayOfMonth = $firstDayOfMonth->modify('last day of this month');
+
+    //     // Xác định Thứ Hai đầu tiên của tháng
+    //     $firstMonday = $firstDayOfMonth;
+    //     if ($firstMonday->format('N') != 1) { // N: 1 = Monday, 7 = Sunday
+    //         $firstMonday = $firstMonday->modify('next Monday');
+    //     }
+
+    //     // Tính tổng số ngày từ Thứ Hai đầu tiên đến hết tháng
+    //     $daysFromFirstMonday = (int) $firstMonday->diff($lastDayOfMonth)->days + 1;
+
+    //     // Số tuần thực tế (tính tròn lên)
+    //     $totalWeeks = (int) ceil($daysFromFirstMonday / 7);
+
+    //     // Đảm bảo giá trị tuần không vượt quá tổng số tuần thực tế
+    //     $week = max(1, min($week, $totalWeeks));
+
+    //     // Xác định khoảng thời gian của tuần được chọn
+    //     $startDate = $firstMonday->modify('+' . (($week - 1) * 7) . ' days');
+    //     $endDate = $startDate->modify('+6 days');
+
+    //     // Giới hạn endDate không vượt quá ngày cuối tháng
+    //     if ($endDate > $lastDayOfMonth) {
+    //         $endDate = $lastDayOfMonth;
+    //     }
+
+    //     // Truy vấn lịch làm việc
+    //     $schedules = $scheduleWorkRepository->createQueryBuilder('s')
+    //         ->where('s.doctor = :doctor')
+    //         ->andWhere('s.date BETWEEN :startDate AND :endDate')
+    //         ->setParameter('doctor', $doctor)
+    //         ->setParameter('startDate', $startDate->format('Y-m-d'))
+    //         ->setParameter('endDate', $endDate->format('Y-m-d'))
+    //         ->orderBy('s.date', 'ASC')
+    //         ->getQuery()
+    //         ->getResult();
+
+
+    //     return $this->render('doctor/schedule_work/index.html.twig', [
+    //         'schedules' => $schedules,
+    //         'currentMonth' => $month,
+    //         'currentWeek' => $week,
+    //         'totalWeeks' => $totalWeeks, // Truyền số tuần thực tế sang view
+    //     ]);
+    // }
 
 
     #[Route('/add-slot', name: 'doctor_add_schedule_slot', methods: ['POST', 'GET'])]
