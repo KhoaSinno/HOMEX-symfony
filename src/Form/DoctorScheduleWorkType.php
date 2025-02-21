@@ -17,22 +17,7 @@ class DoctorScheduleWorkType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $schedule = $options['data'];
-
         $builder
-            // ->add('doctor', EntityType::class, [
-            //     'class' => User::class,
-            //     'query_builder' => function (EntityRepository $er) {
-            //         return $er->createQueryBuilder('u')
-            //             ->where("u.roles LIKE :role") // Tìm kiếm các user có chứa ROLE_DOCTOR trong roles
-            //             ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm chuỗi chứa ROLE_DOCTOR
-            //     },
-            //     'choice_label' => 'fullname',  // Hiển thị fullname của bác sĩ
-            //     'label' => 'Chọn bác sĩ',
-            // ])
-            // ->add('date', null, [
-            //     'widget' => 'single_text',
-            // ])
             ->add('maxPatient')
             ->add('date', null, [
                 'widget' => 'single_text',
@@ -57,10 +42,6 @@ class DoctorScheduleWorkType extends AbstractType
                 'label' => 'Trạng thái',
                 'data' => ScheduleStatus::AVAILABLE, // Mặc định là Available
             ])
-            
-            
-            
-            
             
         ;
     }
