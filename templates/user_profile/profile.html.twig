@@ -55,14 +55,28 @@
 											<div class="form-group">
 												{{ form_label(form.image, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 
-												<!-- Hiển thị ảnh -->
-												<div class="mb-3">
-													<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
-												</div>
+												{% if app.user.googleId %}
 
-												<!-- Input file -->
-												{{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
-												{{ form_errors(form.image) }}
+													<!-- Hiển thị ảnh -->
+													<div class="mb-3">
+														<img id="preview-image" src="{{ app.user.image ? asset(app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+													</div>
+												{% else %}
+
+													<!-- Hiển thị ảnh -->
+													<div class="mb-3">
+														<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+													</div>
+												{% endif %}
+
+												{% if app.user.googleId %}
+
+													{% else %}
+														<!-- Input file -->
+														{{ form_widget(form.image, {'attr': {'class': 'form-control-file'}}) }}
+														{{ form_errors(form.image) }}
+
+												{% endif %}
 											</div>
 										</div>
 
@@ -77,7 +91,12 @@
 										<div class="col-md-6">
 											<div class="form-group">
 												{{ form_label(form.email, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-												{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+												{% if app.user.googleId %}
+													{{ form_widget(form.email, {'attr': {'readonly': 'readonly', 'class': 'form-control'}}) }}
+												{% else %}
+													{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+
+												{% endif %}
 												{{ form_errors(form.email) }}
 											</div>
 										</div>
@@ -134,7 +153,8 @@
 										<button type="submit" class="btn btn-primary btn-block">Lưu thông tin</button>
 
 									</div>
-									{{ form_end(form) }}
+									{{ form_row(form._token) }}
+								 {{ form_end(form, {'render_rest': false}) }}
 
 
 								</div>
@@ -155,11 +175,11 @@
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
-			let reader = new FileReader();
-			reader.onload = function (e) {
-			document.getElementById("preview-image").src = e.target.result;
-			};
-			reader.readAsDataURL(event.target.files[0]);
-			});
+let reader = new FileReader();
+reader.onload = function (e) {
+document.getElementById("preview-image").src = e.target.result;
+};
+reader.readAsDataURL(event.target.files[0]);
+});
 	</script>
 {% endblock %}

@@ -3,7 +3,13 @@
 	<div class="widget-profile pro-widget-content">
 		<div class="profile-info-widget">
 			<a href="#" class="booking-doc-img">
-				<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" alt="User Image">
+				{% if app.user.googleId %}
+
+					<img src="{{ app.user.image ? asset(app.user.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image">
+				{% else %}
+
+					<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image">
+				{% endif %}
 			</a>
 			<div class="profile-det-info">
 				<h3>{{ app.user.fullname ?? '' }}</h3>
@@ -53,24 +59,24 @@
 						</a>
 					{% endif %}
 					{# <li class="{% if app.request.get('_route') == 'doctor_appointments' %}active{% endif %}">
-																				<a href="{{ path('doctor_appointments') }}">
-																					<i class="fas fa-calendar-check"></i>
-																					<span>Appointments</span>
-																				</a>
-																			</li>
-																			<li class="{% if app.request.get('_route') == 'doctor_patients' %}active{% endif %}">
-																				<a href="{{ path('doctor_patients') }}">
-																					<i class="fas fa-user-injured"></i>
-																					<span>My Patients</span>
-																				</a>
-																			</li>
-																			<li class="{% if app.request.get('_route') == 'doctor_invoices' %}active{% endif %}">
-																				<a href="{{ path('doctor_invoices') }}">
-																					<i class="fas fa-file-invoice"></i>
-																					<span>Invoices</span>
-																				</a>
-																			</li>
-																			#}
+																									<a href="{{ path('doctor_appointments') }}">
+																										<i class="fas fa-calendar-check"></i>
+																										<span>Appointments</span>
+																									</a>
+																								</li>
+																								<li class="{% if app.request.get('_route') == 'doctor_patients' %}active{% endif %}">
+																									<a href="{{ path('doctor_patients') }}">
+																										<i class="fas fa-user-injured"></i>
+																										<span>My Patients</span>
+																									</a>
+																								</li>
+																								<li class="{% if app.request.get('_route') == 'doctor_invoices' %}active{% endif %}">
+																									<a href="{{ path('doctor_invoices') }}">
+																										<i class="fas fa-file-invoice"></i>
+																										<span>Invoices</span>
+																									</a>
+																								</li>
+																								#}
 					<li class="{% if app.request.get('_route') == 'user_profile_settings' %}active{% endif %}">
 						<a href="{{ path('user_profile_settings') }}">
 							<i class="fas fa-user-cog"></i>
@@ -86,7 +92,7 @@
 					<li>
 						<a class="text-danger font-weight-bold" href="{{ path('app_logout') }}">
 							<i class="fas fa-sign-out-alt"></i>
-							<span >Logout</span>
+							<span>Logout</span>
 						</a>
 					</li>
 				</ul>

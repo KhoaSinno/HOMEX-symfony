@@ -36,10 +36,10 @@
 	<body>
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{# {% for message in app.flashes('notice') %}
-													<div class="notice">
-														{{ message }}
-													</div>
-												{% endfor %} #}
+																					<div class="notice">
+																						{{ message }}
+																					</div>
+																				{% endfor %} #}
 
 
 		<!-- Main Wrapper -->
@@ -75,20 +75,20 @@
 
 							<li class="{% if app.request.get('_route') in ['app_admin_dashboard', 'app_doctor_dashboard', 'app_patient_dashboard'] %}active{% endif %}">
 								<a href="
-									{% if app.user %}
-										{% if _admin_role in app.user.roles %}
-											{{ path('app_admin_dashboard') }}
-										{% elseif _doctor_role in app.user.roles %}
-											{{ path('app_doctor_dashboard') }}
-										{% elseif _patient_role in app.user.roles %}
-											{{ path('app_patient_dashboard') }}
-										{% else %}
-											{{ path('app_home') }}
-										{% endif %}
-									{% else %}
-										{{ path('app_home') }}
-									{% endif %}
-								">
+																																																	{% if app.user %}
+																																																		{% if _admin_role in app.user.roles %}
+																																																			{{ path('app_admin_dashboard') }}
+																																																		{% elseif _doctor_role in app.user.roles %}
+																																																			{{ path('app_doctor_dashboard') }}
+																																																		{% elseif _patient_role in app.user.roles %}
+																																																			{{ path('app_patient_dashboard') }}
+																																																		{% else %}
+																																																			{{ path('app_home') }}
+																																																		{% endif %}
+																																																	{% else %}
+																																																		{{ path('app_home') }}
+																																																	{% endif %}
+																																																">
 									{% if app.user %}
 										{% if _admin_role in app.user.roles %}
 											Trang quản trị
@@ -124,13 +124,25 @@
 							<li class="nav-item dropdown has-arrow logged-item">
 								<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 									<span class="user-img">
-										<img class="rounded-circle" src="{{app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="Darren Elder">
+
+										{% if app.user.googleId %}
+											<img class="rounded-circle" src="{{app.user.image ? asset(app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+										{% else %}
+											<img class="rounded-circle" src="{{app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+										{% endif %}
+
+
 									</span>
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<div class="user-header">
 										<div class="avatar avatar-sm">
-											<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" alt="User Image" class="avatar-img rounded-circle">
+											{% if app.user.googleId %}
+												<img class="rounded-circle" src="{{app.user.image ? asset(app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+											{% else %}
+												<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" alt="User Image" class="avatar-img rounded-circle">
+											{% endif %}
+
 										</div>
 										<div class="user-text">
 											<h6>{{app.user.getEmail()}}</h6>
@@ -146,9 +158,9 @@
 										</div>
 									</div>
 									{% if _doctor_role in app.user.roles %}
-									<a class="dropdown-item" href="{{ path('app_doctor_dashboard') }}">Dashboard</a>
+										<a class="dropdown-item" href="{{ path('app_doctor_dashboard') }}">Dashboard</a>
 									{% elseif _patient_role in app.user.roles %}
-									<a class="dropdown-item" href="{{ path('app_patient_dashboard') }}">Dashboard</a>
+										<a class="dropdown-item" href="{{ path('app_patient_dashboard') }}">Dashboard</a>
 									{% endif %}
 									<a class="dropdown-item" href="{{ path('user_profile_settings') }}">Cài đặt cá nhân</a>
 									<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
