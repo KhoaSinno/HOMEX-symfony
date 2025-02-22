@@ -29,7 +29,12 @@
 										<div class="pro-widget-content">
 											<div class="profile-info-widget">
 												<a href="{{path('app_doctor_patient_show',{'id': patient.id})}}" class="booking-doc-img">
-													<img src="{{patient.image ? asset('uploads/users/' ~ patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+													{% if patient.googleId %}
+														<img src="{{patient.image ? asset(patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+													{% else %}
+														<img src="{{patient.image ? asset('uploads/users/' ~ patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+													{% endif %}
+
 												</a>
 												<div class="profile-det-info">
 													<h3>
@@ -53,11 +58,12 @@
 													<span>{{patient.phoneNumber ?? 'Trống'}}</span>
 												</li>
 												<li>Tuổi - Giới tính
-													<span>{{patient.dateOfBirth ? patient.dateOfBirth|date('d/m/Y') : 'Trống'}}, {{patient.gender ?? 'Trống'}}</span>
+													<span>{{patient.dateOfBirth ? patient.dateOfBirth|date('d/m/Y') : 'Trống'}},
+														{{patient.gender ?? 'Trống'}}</span>
 												</li>
 												{# <li>Nhóm máu
-													<span>AB+</span>
-												</li> #}
+																									<span>AB+</span>
+																								</li> #}
 											</ul>
 										</div>
 									</div>
