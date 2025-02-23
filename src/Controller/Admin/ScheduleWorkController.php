@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Appointment;
 use App\Entity\ScheduleWork;
 use App\Entity\User;
 use App\Form\ScheduleWorkType;
@@ -41,57 +42,7 @@ final class ScheduleWorkController extends AbstractController
         ]);
     }
 
-    // Show all schedule work
-    // #[Route('/{doctorId}/{date}', name: 'app_view_schedule')]
-    // public function viewSchedule(int $doctorId, string $date, EntityManagerInterface $em): Response
-    // {
-    //     $schedules = $em->getRepository(ScheduleWork::class)->findBy([
-    //         'doctor' => $doctorId,
-    //         'date' => new \DateTime($date),
-    //     ]);
-
-    //     return $this->render('admin/schedule_work/view_schedule.html.twig', [
-    //         'schedules' => $schedules,
-    //         'date' => $date,
-    //     ]);
-    // }
-
     // create schedule work
-    #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
-    // public function createSchedule(Request $request): Response
-    // {
-    //     $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
-    //     $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
-    //     $scheduleWork = new ScheduleWork();
-    //     $scheduleWork->setStatus(ScheduleStatus::AVAILABLE); // Không cần chuyển đổi nữa
-
-    //     $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
-    //         'time_slots' => $timeSlots,
-    //         'doctors' => $doctors,
-    //     ]);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $scheduleWork = $form->getData();
-
-    //         $status = $form->get('status')->getData(); // Lấy giá trị status
-    //         if (!$status instanceof ScheduleStatus) {
-    //             throw new \RuntimeException('Giá trị status không hợp lệ'); // Debug lỗi
-    //         }
-
-    //         $scheduleWork->setStatus($status); // Không cần gọi ScheduleStatus::from($status)
-
-    //         $this->em->persist($scheduleWork);
-    //         $this->em->flush();
-
-    //         return $this->redirectToRoute('app_schedule_work_index');
-    //     }
-
-
-    //     return $this->render('admin/schedule_work/create_schedule.html.twig', [
-    //         'form' => $form->createView(),
-    //     ]);
-    // }
     #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
     public function createSchedule(Request $request): Response
     {
@@ -105,104 +56,27 @@ final class ScheduleWorkController extends AbstractController
             'doctors' => $doctors,
         ]);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             // Lấy status từ form
             $status = $form->get('status')->getData();
-        
+
             if (!$status instanceof ScheduleStatus) {
                 $status = ScheduleStatus::from($status); // Chuyển đổi nếu cần
             }
-        
+
             $scheduleWork->setStatus($status);
             $this->em->persist($scheduleWork);
             $this->em->flush();
-        
+
             return $this->redirectToRoute('app_schedule_work_index');
         }
-        
+
         return $this->render('admin/schedule_work/create_schedule.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    // public function createSchedule(Request $request, EntityManagerInterface $em): Response
-    // {
-    //     // $doctors = $em->getRepository(User::class)->findBy(['role' => 'doctor']);
-    //     $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
-
-    //     if ($request->isMethod('POST')) {
-    //         $doctorId = $request->request->get('doctor_id');
-    //         $date = $request->request->get('date');
-    //         $maxPatients = $request->request->get('max_patients', 1);
-    //         $timeSlots = $request->request->get('time_slots');
-    //         if (!$timeSlots) {
-    //             $timeSlots = [];
-    //         }
-
-    //         $doctor = $em->getRepository(User::class)->find($doctorId);
-
-    //         foreach ($timeSlots as $slot) {
-    //             [$timeStart, $timeEnd] = explode('-', $slot);
-
-    //             $scheduleWork = new ScheduleWork();
-    //             // $scheduleWork->setDoctor($doctor);
-    //             $scheduleWork->setDate(new \DateTime($date));
-    //             $scheduleWork->setTimeStart(new \DateTime($timeStart));
-    //             $scheduleWork->setTimeEnd(new \DateTime($timeEnd));
-    //             $scheduleWork->setMaxPatient($maxPatients);
-    //             $scheduleWork->setStatus(ScheduleStatus::AVAILABLE);
-
-    //             $em->persist($scheduleWork);
-    //         }
-
-    //         $em->flush();
-
-    //         return $this->redirectToRoute('admin_schedule');
-    //     }
-
-    //     return $this->render('admin/schedule_work/create_schedule.html.twig', [
-    //         'doctors' => $doctors,
-    //         'time_slots' => $this->generateTimeSlots('07:00', '17:00', 30),
-    //     ]);
-    // }
-
-    // private function generateTimeSlots(string $startTime, string $endTime, int $intervalMinutes): array
-    // {
-    //     $timeSlots = [];
-
-    //     // Đảm bảo sử dụng múi giờ cụ thể (ví dụ: 'Asia/Ho_Chi_Minh')
-    //     $timezone = new \DateTimeZone('Asia/Ho_Chi_Minh');
-
-    //     // Cung cấp múi giờ khi tạo DateTime
-    //     $currentTime = new \DateTime($startTime, $timezone);
-    //     $endTime = new \DateTime($endTime, $timezone);
-
-    //     while ($currentTime < $endTime) {
-    //         $slotStart = clone $currentTime;
-    //         $slotEnd = (clone $currentTime)->modify("+$intervalMinutes minutes");
-    //         $timeSlots[] = $slotStart->format('H:i') . '-' . $slotEnd->format('H:i');
-    //         $currentTime = $slotEnd;
-    //     }
-
-    //     return $timeSlots;
-    // }
-
-    // private function generateTimeSlots(string $startTime, string $endTime, int $intervalMinutes): array
-    // {
-    //     $timeSlots = [];
-    //     $currentTime = new \DateTime($startTime);
-    //     $endTime = new \DateTime($endTime);
-
-    //     while ($currentTime < $endTime) {
-    //         $slotStart = clone $currentTime;
-    //         $slotEnd = (clone $currentTime)->modify("+$intervalMinutes minutes");
-    //         $timeSlots[] = $slotStart->format('H:i') . '-' . $slotEnd->format('H:i');
-    //         $currentTime = $slotEnd;
-    //     }
-
-    //     return $timeSlots;
-    // }
 
     // Default func
     #[Route('/new', name: 'app_schedule_work_new', methods: ['GET', 'POST'])]
@@ -261,32 +135,63 @@ final class ScheduleWorkController extends AbstractController
         ]);
     }
 
-    // public function edit(Request $request, ScheduleWork $scheduleWork, EntityManagerInterface $entityManager): Response
-    // {
-    //     $form = $this->createForm(ScheduleWorkType::class, $scheduleWork);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute('app_schedule_work_index', [], Response::HTTP_SEE_OTHER);
-    //     }
-
-    //     return $this->render('admin/schedule_work/edit.html.twig', [
-    //         'schedule_work' => $scheduleWork,
-    //         'form' => $form,
-    //     ]);
-    // }
-
-
     #[Route('/{id}', name: 'app_schedule_work_delete', methods: ['POST'])]
     public function delete(Request $request, ScheduleWork $scheduleWork, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $scheduleWork->getId(), $request->getPayload()->getString('_token'))) {
+            $doctor = $scheduleWork->getDoctor();
+            $scheduleDate = $scheduleWork->getDate();
+
+            if (!$scheduleDate instanceof \DateTimeInterface) {
+                throw new \Exception('Invalid date format');
+            }
+
+            $formattedScheduleDate = $scheduleDate->format('Y-m-d'); // Chỉ lấy ngày (YYYY-MM-DD)
+
+            // 🔹 Kiểm tra xem có Appointment nào của bác sĩ trùng ngày không
+            $qb = $entityManager->createQueryBuilder();
+            $qb->select('COUNT(a.id)')
+                ->from(Appointment::class, 'a')
+                ->where('a.doctor = :doctor')
+                ->andWhere("SUBSTRING(a.appointmentDate, 1, 10) = :scheduleDate") // Lấy phần ngày (YYYY-MM-DD)
+                ->setParameter('doctor', $doctor)
+                ->setParameter('scheduleDate', $formattedScheduleDate);
+
+            $appointmentCount = $qb->getQuery()->getSingleScalarResult();
+
+            // dump($appointmentCount);
+            // die();
+
+            if ($appointmentCount > 0) {
+                // 🚫 Không thể xóa vì có cuộc hẹn trùng ngày
+                $this->addFlash('danger', 'Không thể xóa vì có cuộc hẹn trong lịch này.');
+                return $this->redirectToRoute('app_schedule_work_index');
+            }
+
+            // ✅ Nếu không có Appointment nào trùng lịch thì xóa lịch làm việc
             $entityManager->remove($scheduleWork);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Lịch làm việc đã được xóa thành công.');
         }
 
         return $this->redirectToRoute('app_schedule_work_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+    // #[Route('/{id}', name: 'app_schedule_work_delete', methods: ['POST'])]
+    // public function delete(Request $request, ScheduleWork $scheduleWork, EntityManagerInterface $entityManager): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete' . $scheduleWork->getId(), $request->getPayload()->getString('_token'))) {
+    //         $entityManager->remove($scheduleWork);
+    //         $entityManager->flush();
+    //     }
+
+    //     return $this->redirectToRoute('app_schedule_work_index', [], Response::HTTP_SEE_OTHER);
+    // }
 }

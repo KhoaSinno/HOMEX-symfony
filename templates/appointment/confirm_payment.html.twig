@@ -4,58 +4,117 @@
 {% endblock %}
 
 {% block body %}
-	<form method="POST" action="{{ path('process_appointment') }}">
+	<form method="POST" action="{{ path('process_appointment') }}" class="p-4 border rounded shadow-sm bg-light">
 		<input type="hidden" name="doctorId" value="{{ doctor.id }}">
 		<input type="hidden" name="date" value="{{ date|date('Y-m-d') }}">
 		<input type="hidden" name="timeSlot" value="{{ timeSlot }}">
+		<div class="row">
+			<h2 class="p-3 bg-info text-white text-center rounded col-12">Nhập thông tin xác nhận đặt lịch</h2>
 
-		<label>
-			<b>Họ tên bệnh nhân:</b>
-		</label>
-		<input type="text" name="patientFullname" value="{{ patient.fullname }}" required>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Họ tên bệnh nhân:</label>
+				<input type="text" name="patientFullname" class="form-control" value="{{ patient.fullname }}" required>
+			</div>
 
-		<label>
-			<b>Ngày sinh:</b>
-		</label>
-		<input type="date" name="patientDateOfBirth" value="{{ patient.dateOfBirth|date('Y-m-d') }}" required>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Ngày sinh:</label>
+				<input type="date" name="patientDateOfBirth" class="form-control" value="{{ patient.dateOfBirth|date('Y-m-d') }}" required>
+			</div>
 
-		<label>
-			<b>Số điện thoại:</b>
-		</label>
-		<input type="text" name="patientPhoneNumber" value="{{ patient.phoneNumber }}" required>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Số điện thoại:</label>
+				<input type="text" name="patientPhoneNumber" class="form-control" value="{{ patient.phoneNumber }}" required>
+			</div>
 
-		<label>
-			<b>Địa chỉ:</b>
-		</label>
-		<input type="text" name="patientAddress" value="{{ patient.address }}" required>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Địa chỉ:</label>
+				<input type="text" name="patientAddress" class="form-control" value="{{ patient.address }}" required>
+			</div>
 
-		<label>
-			<b>Giới tính:</b>
-		</label>
-		<select name="patientGender" required>
-			<option value="Male" {{ patient.gender == 'Male' ? 'selected' : '' }}>Nam</option>
-			<option value="Female" {{ patient.gender == 'Female' ? 'selected' : '' }}>Nữ</option>
-		</select>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Giới tính:</label>
+				<select name="patientGender" class="form-control" required>
+					<option value="Male" {{ patient.gender == 'Male' ? 'selected' : '' }}>Nam</option>
+					<option value="Female" {{ patient.gender == 'Female' ? 'selected' : '' }}>Nữ</option>
+				</select>
+			</div>
 
-		<label>
-			<b>Email:</b>
-		</label>
-		<input type="email" name="patientEmail" value="{{ patient.email }}">
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Email:</label>
+				<input type="email" name="patientEmail" class="form-control" value="{{ patient.email }}">
+			</div>
 
-		<label>
-			<b>Đặt lịch cho:</b>
-		</label>
-		<select name="forWho" required>
-			<option value="self">Bản thân</option>
-			<option value="relative">Người thân</option>
-		</select>
+			<div class="form-group col-md-6">
+				<label class="font-weight-bold">Đặt lịch cho:</label>
+				<select name="forWho" class="form-control" required>
+					<option value="self">Bản thân</option>
+					<option value="relative">Người thân</option>
+				</select>
+			</div>
 
-		<label>
-			<b>Lý do khám:</b>
-		</label>
-		<textarea name="reason" required></textarea>
+			<div class="form-group col-md-12">
+				<label class="font-weight-bold">Lý do khám:</label>
+				<textarea name="reason" class="form-control" required></textarea>
+			</div>
 
-		<button type="submit">Xác nhận đặt lịch</button>
+			<button type="submit" class="btn btn-primary btn-block col-12">Xác nhận đặt lịch</button>
+
+		</div>
+
 	</form>
+
+	{# <form method="POST" action="{{ path('process_appointment') }}">
+						<input type="hidden" name="doctorId" value="{{ doctor.id }}">
+						<input type="hidden" name="date" value="{{ date|date('Y-m-d') }}">
+						<input type="hidden" name="timeSlot" value="{{ timeSlot }}">
+				
+						<label>
+							<b>Họ tên bệnh nhân:</b>
+						</label>
+						<input type="text" name="patientFullname" value="{{ patient.fullname }}" required>
+				
+						<label>
+							<b>Ngày sinh:</b>
+						</label>
+						<input type="date" name="patientDateOfBirth" value="{{ patient.dateOfBirth|date('Y-m-d') }}" required>
+				
+						<label>
+							<b>Số điện thoại:</b>
+						</label>
+						<input type="text" name="patientPhoneNumber" value="{{ patient.phoneNumber }}" required>
+				
+						<label>
+							<b>Địa chỉ:</b>
+						</label>
+						<input type="text" name="patientAddress" value="{{ patient.address }}" required>
+				
+						<label>
+							<b>Giới tính:</b>
+						</label>
+						<select name="patientGender" required>
+							<option value="Male" {{ patient.gender == 'Male' ? 'selected' : '' }}>Nam</option>
+							<option value="Female" {{ patient.gender == 'Female' ? 'selected' : '' }}>Nữ</option>
+						</select>
+				
+						<label>
+							<b>Email:</b>
+						</label>
+						<input type="email" name="patientEmail" value="{{ patient.email }}">
+				
+						<label>
+							<b>Đặt lịch cho:</b>
+						</label>
+						<select name="forWho" required>
+							<option value="self">Bản thân</option>
+							<option value="relative">Người thân</option>
+						</select>
+				
+						<label>
+							<b>Lý do khám:</b>
+						</label>
+						<textarea name="reason" required></textarea>
+				
+						<button type="submit">Xác nhận đặt lịch</button>
+					</form> #}
 
 {% endblock %}
