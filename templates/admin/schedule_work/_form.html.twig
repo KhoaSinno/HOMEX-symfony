@@ -88,7 +88,7 @@
 				</div>
 			</div>
 
-
+{# 
             <!-- Chọn khung giờ làm việc -->
 			<div class="form-group">
 				<label class="font-weight-bold">Chọn khung giờ làm việc</label>
@@ -105,8 +105,26 @@
 				<div class="invalid-feedback d-block">
 					{{ form_errors(form.timeSlots) }}
 				</div>
-			</div>
+			</div> #}
 
+			<!-- Chọn khung giờ làm việc -->
+			<div class="form-group">
+				<label class="font-weight-bold">Chọn khung giờ làm việc</label>
+				<div class="time-slot-container">
+					{% for choice in form.timeSlots.vars.choices %}
+						<div class="time-slot-item">
+							<input type="checkbox" id="schedule_work_timeSlots_{{ loop.index0 }}" 
+								name="schedule_work[timeSlots][]" 
+								value="{{ choice.value }}"
+								{% if choice.value in form.timeSlots.vars.data|default([]) %} checked {% endif %}>
+							<label for="schedule_work_timeSlots_{{ loop.index0 }}">{{ choice.label }}</label>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="invalid-feedback d-block">
+					{{ form_errors(form.timeSlots) }}
+				</div>
+			</div>
 
 			{{ form_row(form._token) }}
 

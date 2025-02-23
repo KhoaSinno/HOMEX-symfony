@@ -35,19 +35,32 @@
 						<th>Id</th>
 						<th>Tên BS</th>
 						<th>Ngày ĐK</th>
-						<th>MaxPatient</th>
+						<th>BN tối đa</th>
 						<th>Lịch khám trong ngày</th>
-						<th>TimeStart</th>
-						<th>TimeEnd</th>
 						<th>Trạng thái</th>
 						<th></th>
 					</tr>
 				</thead>
 				<tbody>
+
+					{% for message in app.flashes('success') %}
+						<div class="alert alert-success">{{ message }}</div>
+					{% endfor %}
+
+					{% for message in app.flashes('danger') %}
+						<div class="alert alert-danger">{{ message }}</div>
+					{% endfor %}
+
+
 					{% for s in schedule_works %}
 						<tr class="text-center">
 							<td>{{ s.id }}</td>
-							<td>{{ s.getDoctor() ? s.getDoctor().getFullname() : 'Chưa có bác sĩ' }}</td>
+							<td>
+								<a href="{{path('app_doctor_show', {'id': s.getDoctor().id})}}">
+									{{ s.getDoctor() ? s.getDoctor().getFullname() : 'Chưa có bác sĩ' }}
+								</a>
+
+							</td>
 							<td>{{ s.date ? s.date|date('Y-m-d') : '' }}</td>
 							<td>{{ s.maxPatient }}</td>
 							<td>
@@ -59,8 +72,6 @@
 									<span class="badge badge-secondary">Không có</span>
 								{% endif %}
 							</td>
-							{# <td>{{ s.timeStart ? s.timeStart|date('H:i:s') : '' }}</td>
-							<td>{{ s.timeEnd ? s.timeEnd|date('H:i:s') : '' }}</td> #}
 							<td>
 								{% if s.status.value == 'Available' %}
 									<span class="badge badge-success p-2">Còn trống</span>
@@ -71,16 +82,17 @@
 								{% endif %}
 							</td>
 							<td class="text-center">
-								<div class="actions">
-									<a class="btn btn-sm bg-info-light" href="{{ path('app_schedule_work_show', {'id': s.id}) }}">
-										<i class="fa fa-info-circle" aria-hidden="true"></i>
-										Xem
-									</a>
-									<a class="btn btn-sm bg-success-light" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
+								<div
+									class="actions">
+									{# <a class="btn btn-sm bg-info-light" href="{{ path('app_schedule_work_show', {'id': s.id}) }}">
+																												<i class="fa fa-info-circle" aria-hidden="true"></i>
+																												Xem
+																											</a> #}
+									<a class="btn btn-sm bg-success-light m-md-3" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
 										<i class="fe fe-pencil"></i>
 										Sửa
 									</a>
-									<a class="btn btn-sm bg-danger-light">
+									<a href="#" class="btn btn-sm bg-danger-light delete-schedule" data-id="{{ s.id }}" data-token="{{ csrf_token('delete' ~ s.id) }}">
 										<i class="fe fe-trash"></i>
 										Xóa
 									</a>
@@ -89,7 +101,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="7">no records found</td>
+							<td colspan="9">Không có dữ liệu</td>
 						</tr>
 					{% endfor %}
 				</tbody>
@@ -97,5 +109,47 @@
 
 		</div>
 	</div>
+
+{% endblock %}
+
+{% block JSCustom %}
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-schedule").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault();
+let scheduleId = this.getAttribute("data-id");
+let csrfToken = this.getAttribute("data-token");
+
+Swal.fire({
+title: "Bạn có chắc chắn muốn xóa?",
+text: "Hành động này không thể hoàn tác!",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xóa",
+cancelButtonText: "Hủy"
+}).then((result) => {
+if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
+let form = document.createElement("form");
+form.method = "POST";
+form.action = `/admin/schedule_work/${scheduleId}`;
+document.body.appendChild(form);
+
+let csrfInput = document.createElement("input");
+csrfInput.type = "hidden";
+csrfInput.name = "_token";
+csrfInput.value = csrfToken;
+form.appendChild(csrfInput);
+
+form.submit();
+}
+});
+});
+});
+});
+	</script>
 
 {% endblock %}

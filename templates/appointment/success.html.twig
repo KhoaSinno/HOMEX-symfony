@@ -1,8 +1,16 @@
 {% extends 'baseCustomer.html.twig' %}
 
-{% block title %}Đặt lịch thành công{% endblock %}
+{% block title %}Đặt lịch thành công
+{% endblock %}
 
 {% block body %}
-    <h2>Đặt lịch thành công!</h2>
-    <p>Lịch hẹn của bạn đã được lưu, vui lòng đến cơ sở y tế để thanh toán.</p>
+	<div class="text-center p-4 bg-light border rounded shadow-sm">
+		<h2 class="text-success font-weight-bold mb-3">
+			<i class="fa fa-check-circle"></i>
+			Đặt lịch thành công!
+		</h2>
+		<p class="text-muted lead">Lịch hẹn của bạn đã được xác nhận. Vui lòng đến cơ sở y tế để hoàn tất thanh toán.</p>
+	</div>
+
+
 {% endblock %}
