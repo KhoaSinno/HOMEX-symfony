@@ -15,10 +15,10 @@ class Appointment
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
-    private ?user $patient = null;
+    private ?User $patient = null;
 
     #[ORM\ManyToOne(inversedBy: 'appointments')]
-    private ?user $doctor = null;
+    private ?User $doctor = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $appointmentDate = null;
@@ -73,24 +73,24 @@ class Appointment
         return $this->id;
     }
 
-    public function getPatient(): ?user
+    public function getPatient(): ?User
     {
         return $this->patient;
     }
 
-    public function setPatient(?user $patient): static
+    public function setPatient(?User $patient): static
     {
         $this->patient = $patient;
 
         return $this;
     }
 
-    public function getDoctor(): ?user
+    public function getDoctor(): ?User
     {
         return $this->doctor;
     }
 
-    public function setDoctor(?user $doctor): static
+    public function setDoctor(?User $doctor): static
     {
         $this->doctor = $doctor;
 

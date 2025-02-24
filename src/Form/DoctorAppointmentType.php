@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Appointment;
-use App\Entity\user;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,11 +35,11 @@ class DoctorAppointmentType extends AbstractType
             ->add('paymentStatus')
             ->add('invoiceNumber')
             ->add('patient', EntityType::class, [
-                'class' => user::class,
+                'class' => User::class,
                 'choice_label' => 'id',
             ])
             ->add('doctor', EntityType::class, [
-                'class' => user::class,
+                'class' => User::class,
                 'choice_label' => 'id',
             ])
         ;

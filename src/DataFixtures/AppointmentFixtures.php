@@ -18,24 +18,24 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
         // Lấy danh sách doctor và patient đã tạo trong UserDataFixture
         $doctor = $this->getReference('doctor-doe', User::class);
         $patient = $this->getReference('patient-mary', User::class);
-        
+
         $appointment = new Appointment();
         $appointment->setDoctor($doctor);
         $appointment->setPatient($patient);
-        $appointment->setAppointmentDate(new \DateTime('2025-02-20')); // Ngày hẹn giả lập
+        $appointment->setAppointmentDate(new \DateTime('2025-04-20')); // Ngày hẹn giả lập
         $appointment->setAppointmentTime('14:00-14:30'); // Giờ hẹn giả lập
         $appointment->setNote('Khám sức khỏe tổng quát');
-        $appointment->setStatus(AppointmentConstants::PENDING_STATUS); // Trạng thái chờ xác nhận
         $appointment->setPrice(500000); // Giá khám bệnh
-        $appointment->setPaymentStatus(AppointmentConstants::UNPAID_STATUS); // Chưa thanh toán
         $appointment->setPatientFullname($patient->getFullname());
         $appointment->setPatientDateOfBirth($patient->getDateOfBirth());
         $appointment->setPatientPhoneNumber($patient->getPhoneNumber());
         $appointment->setPatientAddress($patient->getAddress());
         $appointment->setPatientGender($patient->getGender());
         $appointment->setPatientEmail($patient->getEmail());
-        $appointment->setForWho(AppointmentConstants::FOR_WHO_SELF); // Dành cho chính bệnh nhân
         $appointment->setReason('Khám định kỳ');
+        $appointment->setStatus(AppointmentConstants::PENDING_STATUS); // Trạng thái chờ xác nhận
+        $appointment->setPaymentStatus(AppointmentConstants::UNPAID_STATUS); // Chưa thanh toán
+        $appointment->setForWho(AppointmentConstants::FOR_WHO_SELF); // Dành cho chính bệnh nhân
 
         $manager->persist($appointment);
         $manager->flush();

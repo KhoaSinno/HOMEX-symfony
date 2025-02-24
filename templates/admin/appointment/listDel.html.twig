@@ -1,0 +1,97 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Cuộc hẹn đã hủy
+{% endblock %}
+
+{% block body %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">Cuộc hẹn đã hủy</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Cuộc hẹn đã hủy</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr class="text-center">
+											<th>Mã</th>
+											<th>Mã BN</th>
+											<th>Tên BN</th>
+											<th>Tổng tiền</th>
+											<th>TT thanh toán</th>
+											<th>TT lịch</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for ap in appointments %}
+											<tr class="text-center">
+												<td>
+													<a href="invoice.html">{{ap.id}}</a>
+												</td>
+												<td>{{ap.patient.id}}</td>
+												<td>
+													<h2 class="table-avatar">
+														<a href="{{path('app_admin_patient_show', {'id': ap.patient.id})}}" class="avatar avatar-sm mr-2">
+															{% if ap.patient.googleId %}
+																<img class="rounded-circle" style="width: 50px; height: 50px;" src="{{ap.patient.image ? asset(ap.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+															{% else %}
+																<img class="avatar-img rounded-circle" src="{{ap.patient.image ? asset('uploads/users/' ~ ap.patient.image) : asset('uploads/users/default.png')}}" alt="Hình ảnh bệnh nhân">
+															{% endif %}
+														</a>
+														<a class="ml-2" href="{{path('app_admin_patient_show', {'id': ap.patient.id})}}">{{ap.patient.fullname}}</a>
+													</h2>
+												</td>
+												<td>{{ap.price | currency_vnd}}</td>
+												<td class="text-center">
+													<span class="badge badge-pill {{ ap.paymentStatus | payment_class }} inv-badge">{{ap.paymentStatus | convertPaymentStatus}}</span>
+												</td>
+												<td>{{ap.status | status_badge}}</td>
+												<td>
+													<div class="actions">
+														<a class="btn btn-sm bg-info-light" href="{{ path('app_admin_appointment_show', {'id': ap.id}) }}">
+															<i class="fa fa-info-circle" aria-hidden="true"></i>
+															Xem
+														</a>
+
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td colspan="6">Không có cuộc hẹn nào</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+{% endblock %}
