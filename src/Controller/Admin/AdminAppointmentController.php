@@ -19,7 +19,23 @@ final class AdminAppointmentController extends AbstractController
     public function index(AppointmentRepository $appointmentRepository): Response
     {
         return $this->render('admin/appointment/index.html.twig', [
-            'appointments' => $appointmentRepository->findAll(),
+            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::PENDING_STATUS]),
+        ]);
+    }
+
+    #[Route('/admin/appointments/deleted', name: 'app_admin_appointment_listDel', methods: ['GET'])]
+    public function listDel(AppointmentRepository $appointmentRepository): Response
+    {
+        return $this->render('admin/appointment/listDel.html.twig', [
+            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::CANCELLED_STATUS]),
+        ]);
+    }
+
+    #[Route('/admin/appointments/success', name: 'app_admin_appointment_listSuccess', methods: ['GET'])]
+    public function listSuccess(AppointmentRepository $appointmentRepository): Response
+    {
+        return $this->render('admin/appointment/listSuccess.html.twig', [
+            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::CONFIRMED_STATUS]),
         ]);
     }
 
@@ -79,6 +95,22 @@ final class AdminAppointmentController extends AbstractController
 
     //     return $this->redirectToRoute('app_admin_appointment', [], Response::HTTP_SEE_OTHER);
     // }
+    #[Route('/{id}/approve', name: 'app_admin_appointment_approve', methods: ['POST', 'APPROVE'])]
+    public function approve(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('approve' . $appointment->getId(), $request->request->get('_token'))) {
+            $appointment->setStatus(AppointmentConstants::CONFIRMED_STATUS);
+            $appointment->setPaymentStatus(AppointmentConstants::PAID_STATUS);
+            $entityManager->persist($appointment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Duyệt lịch hẹn thành công!');
+        } else {
+            $this->addFlash('danger', 'Lỗi CSRF, vui lòng thử lại!');
+        }
+
+        return $this->redirectToRoute('app_admin_appointment');
+    }
+
     #[Route('/{id}/delete', name: 'app_admin_appointment_delete', methods: ['POST', 'DELETE'])]
     public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
     {

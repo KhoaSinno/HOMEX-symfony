@@ -53,15 +53,15 @@
 									<tr>
 										<th class="bg-light">Trạng thái</th>
 										<td>
-											<span class="badge badge-{% if appointment.status == 'Đã xác nhận' %}success{% else %}warning{% endif %}">
+											{# <span class="badge badge-{% if appointment.status == 'Đã xác nhận' %}success{% else %}warning{% endif %}">
 												{{ appointment.status | convertAppointStatus }}
-											</span>
+											</span> #}
+												{{ appointment.status | status_badge }}
 										</td>
 									</tr>
 									<tr>
 										<th class="bg-light">Giá tiền</th>
-										<td>{{ appointment.price }}
-											VND</td>
+										<td>{{ appointment.price  | currency_vnd}}</td>
 									</tr>
 									<tr>
 										<th class="bg-light">Kết quả</th>
@@ -105,7 +105,7 @@
 									<tr>
 										<th class="bg-light">Trạng thái thanh toán</th>
 										<td>
-											<span class="badge badge-{% if appointment.paymentStatus == 'Đã thanh toán' %}success{% else %}danger{% endif %}">
+											<span class="badge  {{ appointment.paymentStatus | payment_class }} text-white">
 												{{ appointment.paymentStatus | convertPaymentStatus }}
 											</span>
 										</td>
@@ -123,73 +123,73 @@
 	<!-- /Page Wrapper -->
 
 	{# <table class="table">
-			        <tbody>
-			            <tr>
-			                <th>Id</th>
-			                <td>{{ appointment.id }}</td>
-			            </tr>
-			            <tr>
-			                <th>AppointmentDate</th>
-			                <td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
-			            </tr>
-			            <tr>
-			                <th>AppointmentTime</th>
-			                <td>{{ appointment.appointmentTime }}</td>
-			            </tr>
-			            <tr>
-			                <th>Note</th>
-			                <td>{{ appointment.note }}</td>
-			            </tr>
-			            <tr>
-			                <th>Status</th>
-			                <td>{{ appointment.status }}</td>
-			            </tr>
-			            <tr>
-			                <th>Price</th>
-			                <td>{{ appointment.price }}</td>
-			            </tr>
-			            <tr>
-			                <th>Result</th>
-			                <td>{{ appointment.result }}</td>
-			            </tr>
-			            <tr>
-			                <th>ForWho</th>
-			                <td>{{ appointment.forWho }}</td>
-			            </tr>
-			            <tr>
-			                <th>Reason</th>
-			                <td>{{ appointment.reason }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientFullname</th>
-			                <td>{{ appointment.patientFullname }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientDateOfBirth</th>
-			                <td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientPhoneNumber</th>
-			                <td>{{ appointment.patientPhoneNumber }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientAddress</th>
-			                <td>{{ appointment.patientAddress }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientGender</th>
-			                <td>{{ appointment.patientGender }}</td>
-			            </tr>
-			            <tr>
-			                <th>PatientEmail</th>
-			                <td>{{ appointment.patientEmail }}</td>
-			            </tr>
-			            <tr>
-			                <th>PaymentStatus</th>
-			                <td>{{ appointment.paymentStatus }}</td>
-			            </tr>
-			        </tbody>
-			    </table> #}
+				        <tbody>
+				            <tr>
+				                <th>Id</th>
+				                <td>{{ appointment.id }}</td>
+				            </tr>
+				            <tr>
+				                <th>AppointmentDate</th>
+				                <td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+				            </tr>
+				            <tr>
+				                <th>AppointmentTime</th>
+				                <td>{{ appointment.appointmentTime }}</td>
+				            </tr>
+				            <tr>
+				                <th>Note</th>
+				                <td>{{ appointment.note }}</td>
+				            </tr>
+				            <tr>
+				                <th>Status</th>
+				                <td>{{ appointment.status }}</td>
+				            </tr>
+				            <tr>
+				                <th>Price</th>
+				                <td>{{ appointment.price }}</td>
+				            </tr>
+				            <tr>
+				                <th>Result</th>
+				                <td>{{ appointment.result }}</td>
+				            </tr>
+				            <tr>
+				                <th>ForWho</th>
+				                <td>{{ appointment.forWho }}</td>
+				            </tr>
+				            <tr>
+				                <th>Reason</th>
+				                <td>{{ appointment.reason }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientFullname</th>
+				                <td>{{ appointment.patientFullname }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientDateOfBirth</th>
+				                <td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientPhoneNumber</th>
+				                <td>{{ appointment.patientPhoneNumber }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientAddress</th>
+				                <td>{{ appointment.patientAddress }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientGender</th>
+				                <td>{{ appointment.patientGender }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientEmail</th>
+				                <td>{{ appointment.patientEmail }}</td>
+				            </tr>
+				            <tr>
+				                <th>PaymentStatus</th>
+				                <td>{{ appointment.paymentStatus }}</td>
+				            </tr>
+				        </tbody>
+				    </table> #}
 
 	<a href="{{ path('app_admin_appointment') }}">back to list</a>
 

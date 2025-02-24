@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Appointment;
-use App\Entity\user;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

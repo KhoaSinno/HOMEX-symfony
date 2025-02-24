@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use App\Entity\User; // Ensure this is the correct path to your User entity
+use App\Entity\User; 
 use Symfony\Component\Form\FormError;
 
 class AdminAccountController extends AbstractController

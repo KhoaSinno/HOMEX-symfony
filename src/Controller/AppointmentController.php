@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
 use App\Entity\User;
 use App\Repository\ScheduleWorkRepository;
@@ -68,11 +69,11 @@ class AppointmentController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-    
+
         $doctorId = $request->request->get('doctorId');
         $date = new \DateTime($request->request->get('date'));
         $timeSlot = $request->request->get('timeSlot');
-    
+
         $patientFullname = $request->request->get('patientFullname');
         $patientDateOfBirth = new \DateTime($request->request->get('patientDateOfBirth'));
         $patientPhoneNumber = $request->request->get('patientPhoneNumber');
@@ -81,12 +82,12 @@ class AppointmentController extends AbstractController
         $patientEmail = $request->request->get('patientEmail');
         $forWho = $request->request->get('forWho');
         $reason = $request->request->get('reason');
-    
+
         $doctor = $entityManager->getRepository(User::class)->find($doctorId);
         if (!$doctor) {
             return new Response('Bác sĩ không tồn tại!', 404);
         }
-    
+
         $appointment = new Appointment();
         $appointment->setPatient($user);
         $appointment->setDoctor($doctor);
@@ -100,14 +101,16 @@ class AppointmentController extends AbstractController
         $appointment->setReason($reason);
         $appointment->setAppointmentDate($date);
         $appointment->setAppointmentTime($timeSlot);
-        $appointment->setStatus('Pending Payment');
-    
+        $appointment->setPrice($doctor->getConsultationFee());
+        $appointment->setStatus(AppointmentConstants::PENDING_STATUS);
+        $appointment->setPaymentStatus(AppointmentConstants::UNPAID_STATUS);
+
         $entityManager->persist($appointment);
         $entityManager->flush();
-    
+
         return $this->redirectToRoute('appointment_success');
     }
-    
+
 
     #[Route('/appointment-success', name: 'appointment_success', methods: ['GET'])]
     public function appointmentSuccess(): Response
@@ -115,7 +118,7 @@ class AppointmentController extends AbstractController
         return $this->render('appointment/success.html.twig');
     }
 
-
+    // ------------------------------------------------------------------ Case substitutions business logic ------------------------------------------------------------------
     // flow Book trực tiếp ko confirm 
     #[Route('/book-appointment', name: 'book_appointment', methods: ['POST'])]
     public function bookAppointment(Request $request, EntityManagerInterface $em): JsonResponse

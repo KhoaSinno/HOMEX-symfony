@@ -49,10 +49,14 @@
 
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2">
-															<img class="avatar-img" src="{{ patient.image ? asset('uploads/users/' ~ patient.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ patient.fullName }}">
+														<a href="{{path('app_admin_patient_show', {'id': patient.id})}}" class="avatar avatar-sm mr-2">
+															{% if patient.googleId %}
+																<img class="avatar-img" src="{{ patient.image ? asset(patient.image) : asset('uploads/users/defaultUser.png') }}" alt="{{ patient.fullName }}">
+															{% else %}
+																<img class="avatar-img" src="{{ patient.image ? asset('uploads/users/' ~ patient.image) : asset('uploads/users/defaultUser.png') }}" alt="{{ patient.fullName }}">
+															{% endif %}
 														</a>
-														<a href="profile.html">{{ patient.fullname }}</a>
+														<a href="{{path('app_admin_patient_show', {'id': patient.id})}}">{{ patient.fullname }}</a>
 													</h2>
 												</td>
 
