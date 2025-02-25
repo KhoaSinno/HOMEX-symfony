@@ -64,12 +64,12 @@
 											<th class="bg-primary text-white text-center" colspan="2">Thông tin Cuộc hẹn</th>
 										</tr>
 										<tr>
-											<th class="bg-light">Mã cuộc hẹn</th>
+											<th class="bg-light">Mã CH</th>
 											<td>{{ appointment.id }}</td>
 										</tr>
 										<tr>
 											<th class="bg-light">Ngày hẹn</th>
-											<td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+											<td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('d-m-Y') : '' }}</td>
 										</tr>
 										<tr>
 											<th class="bg-light">Giờ hẹn</th>
@@ -110,7 +110,7 @@
 										</tr>
 										<tr>
 											<th class="bg-light">Ngày sinh</th>
-											<td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+											<td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('d-m-Y') : '' }}</td>
 										</tr>
 										<tr>
 											<th class="bg-light">Số điện thoại</th>

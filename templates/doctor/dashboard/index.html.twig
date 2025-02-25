@@ -97,23 +97,85 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<h4 class="mb-4">Patient Appoinment</h4>
+							<h4 class="mb-4">Lịch hẹn bệnh nhân</h4>
 							<div
 								class="appointment-tab">
 
 								<!-- Appointment Tab -->
 								<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
 									<li class="nav-item">
-										<a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+										<a class="nav-link" href="#today-appointments" data-toggle="tab">Hôm nay</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#today-appointments" data-toggle="tab">Today</a>
+										<a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Sắp tới</a>
 									</li>
 								</ul>
 								<!-- /Appointment Tab -->
 
 								<div
 									class="tab-content">
+
+
+									<!-- Today Appointment Tab -->
+									<div class="tab-pane" id="today-appointments">
+										<div class="card card-table mb-0">
+											<div class="card-body">
+												<div class="table-responsive">
+													<table class="table table-hover table-center mb-0">
+														<thead>
+															<tr class="text-center">
+																<th>Tên BN</th>
+																<th>Ngày khám</th>
+																<th>Chuẩn đoán</th>
+																<th class="text-center">Tổng tiền</th>
+																<th></th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for apTo in appointmentsToday %}
+
+																<tr>
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ apTo.patient.image ? asset('uploads/users/' ~ apTo.patient.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image"></a>
+																			<a href="patient-profile.html">{{apTo.patient.fullname}}
+																				<span>#P{{apTo.patient.id}}</span>
+																			</a>
+																		</h2>
+																	</td>
+																	<td>{{apTo.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{apTo.appointmentTime}}</span>
+																	</td>
+																	<td>{{apTo.result}}</td>
+																	<td class="text-center">{{apTo.price | currency_vnd}}</td>
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="{{path('app_doctor_appointment_show', {'id': apTo.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+
+																			<a href="{{path('app_doctor_appointment_edit', {'id': apTo.id})}}" class="btn btn-sm bg-success-light">
+																				<i class="fas fa-check"></i>
+																				Duyệt
+																			</a>
+																			<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																				<i class="fas fa-times"></i>
+																				Hủy
+																			</a>
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
+
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- /Today Appointment Tab -->
+
 
 									<!-- Upcoming Appointment Tab -->
 									<div class="tab-pane show active" id="upcoming-appointments">
@@ -122,49 +184,51 @@
 												<div class="table-responsive">
 													<table class="table table-hover table-center mb-0">
 														<thead>
-															<tr>
-																<th>Patient Name</th>
-																<th>Appt Date</th>
-																<th>Purpose</th>
-																<th>Type</th>
-																<th class="text-center">Paid Amount</th>
+															<tr class="text-center">
+																<th>Tên BN</th>
+																<th>Ngày khám</th>
+																<th>Chuẩn đoán</th>
+
+																<th class="text-center">Tổng tiền</th>
 																<th></th>
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
-																<td>
-																	<h2 class="table-avatar">
-																		<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{asset('customer/assets/img/patients/patient.jpg')}}" alt="User Image"></a>
-																		<a href="patient-profile.html">Richard Wilson
-																			<span>#PT0016</span>
-																		</a>
-																	</h2>
-																</td>
-																<td>11 Nov 2019
-																	<span class="d-block text-info">10.00 AM</span>
-																</td>
-																<td>General</td>
-																<td>New Patient</td>
-																<td class="text-center">$150</td>
-																<td class="text-right">
-																	<div class="table-action">
-																		<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-																			<i class="far fa-eye"></i>
-																			View
-																		</a>
 
-																		<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																			<i class="fas fa-check"></i>
-																			Accept
-																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																			<i class="fas fa-times"></i>
-																			Cancel
-																		</a>
-																	</div>
-																</td>
-															</tr>
+															{% for apUp in appointmentsUpcoming %}
+																<tr class="text-center">
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ apUp.patient.image ? asset('uploads/users/' ~ apUp.patient.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image"></a>
+																			<a href="patient-profile.html">{{apUp.patient.fullname}}
+																				<span>#P{{apUp.patient.id}}</span>
+																			</a>
+																		</h2>
+																	</td>
+																	<td>{{apUp.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{apUp.appointmentTime}}</span>
+																	</td>
+																	<td>{{apUp.result}}</td>
+																	<td class="text-center">{{apUp.price | currency_vnd}}</td>
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="{{path('app_doctor_appointment_show', {'id': apUp.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+
+																			{# <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+																																																										<i class="fas fa-check"></i>
+																																																										Duyệt
+																																																									</a> #}
+																			<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																				<i class="fas fa-times"></i>
+																				Hủy
+																			</a>
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
 
 														</tbody>
 													</table>
@@ -174,64 +238,6 @@
 									</div>
 									<!-- /Upcoming Appointment Tab -->
 
-									<!-- Today Appointment Tab -->
-									<div class="tab-pane" id="today-appointments">
-										<div class="card card-table mb-0">
-											<div class="card-body">
-												<div class="table-responsive">
-													<table class="table table-hover table-center mb-0">
-														<thead>
-															<tr>
-																<th>Patient Name</th>
-																<th>Appt Date</th>
-																<th>Purpose</th>
-																<th>Type</th>
-																<th class="text-center">Paid Amount</th>
-																<th></th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>
-																	<h2 class="table-avatar">
-																		<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{asset('customer/assets/img/patients/patient6.jpg')}}" alt="User Image"></a>
-																		<a href="patient-profile.html">Elsie Gilley
-																			<span>#PT0006</span>
-																		</a>
-																	</h2>
-																</td>
-																<td>14 Nov 2019
-																	<span class="d-block text-info">6.00 PM</span>
-																</td>
-																<td>Fever</td>
-																<td>Old Patient</td>
-																<td class="text-center">$300</td>
-																<td class="text-right">
-																	<div class="table-action">
-																		<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-																			<i class="far fa-eye"></i>
-																			View
-																		</a>
-
-																		<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																			<i class="fas fa-check"></i>
-																			Accept
-																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																			<i class="fas fa-times"></i>
-																			Cancel
-																		</a>
-																	</div>
-																</td>
-															</tr>
-
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- /Today Appointment Tab -->
 
 								</div>
 							</div>
@@ -251,8 +257,7 @@
 	{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
 
 
-	<!-- Sticky Sidebar JS -->
-	<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"></script>
+	<!-- Sticky Sidebar JS --><script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"> </script>
 	<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js')}}"></script>
 
 	<!-- Circle Progress JS -->

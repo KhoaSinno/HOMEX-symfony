@@ -26,6 +26,15 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByDoctor(User $doctor): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.doctor = :doctor')
+            ->setParameter('doctor', $doctor)
+            ->orderBy('a.appointmentDate', 'DESC') 
+            ->getQuery()
+            ->getResult();
+    }
     
     public function findInvoices($patient)
     {

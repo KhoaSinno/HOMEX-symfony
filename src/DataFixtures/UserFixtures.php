@@ -37,6 +37,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $doctor->setFullname('Dr. John Doe');
         $doctor->setRoles(['ROLE_DOCTOR']);
         $doctor->setImage('doctor_doe_avt.jpg');
+        $doctor->setDateOfBirth(new \DateTime('1980-01-01'));   
+        $doctor->setGender('Male');
+        $doctor->setQualification('BDS, MDS - Phẫu thuật Răng Hàm Mặt');
         $hashedPassword = $this->passwordHasher->hashPassword($doctor, '123456');
         $doctor->setPassword($hashedPassword);
         $doctor->setPhoneNumber('0123456789');
@@ -54,7 +57,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ✔️ Kiểm tra sức khỏe tổng quát và phòng ngừa bệnh lý tim mạch
 
             Nếu bạn đang gặp vấn đề về sức khỏe nam giới hoặc tim mạch, đừng ngần ngại đặt lịch hẹn với bác sĩ [Tên Bác Sĩ] để được tư vấn và điều trị kịp thời!');
-        $doctor->setQualification('BDS, MDS - Phẫu thuật Răng Hàm Mặt');
         $doctor->setConsultationFee(100000);
         // Lấy specialty từ reference
         $specialty = $this->getReference('specialty-cardiology', Specialty::class);
@@ -69,6 +71,10 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $patient->setFullname('Mary');
         $patient->setRoles(['ROLE_PATIENT']);
         $patient->setImage('patient_mary.jpg');
+        $patient->setPhoneNumber('0123456789');
+        $patient->setAddress('An Phú, Ninh Kiều, Cần Thơ');
+        $patient->setDateOfBirth(new \DateTime('1990-01-01'));
+        $patient->setGender('Male');
         $hashedPassword = $this->passwordHasher->hashPassword($patient, '123456');
         $patient->setPassword($hashedPassword);
         $manager->persist($patient);

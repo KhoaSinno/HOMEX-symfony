@@ -50,6 +50,7 @@ final class DoctorAppointmentController extends AbstractController
         ]);
     }
 
+    // Doctor confirm appointment
     #[Route('/{id}/edit', name: 'app_doctor_appointment_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
     {

@@ -1,4 +1,77 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<div class="row">
+	<h2 class="p-3 bg-info text-white text-center rounded col-12">Xác nhận duyệt kết quả</h2>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientFullname) }}
+		{{ form_widget(form.patientFullname) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientDateOfBirth) }}
+		{{ form_widget(form.patientDateOfBirth) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientPhoneNumber) }}
+		{{ form_widget(form.patientPhoneNumber) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientAddress) }}
+		{{ form_widget(form.patientAddress) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientGender) }}
+		{{ form_widget(form.patientGender) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.patientEmail) }}
+		{{ form_widget(form.patientEmail) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.appointmentDate) }}
+		{{ form_widget(form.appointmentDate) }}
+	</div>
+	<div class="form-group col-md-6">
+
+		{{ form_label(form.appointmentTime) }}
+		{{ form_widget(form.appointmentTime) }}
+	</div>
+	<div class="form-group col-md-4">
+		{{ form_label(form.forWho) }}
+		{{ form_widget(form.forWho) }}
+	</div>
+
+	<div class="form-group col-md-4">
+		{{ form_label(form.status) }}
+		{{ form_widget(form.status) }}
+	</div>
+
+	<div class="form-group col-md-4">
+		{{ form_label(form.price) }}
+		{{ form_widget(form.price, {
+        'attr': {'readonly': true, 'class': 'form-control', 'value': form.price.vars.value | currency_vnd}
+    }) }}
+	</div>
+
+	<div class="form-group col-12">
+		{{ form_label(form.reason) }}
+		{{ form_widget(form.reason) }}
+	</div>
+
+	<div class="form-group col-md-6">
+		{{ form_label(form.note) }}
+		{{ form_widget(form.note) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.result) }}
+		{{ form_widget(form.result) }}
+	</div>
+	<div class="form-group col-md-6">
+		{{ form_label(form.resultFile) }}
+		{{ form_widget(form.resultFile) }}
+	</div>
+
+
+
+	<button class="btn btn-info form-group col-12">{{ button_label|default('Save') }}</button>
+</div>
 {{ form_end(form) }}
