@@ -65,7 +65,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Patient
         $patient = new User();
-        $patient->setEmail('mary@gmail.com');
+        $patient->setEmail('khoasinno@gmail.com');
         $patient->setFullname('Mary');
         $patient->setRoles(['ROLE_PATIENT']);
         $patient->setImage('patient_mary.jpg');
