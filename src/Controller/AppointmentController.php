@@ -7,13 +7,17 @@ use App\Entity\Appointment;
 use App\Entity\User;
 use App\Repository\ScheduleWorkRepository;
 use App\Repository\SpecialtyRepository;
+use App\Service\MailService;
 use App\Service\ScheduleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Mime\Email;
+
 
 class AppointmentController extends AbstractController
 {
@@ -21,13 +25,15 @@ class AppointmentController extends AbstractController
     private SpecialtyRepository $specialtyRepository;
     private ScheduleService $scheduleService;
     private ScheduleWorkRepository $scheduleRepo;
+    private MailService $mailService;
 
-    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository, ScheduleService $scheduleService, ScheduleWorkRepository $scheduleRepo)
+    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository, ScheduleService $scheduleService, ScheduleWorkRepository $scheduleRepo, MailService $mailService)
     {
         $this->em = $em;
         $this->specialtyRepository = $specialtyRepository;
         $this->scheduleService = $scheduleService;
         $this->scheduleRepo = $scheduleRepo;
+        $this->mailService = $mailService;
     }
     #[Route('/appointment', name: 'app_appointment')]
     public function index(): Response
@@ -66,7 +72,8 @@ class AppointmentController extends AbstractController
     public function processAppointment(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        if (!$user) {
+
+        if (!$user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -108,6 +115,14 @@ class AppointmentController extends AbstractController
         $entityManager->persist($appointment);
         $entityManager->flush();
 
+        // Gửi email xác nhận
+        $this->mailService->sendAppointmentConfirmation(
+            $patientEmail,
+            $user->getFullname(),
+            $appointment->getAppointmentDate()->format('Y-m-d'),
+            $doctor->getFullName()
+        );
+
         return $this->redirectToRoute('appointment_success');
     }
 
@@ -116,6 +131,22 @@ class AppointmentController extends AbstractController
     public function appointmentSuccess(): Response
     {
         return $this->render('appointment/success.html.twig');
+    }
+
+    // ------------------------------------------------------------------ Test Mail ------------------------------------------------------------------
+
+
+    #[Route('/send-test-email', name: 'send_test_email')]
+    public function sendTestEmail(MailerInterface $mailer)
+    {
+        $email = (new Email())
+            ->from('ntakhoa.work@gmail.com')
+            ->to('khoasinno@gmail.com')
+            ->subject('Test Email')
+            ->text('This is a test email from Symfony Mailer.');
+
+        $mailer->send($email);
+        return new JsonResponse(['message' => 'Email sent successfully!']);
     }
 
     // ------------------------------------------------------------------ Case substitutions business logic ------------------------------------------------------------------
