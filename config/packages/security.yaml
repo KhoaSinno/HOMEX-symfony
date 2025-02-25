@@ -1,0 +1,72 @@
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        # auto hasher with default options for the User class (and children)
+        App\Entity\User: 'auto'
+
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+
+            stateless: false
+            # entry_point: form_login  # Hoặc "App\Security\GoogleAuthenticator" nếu muốn Google là chính
+            # entry_point: App\Security\GoogleAuthenticator  
+
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                success_handler: App\Security\LoginSuccessHandler
+                # default_target_path: app_home
+
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: app_login
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+        # google:
+        #     pattern: ^/connect/google
+        #     stateless: true  # Để không lưu session
+        #     provider: app_user_provider
+        #     custom_authenticators:
+        #         - App\Security\GoogleAuthenticator
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/doctor, roles: ROLE_DOCTOR }
+        - { path: ^/appointment/book, roles: ROLE_PATIENT }
+        # - { path: ^/connect/google, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

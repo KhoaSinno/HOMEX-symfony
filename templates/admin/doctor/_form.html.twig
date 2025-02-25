@@ -1,0 +1,146 @@
+<div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': (user is defined and user.id is not null) 
+					? path('app_doctor_edit', {'id': user.id}) 
+					: path('app_doctor_new'),
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+
+			<div class="form-row flex-column">
+				<div
+					class="col-12 mb-3  justify-content-center align-items-center">
+					<!-- Hiển thị ảnh -->
+					<div class="col-12 d-flex flex-column justify-content-center align-items-center">
+						<img id="preview-image" src="{{ user.image ? asset('uploads/users/' ~ user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+						<label for="validationCustom04">Ảnh đại diện</label>
+					</div>
+				<div class="col-md-4 mb-3 text-left">
+					{{ form_label(form.image) }}
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="inputGroupPrepend">
+								<i class="fa fa-picture-o" aria-hidden="true"></i>
+							</span>
+						</div>
+						{{ form_widget(form.image) }}
+						{{ form_errors(form.image) }}
+					</div>
+				</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.fullname) }}
+					{{ form_widget(form.fullname) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.fullname) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.phoneNumber) }}
+					{{ form_widget(form.phoneNumber) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.phoneNumber) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.email) }}
+					{{ form_widget(form.email) }}
+					{{ form_errors(form.email) }}
+				</div>
+
+			</div>
+
+			<div class="form-row">
+				<div class="col-12 mb-3">
+					{{ form_label(form.address) }}
+					{{ form_widget(form.address) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.address) }}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-row">
+
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.dateOfBirth) }}
+					{{ form_widget(form.dateOfBirth) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.dateOfBirth) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.gender) }}
+					{{ form_widget(form.gender) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.gender) }}
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-row">
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.specialty) }}
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="inputGroupPrepend">
+								<i class="fa fa-briefcase" aria-hidden="true"></i>
+							</span>
+						</div>
+						{{ form_widget(form.specialty) }}
+						{{ form_errors(form.specialty) }}
+					</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.consultationFee) }}
+					<div class="input-group-append">
+						{{ form_widget(form.consultationFee) }}
+						<span class="input-group-text" id="basic-addon2">VNĐ</span>
+					</div>
+					<div class="valid-feedback">
+						{{ form_errors(form.consultationFee) }}
+					</div>
+				</div>
+
+				<div class="col-12 mb-3">
+					{{ form_label(form.bio) }}
+					{{ form_widget(form.bio) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.bio) }}
+					</div>
+				</div>
+			</div>
+			{# Button submit #}
+			<div class="form-row">
+				<button class="btn btn-primary" type="submit">
+					{{user is defined and user.id is not null ? 'Cập nhật thông tin' : 'Tạo mới' }}</button>
+			</div>
+
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div>
+
+{% block JSCustom %}
+	<!-- Script hiển thị ảnh ngay khi chọn file -->
+	<script>
+		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
+let reader = new FileReader();
+reader.onload = function (e) {
+document.getElementById("preview-image").src = e.target.result;
+};
+reader.readAsDataURL(event.target.files[0]);
+});
+	</script>
+{% endblock %}

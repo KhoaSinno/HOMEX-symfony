@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}HOMEX Admin
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+		<!-- Favicon -->
+		<link
+		rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/assets/img/favicon.png') }}"> <!-- Bootstrap CSS -->
+		<link
+		rel="stylesheet" href="{{asset('admin/assets/css/bootstrap.min.css')}}">
+
+		<!-- Fontawesome CSS -->
+		<link
+		rel="stylesheet" href="{{asset('admin/assets/css/font-awesome.min.css')}}">
+
+		<!-- Feathericon CSS -->
+		<link rel="stylesheet" href="{{asset('admin/assets/css/feathericon.min.css')}}">
+
+
+		<!-- Datatables CSS -->
+		<link
+		rel="stylesheet" href="{{asset('admin/assets/plugins/datatables/datatables.min.css')}}"> <!-- Main CSS -->
+		<link rel="stylesheet" href="{{asset('admin/assets/css/style.css')}}">
+
+		{% block StyleCustom %}{% endblock %}
+
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body>
+
+		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
+		{% for message in app.flashes('notice') %}
+			<div class="notice">
+				{{ message }}
+			</div>
+		{% endfor %}
+
+
+		<!-- Main Wrapper -->
+		<div
+			class="main-wrapper">
+
+			<!-- Header -->
+			<div
+				class="header">
+
+				<!-- Logo -->
+				<div class="header-left">
+					<a href="index.html" class="logo">
+						<img src="{{asset('admin/assets/img/logo.png')}}" alt="Logo">
+					</a>
+					<a href="index.html" class="logo logo-small">
+						<img src="{{asset('admin/assets/img/logo-small.png')}}" alt="Logo" width="30" height="30">
+					</a>
+				</div>
+				<!-- /Logo -->
+
+				<a href="javascript:void(0);" id="toggle_btn">
+					<i class="fe fe-text-align-left"></i>
+				</a>
+
+				<div class="top-nav-search">
+					<form>
+						<input type="text" class="form-control" placeholder="Tìm kiếm ở đây">
+						<button class="btn" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</form>
+				</div>
+
+				<!-- Mobile Menu Toggle -->
+				<a class="mobile_btn" id="mobile_btn">
+					<i class="fa fa-bars"></i>
+				</a>
+				<!-- /Mobile Menu Toggle -->
+
+				<!-- Header Right Menu -->
+				<ul class="nav user-menu">
+
+					<!-- Notifications -->
+					{# <li class="nav-item dropdown noti-dropdown">
+																																																													<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+																																																														<i class="fe fe-bell"></i>
+																																																														<span class="badge badge-pill">3</span>
+																																																													</a>
+																																																													<div class="dropdown-menu notifications">
+																																																														<div class="topnav-dropdown-header">
+																																																															<span class="notification-title">Notifications</span>
+																																																															<a href="javascript:void(0)" class="clear-noti">
+																																																																Clear All
+																																																															</a>
+																																																														</div>
+																																																														<div class="noti-content">
+																																																															<ul class="notification-list">
+																																																																<li class="notification-message">
+																																																																	<a href="#">
+																																																																		<div class="media">
+																																																																			<span class="avatar avatar-sm">
+																																																																				<img class="avatar-img rounded-circle" alt="User Image" src="{{asset('admin/assets/img/doctors/doctor-thumb-01.jpg')}}">
+																																																																			</span>
+																																																																			<div class="media-body">
+																																																																				<p class="noti-details">
+																																																																					<span class="noti-title">Dr. Ruby Perrin</span>
+																																																																					Schedule
+																																																																					<span class="noti-title">her appointment</span>
+																																																																				</p>
+																																																																				<p class="noti-time">
+																																																																					<span class="notification-time">4 mins ago</span>
+																																																																				</p>
+																																																																			</div>
+																																																																		</div>
+																																																																	</a>
+																																																																</li>
+																																																																<li class="notification-message">
+																																																																	<a href="#">
+																																																																		<div class="media">
+																																																																			<span class="avatar avatar-sm">
+																																																																				<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/patients/patient1.jpg">
+																																																																			</span>
+																																																																			<div class="media-body">
+																																																																				<p class="noti-details">
+																																																																					<span class="noti-title">Charlene Reed</span>
+																																																																					has booked her appointment to
+																																																																					<span class="noti-title">Dr. Ruby Perrin</span>
+																																																																				</p>
+																																																																				<p class="noti-time">
+																																																																					<span class="notification-time">6 mins ago</span>
+																																																																				</p>
+																																																																			</div>
+																																																																		</div>
+																																																																	</a>
+																																																																</li>
+																																																																<li class="notification-message">
+																																																																	<a href="#">
+																																																																		<div class="media">
+																																																																			<span class="avatar avatar-sm">
+																																																																				<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/patients/patient2.jpg">
+																																																																			</span>
+																																																																			<div class="media-body">
+																																																																				<p class="noti-details">
+																																																																					<span class="noti-title">Travis Trimble</span>
+																																																																					sent a amount of $210 for his
+																																																																					<span class="noti-title">appointment</span>
+																																																																				</p>
+																																																																				<p class="noti-time">
+																																																																					<span class="notification-time">8 mins ago</span>
+																																																																				</p>
+																																																																			</div>
+																																																																		</div>
+																																																																	</a>
+																																																																</li>
+																																																																<li class="notification-message">
+																																																																	<a href="#">
+																																																																		<div class="media">
+																																																																			<span class="avatar avatar-sm">
+																																																																				<img class="avatar-img rounded-circle" alt="User Image" src="assets/img/patients/patient3.jpg">
+																																																																			</span>
+																																																																			<div class="media-body">
+																																																																				<p class="noti-details">
+																																																																					<span class="noti-title">Carl Kelly</span>
+																																																																					send a message
+																																																																					<span class="noti-title">
+																																																																						to his doctor</span>
+																																																																				</p>
+																																																																				<p class="noti-time">
+																																																																					<span class="notification-time">12 mins ago</span>
+																																																																				</p>
+																																																																			</div>
+																																																																		</div>
+																																																																	</a>
+																																																																</li>
+																																																															</ul>
+																																																														</div>
+																																																														<div class="topnav-dropdown-footer">
+																																																															<a href="#">View all Notifications</a>
+																																																														</div>
+																																																													</div>
+																																																												</li> #}
+					<!-- /Notifications -->
+
+						{% if app.user %}
+						<!-- User Menu -->
+							<li class="nav-item dropdown has-arrow"> <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+								<span class="user-img"><img class="rounded-circle" src="{{ asset('admin/assets/img/profiles/avatar-01.jpg')}}" width="31" alt="Ryan Taylor"></span>
+							</a>
+							<div class="dropdown-menu">
+								<div class="user-header">
+									<div class="avatar avatar-sm">
+										<img src="{{asset('admin/assets/img/profiles/avatar-01.jpg')}}" alt="User Image" class="avatar-img rounded-circle">
+									</div>
+									<div class="user-text">
+										<h6>{{app.user.getFullname()}}</h6>
+										<p class="text-muted mb-0">
+											{% if _admin_role in app.user.roles %}
+												Admin
+											{% else %}
+												Invalid role
+											{% endif %}
+										</p>
+									</div>
+								</div>
+								{# <a class="dropdown-item" href="profile.html">My Profile</a>
+								<a class="dropdown-item" href="settings.html">Settings</a> #}
+
+								<a class="dropdown-item" href="{{path('app_admin_account_changePass')}}">Đổi mật khẩu</a>
+								<a class="dropdown-item text-danger font-weight-bold" href="{{path('app_logout')}}">Logout</a>
+							</div>
+						</li>
+						<!-- /User Menu -->
+						{% else %}
+					{% endif %}
+				</ul>
+				<!-- /Header Right Menu -->
+
+			</div>
+			<!-- /Header -->
+
+			<!-- Sidebar -->
+			<div class="sidebar" id="sidebar">
+				<div class="sidebar-inner slimscroll">
+					<div id="sidebar-menu" class="sidebar-menu">
+						<ul>
+							<li class="menu-title">
+								<span>Menu chức năng</span>
+							</li>
+							<li>
+								<a href="{{path('app_admin_dashboard')}}" class="{{ app.request.attributes.get('_route') == 'app_admin_dashboard' ? 'activeA' : '' }}">
+									<i class="fe fe-home"></i>
+									<span>Dashboard</span>
+								</a>
+							</li>
+
+							{# Appointment #}
+							<li class="submenu">
+								<a href="#" class="{{ app.request.uri matches '/\\/admin\\/schedule_work/' ? 'activeA' : '' }}">
+									<i class="fe fe-user-plus"></i>
+									<span>Lịch khám bác sĩ</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul style="display: none;">
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_schedule_work_index' ? 'active' : '' }}" href="{{path('app_schedule_work_index')}}">Danh sách Lịch khám</a>
+									</li>
+
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_create_schedule' ? 'active' : '' }}" href="{{path('app_create_schedule')}}">Tạo mới Lịch khám</a>
+									</li>
+
+								</ul>
+							</li>
+
+							{# Specialty #}
+							<li class="{{ app.request.uri matches '/\\/admin\\/specialty/' ? 'active' : '' }}">
+								<a href="{{path('app_specialty_index')}}">
+									<i class="fe fe-users"></i>
+									<span>Chuyên khoa</span>
+								</a>
+							</li>
+
+							{# Doctor #}
+							<li class="submenu">
+								<a href="#" class=" {{ app.request.uri matches '/\\/admin\\/doctor/' ? 'activeA' : '' }}">
+									<i class="fe fe-user-plus"></i>
+									<span>Bác sĩ</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul style="display: none;">
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_doctor_index' ? 'active' : '' }}" href="{{path('app_doctor_index')}}">Danh sách Bác sĩ</a>
+									</li>
+
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_doctor_new' ? 'active' : '' }}" href="{{path('app_doctor_new')}}">Tạo mới Bác sĩ</a>
+									</li>
+
+								</ul>
+							</li>
+
+							{# Patient #}
+							<li class="submenu">
+								<a href="#" class=" {{ app.request.uri matches '/\\/admin\\/patient/' ? 'activeA' : '' }}">
+									<i class="fe fe-user"></i>
+									<span>Bệnh nhân</span>
+									<span class="menu-arrow"></span>
+								</a>
+								<ul style="display: none;">
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_admin_patient' ? 'active' : '' }}" href="{{path('app_admin_patient')}}">Danh sách Bệnh nhân</a>
+									</li>
+
+									<li>
+										<a class="{{ app.request.attributes.get('_route') == 'app_admin_patient_new' ? 'active' : '' }}" href="{{path('app_admin_patient_new')}}">Tạo mới Bệnh nhân</a>
+									</li>
+								</ul>
+							</li>
+
+							<li>
+								<a href="{{path('app_admin_appointment')}}" class="{{ app.request.attributes.get('_route') == 'app_admin_appointment' ? 'activeA' : '' }}">
+									<i class="fe fe-activity"></i>
+									<span>Cuộc hẹn</span>
+								</a>
+							</li>
+
+							<li class="mt-5">
+								<a class=" bg-warning text-danger font-weight-bold" href="{{path('app_logout')}}">
+									<i class="fa fa-sign-out" aria-hidden="true"></i>
+									<span>Logout</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Sidebar -->
+
+			{% block body %}{% endblock %}
+
+		</div>
+		<!-- /Main Wrapper -->
+
+
+		<!-- jQuery -->
+		<script src="{{asset('admin/assets/js/jquery-3.2.1.min.js')}}"></script>
+
+		<!-- Bootstrap Core JS -->
+		<script src="{{asset('admin/assets/js/popper.min.js')}}"></script>
+		<script src="{{asset('admin/assets/js/bootstrap.min.js')}}"></script>
+
+		<!-- Slimscroll JS -->
+		<script src="{{asset('admin/assets/plugins/slimscroll/jquery.slimscroll.min.js')}}"></script>
+
+		<!-- Sweealeart 2 -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<!-- Datatables JS -->
+		<script src="{{asset('admin/assets/plugins/datatables/jquery.dataTables.min.js')}}"></script>
+		<script src="{{asset('admin/assets/plugins/datatables/datatables.min.js')}}"></script>
+
+		<!-- My Custom JS -->
+		{% block JSCustom %}{% endblock %}
+
+		<!-- Custom JS sys-->
+		<script src="{{asset('admin/assets/js/script.js')}}"></script>
+	</body>
+</html>

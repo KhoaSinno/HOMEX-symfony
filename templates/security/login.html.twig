@@ -1,0 +1,108 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Log in!
+{% endblock %}
+
+{% block body %}
+	<!-- Login Tab Content -->
+	<div class="account-content">
+		<div class="row align-items-center justify-content-center">
+			<div class="col-md-7 col-lg-6 login-left">
+				<img src="{{asset('customer/assets/img/login-banner.png')}}" class="img-fluid" alt="Doccure Login">
+			</div>
+			<div class="col-md-12 col-lg-6 login-right">
+				<div class="login-header">
+					<h3 class="text-center">Đăng nhập tài khoản
+					</h3>
+				</div>
+				<form method="post">
+					{% if error %}
+						<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					{% endif %}
+
+					{# Test mode dev #}
+					{% if app.user %}
+						<div class="mb-3">
+							You are logged in as
+							{{ app.user.userIdentifier }},
+							<a href="{{ path('app_logout') }}">Logout</a>
+						</div>
+					{% endif %}
+
+					<div class="form-group form-focus">
+						<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control floating" autocomplete="email" required autofocus>
+						<label for="username" class="focus-label">Email</label>
+					</div>
+					<div class="form-group form-focus">
+						<input type="password" name="_password" id="password" class="form-control floating" autocomplete="current-password" required>
+						<label for="password" class="focus-label">Password</label>
+					</div>
+					<div class="text-right">
+						<a class="forgot-link" href="forgot-password.html">Quên mật khẩu?</a>
+					</div>
+					<button class="btn btn-primary btn-block btn-lg login-btn" type="submit">Đăng nhập</button>
+					<div class="login-or">
+						<span class="or-line"></span>
+						<span class="span-or">Hoặc</span>
+					</div>
+					<div class="row form-row social-login">
+						<div class="col-6">
+							<a href="#" class="btn btn-facebook btn-block">
+								<i class="fab fa-facebook-f mr-1"></i>
+								Đăng nhập</a>
+						</div>
+						<div class="col-6">
+							<a href="{{ path('connect_google_start') }}" class="btn btn-google btn-block">
+								<i class="fab fa-google mr-1"></i>
+								Đăng nhập</a>
+						</div>
+					</div>
+					<div class="text-center dont-have">Ban chưa có tài khoản?
+						<a href="{{path('app_logout')}}">Đăng ký</a>
+					</div>
+                    {# csrf #}
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /Login Tab Content -->
+
+	{# <form method="post">
+		{% if error %}
+			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+		{% endif %}
+
+		{% if app.user %}
+			<div class="mb-3">
+				You are logged in as
+				{{ app.user.userIdentifier }},
+				<a href="{{ path('app_logout') }}">Logout</a>
+			</div>
+		{% endif %}
+
+
+		<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+		<label for="username">Email</label>
+		<input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+		<label for="password">Password</label>
+		<input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+
+		<input
+		type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+		
+						            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+						            See https://symfony.com/doc/current/security/remember_me.html
+						
+						            <div class="checkbox mb-3">
+						                <input type="checkbox" name="_remember_me" id="_remember_me">
+						                <label for="_remember_me">Remember me</label>
+						            </div>
+						        
+
+		<button class="btn btn-lg btn-primary" type="submit">
+			Sign in
+		</button>
+	</form> #}
+{% endblock %}

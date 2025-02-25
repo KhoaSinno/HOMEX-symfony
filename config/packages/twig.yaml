@@ -1,0 +1,9 @@
+twig:
+    file_name_pattern: '*.twig'
+    globals:
+        _admin_role: 'ROLE_ADMIN'
+        _doctor_role: 'ROLE_DOCTOR'
+        _patient_role: 'ROLE_PATIENT'
+when@test:
+    twig:
+        strict_variables: true

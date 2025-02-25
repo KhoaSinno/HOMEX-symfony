@@ -1,0 +1,374 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Specialty list
+{% endblock %}
+
+{% block body %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">Chuyên khoa</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Chuyên khoa</li>
+						</ul>
+					</div>
+					<div class="col-sm-5 col">
+						<a href="#Add_Specialities_details" data-toggle="modal" class="btn btn-primary float-right mt-2">Thêm mới</a>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>Mã</th>
+											<th>Tên</th>
+											<th>Số phòng</th>
+											<th class="text-right"></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for specialty in specialties %}
+											<tr>
+												<td>{{ specialty.id }}</td>
+
+												<td>
+													<h2 class="table-avatar">
+														<a href="profile.html" class="avatar avatar-sm mr-2">
+															<img class="avatar-img" src="{{ specialty.image ? asset('uploads/specialty/' ~ specialty.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ specialty.name }}">
+														</a>
+														<a href="profile.html">{{ specialty.name }}</a>
+													</h2>
+												</td>
+
+												<td>{{ specialty.clinicNumber }}</td>
+
+												<td class="text-center">
+													<div class="actions">
+														<a class="btn btn-sm bg-success-light" data-toggle="modal" data-target="#edit_specialities_details_{{ specialty.id }}">
+															<i class="fe fe-pencil"></i>
+															Sửa
+														</a>
+														<a data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light"
+														data-target="#delete_modal_{{ specialty.id }}">
+															<i class="fe fe-trash"></i>
+															Xóa
+														</a>
+													</div>
+												</td>
+											</tr>
+										{% else %}
+											<tr>
+												<td class="text-center" colspan="4">Chưa có dữ liệu</td>
+											</tr>
+										{% endfor %}
+
+									</tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Page Wrapper -->
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="Add_Specialities_details" aria-hidden="true" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Add Specialities</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{{ form_start(addForm, {'action': path('app_specialty_new'), 'method': 'POST', 'attr': {'novalidate': 'novalidate', 'id': 'addSpecialtyForm','class': 'ajax-form'}}) }}
+
+				<div class="row form-row">
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{{ form_label(addForm.name) }}
+							{{ form_widget(addForm.name) }}
+							{{ form_errors(addForm.name) }}
+							<div id="nameError" class="invalid-feedback" style="display:none;"></div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{{ form_label(addForm.image) }}
+							{{ form_widget(addForm.image, {'attr': {'onchange': 'previewImage(event)','data-preview-id': 'imagePreview-create'}}) }}
+							<small class="form-text text-muted">Chỉ chấp nhận file ảnh JPEG hoặc PNG, kích thước tối đa 2MB.</small>
+							<div id="imageError" class="invalid-feedback" style="display:none;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row form-row">
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{{ form_label(addForm.clinicNumber) }}
+							{{ form_widget(addForm.clinicNumber) }}
+							{{ form_errors(addForm.clinicNumber) }}
+							<div id="clinicNumberError" class="invalid-feedback" style="display:none;"></div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-6">
+						<div class="form-group">
+							{# <label>Preview hình ảnh</label> #}
+							<img id="imagePreview-create" src="#" alt="Preview" class="img-fluid d-none" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;"/>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary btn-block">Tạo mới</button>
+				{{ form_end(addForm) }}
+			</div>
+		</div>
+	</div>
+</div></div><!-- /ADD Modal -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+{# $('#addSpecialtyForm').submit(function(e) { #}
+$(document).on('submit', '.ajax-form', function(e) {
+    e.preventDefault(); 
+
+    var form = $(this);
+    var formData = new FormData(this);
+
+    // Reset previous error messages
+    $('.invalid-feedback').text('').hide();
+
+    $.ajax({
+        url: form.attr('action'),
+        type: form.attr('method'),
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: response.message
+            });
+
+			setInterval(function() {
+			window.location.reload();
+			}, 2000);
+
+            // Close modal and reset form
+            $('#Add_Specialities_details').modal('hide');
+            form[0].reset(); // Reset the form after successful submission
+        },
+    	error: function(xhr) {
+			if (xhr.responseJSON && xhr.responseJSON.errors) {
+				let errors = xhr.responseJSON.errors;
+
+				// Xử lý lỗi chi tiết
+				let errorMessages = "";
+				for (const [field, messages] of Object.entries(errors)) {
+					messages.forEach(message => {
+						errorMessages += `${message}<br>`;
+					});
+				}
+
+				// Hiển thị thông báo lỗi chi tiết bằng SweetAlert
+				Swal.fire({
+					icon: 'error',
+					title: errorMessages,
+					//html: errorMessages // Sử dụng html để hỗ trợ xuống dòng
+				});
+			} else if (xhr.responseJSON && xhr.responseJSON.message) {
+				// Thông báo tổng quát nếu không có lỗi chi tiết
+				Swal.fire({
+					icon: 'error',
+					title: 'Có lỗi xảy ra!',
+					text: xhr.responseJSON.message
+				});
+			} else {
+				// Thông báo mặc định nếu không có dữ liệu lỗi
+				Swal.fire({
+					icon: 'error',
+					title: 'Có lỗi xảy ra!',
+					text: 'Không thể xử lý yêu cầu của bạn. Vui lòng thử lại sau!'
+				});
+			}
+		}
+
+    });
+
+    return false;
+});
+
+
+
+</script>
+
+{% for specialty in specialties %}
+<!-- Edit Details Modal -->
+<div class="modal fade" id="edit_specialities_details_{{ specialty.id }}" aria-hidden="true" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Cập nhật Chuyên khoa</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{{ form_start(forms[specialty.id], {'attr': {'novalidate': 'novalidate', 'class': 'ajax-form'}}) }}
+					<div class="row form-row">
+						<div class="col-12 col-sm-6">
+							<div class="form-group">
+								{{ form_label(forms[specialty.id].name) }}
+								{{ form_widget(forms[specialty.id].name) }}
+							</div>
+						</div>
+						<div class="col-12 col-sm-6">
+							<div class="form-group">
+								{{ form_label(forms[specialty.id].image) }}
+								{{ form_widget(forms[specialty.id].image, {'attr': {'onchange': 'previewImage(event)','data-preview-id': 'imagePreview-edit-' ~ specialty.id}}) }}
+							</div>
+						</div>
+						<div class="col-12 col-sm-6">
+							<div class="form-group">
+								{{ form_label(forms[specialty.id].clinicNumber) }}
+								{{ form_widget(forms[specialty.id].clinicNumber) }}
+							</div>
+						</div>
+					
+						<div class="col-12 col-sm-6">
+							<div class="form-group">
+								<label>Hình ảnh hiện tại</label>
+									<div class="position-relative" style="display: inline-block; width: 100px;">
+										<img id="imagePreview-edit-{{ specialty.id }}" 
+											src="{{ specialty.image ? asset('uploads/specialty/' ~ specialty.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" 
+											alt="{{ specialty.name }}" 
+											class="img-fluid" 
+											style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;">
+
+								{% if specialty.image %}
+										<button type="button" class="btn btn-danger btn-sm position-absolute" style="top: -5px; right: -5px; border-radius: 50%; padding: 2px 8px;"
+											onclick="deleteImage('{{ specialty.id }}')"
+											data-token="{{ csrf_token('delete_image' ~ specialty.id) }}"
+											data-specialty-id="{{ specialty.id }}">
+											&times;
+										</button>
+								{% endif %}
+									</div>
+
+								{# {% else %}
+									<p>(Trống)</p> #}
+							</div>
+						</div>
+
+
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Cập nhật</button>
+				{{ form_end(forms[specialty.id]) }}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Edit Details Modal -->
+
+<!-- Delete Modal -->
+	<div class="modal fade" id="delete_modal_{{ specialty.id }}" aria-hidden="true" role="dialog"> <div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="form-content p-2 text-center">
+					<h4 class="modal-title">Xóa chuyên khoa</h4>
+					<p class="mb-4">Bạn có chắc muốn xóa không?</p>
+					<!-- Form Xóa -->
+					<form method="post" action="{{ path('app_specialty_delete', {'id': specialty.id}) }}">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ specialty.id) }}">
+						<button type="submit" class="btn btn-primary">Xóa</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function deleteImage(specialtyId) {
+    if (confirm("Bạn có chắc muốn xóa hình ảnh này không?")) {
+        // Lấy token từ data-attribute
+        const token = document.querySelector('[data-specialty-id="'+specialtyId+'"]').getAttribute('data-token');
+        console.log(token); // Kiểm tra token in ra console
+
+		const formData = new FormData();
+		formData.append('_token', token); // Truyền token vào form data
+
+        fetch(`specialty/${specialtyId}/delete-image`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Hình ảnh đã được xóa thành công.");
+                location.reload(); // Reload lại trang hoặc cập nhật giao diện
+            } else {
+                alert("Có lỗi xảy ra khi xóa hình ảnh.");
+            }
+        })
+        .catch(error => {
+            alert("Lỗi kết nối đến máy chủ.");
+            console.error(error);
+        });
+    }
+}
+
+</script>
+{% endfor %}
+<script>
+	function previewImage(event) {
+		const file = event.target.files[0]; // Lấy file từ input
+		const previewId = event.target.getAttribute('data-preview-id'); // Lấy id ảnh preview từ data-attribute
+		const preview = document.getElementById(previewId); // Lấy phần tử ảnh preview
+		if (!preview) {
+			console.error(`Không tìm thấy phần tử có id: ${previewId}`);
+			return; // Thoát nếu không tìm thấy
+		}
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				preview.src = e.target.result; // Hiển thị ảnh preview
+				preview.classList.remove('d-none'); // Hiện ảnh nếu có file
+			};
+			reader.readAsDataURL(file);
+		} else {
+			preview.src = '#'; // Reset ảnh nếu không chọn file
+			preview.classList.add('d-none'); // Ẩn ảnh preview
+		}
+	}
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,139 @@
+{# <div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': path('app_create_schedule'), 
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+			{{ form_row(form.doctor) }}
+			{{ form_row(form.date) }}
+			{{ form_row(form.maxPatient) }}
+			{{ form_row(form.status) }}
+			<p>Status:
+				{{ form.status.vars.value }}</p>
+		
+
+
+			{{ form_row(form.timeSlots) }}
+			<button type="submit">Tạo lịch làm việc</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div> #}
+{# <div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': (schedule_work is defined and schedule_work.id is not null) 
+					? path('app_schedule_work_edit', {'id': schedule_work.id}) 
+					: path('app_create_schedule'),
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+			{{ form_row(form.doctor) }}
+			{{ form_row(form.date) }}
+			{{ form_row(form.maxPatient) }}
+			{{ form_row(form.timeSlots) }}
+			
+			<button type="submit"> {{ schedule_work.id is defined ? 'Cập nhật lịch làm việc' : 'Tạo lịch làm việc' }}</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+</div> #}
+
+<div class="common-form p-4 border rounded shadow-sm bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            {{ form_start(form, {
+                'action': (schedule_work is defined and schedule_work.id is not null) 
+                    ? path('app_schedule_work_edit', {'id': schedule_work.id}) 
+                    : path('app_create_schedule'),
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate', 'data-turbo': 'false'},
+            }) }}
+<div class="row">
+            <!-- Bác sĩ -->
+            <div class="form-group col-md-4">
+                {{ form_label(form.doctor, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+                {{ form_widget(form.doctor, {'attr': {'class': 'form-control'}}) }}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.doctor) }}
+                </div>
+            </div>
+
+            <!-- Ngày làm việc -->
+            <div class="form-group  col-md-4">
+                {{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+                {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.date) }}
+                </div>
+            </div>
+
+            <!-- Số lượng bệnh nhân tối đa -->
+            <div class="form-group col-md-4">
+                {{ form_label(form.maxPatient, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+                {{ form_widget(form.maxPatient, {'attr': {'class': 'form-control', 'min': '1'}}) }}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.maxPatient) }}
+                </div>
+            </div>
+
+			<div class="form-group col-12">
+				{{ form_label(form.status, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+				{{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+				<div class="invalid-feedback d-block">
+					{{ form_errors(form.status) }}
+				</div>
+			</div>
+
+{# 
+            <!-- Chọn khung giờ làm việc -->
+			<div class="form-group">
+				<label class="font-weight-bold">Chọn khung giờ làm việc</label>
+				<div class="time-slot-container">
+					{% for choice in form.timeSlots.vars.choices %}
+						<div class="time-slot-item">
+							<input type="checkbox" id="schedule_work_timeSlots_{{ loop.index0 }}" 
+								name="schedule_work[timeSlots][]" 
+								value="{{ choice.value }}">
+							<label for="schedule_work_timeSlots_{{ loop.index0 }}">{{ choice.label }}</label>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="invalid-feedback d-block">
+					{{ form_errors(form.timeSlots) }}
+				</div>
+			</div> #}
+
+			<!-- Chọn khung giờ làm việc -->
+			<div class="form-group">
+				<label class="font-weight-bold">Chọn khung giờ làm việc</label>
+				<div class="time-slot-container">
+					{% for choice in form.timeSlots.vars.choices %}
+						<div class="time-slot-item">
+							<input type="checkbox" id="schedule_work_timeSlots_{{ loop.index0 }}" 
+								name="schedule_work[timeSlots][]" 
+								value="{{ choice.value }}"
+								{% if choice.value in form.timeSlots.vars.data|default([]) %} checked {% endif %}>
+							<label for="schedule_work_timeSlots_{{ loop.index0 }}">{{ choice.label }}</label>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="invalid-feedback d-block">
+					{{ form_errors(form.timeSlots) }}
+				</div>
+			</div>
+
+			{{ form_row(form._token) }}
+
+            <!-- Nút Submit -->
+            <button type="submit" class="btn btn-primary btn-block">
+                {{ schedule_work.id is defined ? 'Cập nhật lịch làm việc' : 'Tạo lịch làm việc' }}
+            </button>
+</div>
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
+    </div>
+</div>

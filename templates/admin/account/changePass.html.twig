@@ -1,0 +1,99 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}HĐổi mật khẩu
+{% endblock %}
+
+{% block body %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">Đổi mật khẩu</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Đổi mật khẩu</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					<script>
+						document.addEventListener("DOMContentLoaded", function () {
+                        Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: '{{ label }}',
+                        title: '{{ message }}',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        });
+					</script>
+				{% endfor %}
+			{% endfor %}
+
+			<div class="card-body">
+				{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate','data-turbo': 'false'}}) }}
+				<div class="row justify-content-center align-items-center">
+
+					<div class="col-md-12">
+						<div class="form-group">
+							{{ form_label(form.oldPassword, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+							{{ form_widget(form.oldPassword, {'attr': {'class': 'form-control'}}) }}
+							{% if form_errors(form.oldPassword) %}
+								<div class="invalid-feedback d-block">
+									{{ form_errors(form.oldPassword) }}
+								</div>
+							{% endif %}
+
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							{{ form_label(form.newPassword.first, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+							{{ form_widget(form.newPassword.first, {'attr': {'class': 'form-control'}}) }}
+							{# {{ form_errors(form.newPassword.first) }} #}
+							{% if form_errors(form.newPassword.first) %}
+								<div class="invalid-feedback d-block">
+									{{ form_errors(form.newPassword.first) }}
+								</div>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<div class="form-group">
+							{{ form_label(form.newPassword.second, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+							{{ form_widget(form.newPassword.second, {'attr': {'class': 'form-control'}}) }}
+							{{ form_errors(form.newPassword.second) }}
+							{% if form_errors(form.newPassword.second) %}
+								<div class="invalid-feedback d-block">
+									{{ form_errors(form.newPassword.second) }}
+								</div>
+							{% endif %}
+						</div>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Đổi mật khẩu</button>
+
+				</div>
+				{{ form_end(form) }}
+
+
+			</div>
+
+		</div>
+	</div>
+
+
+{% endblock %}

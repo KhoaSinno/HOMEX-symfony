@@ -1,0 +1,154 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Trang chủ
+{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block body %}
+	<!-- Home Banner -->
+	<section class="section section-search">
+		<div class="container-fluid">
+			<div class="banner-wrapper">
+				<div class="banner-header text-center">
+					<h1>Tìm kiếm bác sĩ, Đặt lịch hẹn</h1>
+					<p>Khám phá các bác sĩ, bệnh viện tốt nhất gần bạn trong thành phố.</p>
+				</div>
+
+				<!-- Search -->
+				<div class="search-box">
+					<form action="{{ path('app_search_doctor') }}" method="get">
+						<div class="form-group search-location">
+							<input type="text" name="address" class="form-control" placeholder="Địa chỉ của bạn">
+							<span class="form-text">Vd: Cần Thơ</span>
+						</div>
+						<div class="form-group search-info">
+							<input type="text" name="fullname" class="form-control" placeholder="Tên bác sĩ">
+							<span class="form-text">Vd: Dr. Joh</span>
+						</div>
+						<div class="form-group search-info">
+							<input type="text" name="specialty" class="form-control" placeholder="Chọn khoa muốn tìm">
+							<span class="form-text">Vd: Tim mạch</span>
+						</div>
+						<button type="submit" class="btn btn-primary search-btn">
+							<i class="fas fa-search"></i>
+							<span>Search</span>
+						</button>
+					</form>
+				</div>
+				<!-- /Search -->
+
+
+			</div>
+		</div>
+	</section>
+	<!-- /Home Banner -->
+
+	<!-- Clinic and Specialities -->
+	<section class="section section-specialities">
+		<div class="container-fluid">
+			<div class="section-header text-center">
+				<h2>Phòng khám và Chuyên khoa</h2>
+				<p class="sub-title">Chào mừng bạn đến với hệ thống đặt lịch khám bệnh, nơi cung cấp các dịch vụ y tế đa dạng với các chuyên khoa hàng đầu.</p>
+			</div>
+			<div class="row justify-content-center">
+				<div
+					class="col-md-9">
+					<!-- Slider -->
+					<div class="specialities-slider slider">
+
+						{% for specialty in specialties %}
+
+							<!-- Slider Item -->
+							<div class="speicality-item text-center">
+								<div class="speicality-img">
+									<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{specialty.name}}">
+									<span>
+										<i class="fa fa-circle" aria-hidden="true"></i>
+									</span>
+								</div>
+								<p>{{specialty.name}}</p>
+							</div>
+							<!-- /Slider Item -->
+
+						{% endfor %}
+
+					</div>
+					<!-- /Slider -->
+
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Clinic and Specialities -->
+
+	<!-- Popular Section -->
+	<section class="section section-doctor">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="section-header">
+						<h2>Bác Sĩ Của Chúng Tôi</h2>
+						<p>Chúng tôi mang đến dịch vụ tốt nhất cho sức khỏe của bạn</p>
+					</div>
+					<div class="about-content">
+						<p>Chúng tôi cung cấp dịch vụ đặt lịch khám bệnh trực tuyến, giúp bạn dễ dàng kết nối với các bác sĩ chuyên khoa hàng đầu. Với hệ thống đặt lịch đơn giản, bạn có thể chọn thời gian và bác sĩ phù hợp với nhu cầu của mình một cách nhanh chóng và thuận tiện.</p>
+						<p>Đội ngũ bác sĩ của chúng tôi là những chuyên gia giàu kinh nghiệm trong các lĩnh vực y tế khác nhau. Họ luôn sẵn sàng hỗ trợ và tư vấn cho bạn, giúp bạn có được sự chăm sóc sức khỏe tốt nhất.</p>
+						<a href="{{path('app_search_doctor')}}">Xem Thêm</a>
+					</div>
+
+				</div>
+				<div class="col-lg-8">
+					<div class="doctor-slider slider">
+
+						{% for doctor in doctors %}
+							<!-- Doctor Widget -->
+							<div class="profile-widget">
+								<div class="doc-img">
+									<a href="doctor-profile.html">
+										<img class="img-fluid" alt="User Image" src="{{doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('customer/assets/img/doctors/doctor-01.jpg')}}">
+									</a>
+								</div>
+								<div class="pro-content">
+									<h3 class="title">
+										<a href="doctor-profile.html">{{doctor.fullname}}</a>
+										<i class="fas fa-check-circle verified"></i>
+									</h3>
+									<p class="speciality">{{doctor.specialty ?? 'MBBS, MD - Ophthalmology, DNB - Ophthalmology'}}</p>
+
+									<ul class="available-info">
+										<li>
+											<i class="fas fa-map-marker-alt"></i>
+											{{doctor.address ?? 'Newyork, USA'}}
+										</li>
+										{# <li>
+																					<i class="far fa-clock"></i>
+																					Available on Fri, 22 Mar
+																				</li> #}
+										<li>
+											<i class="far fa-money-bill-alt"></i>
+											{{doctor.consultationFee | currency_vnd}}
+											VNĐ
+											<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
+										</li>
+									</ul>
+									<div class="row row-sm">
+										{# <div class="col-6">
+											<a href="{{path('app_doctor_profile')}}" class="btn view-btn">Xem thông tin</a>
+										</div> #}
+										<div class="col-12">
+											<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}" class="btn book-btn">Đặt ngay</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /Doctor Widget -->
+						{% endfor %}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- /Popular Section -->
+{% endblock %}

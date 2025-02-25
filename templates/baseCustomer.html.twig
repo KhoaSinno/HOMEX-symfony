@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome HOMEX
+			{% endblock %}
+		</title>
+		<link
+		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+		<!-- Favicons -->
+		<link
+		href="{{asset('customer/assets/img/favicon.png')}}" rel="icon">
+		<!-- Bootstrap CSS -->
+		<link
+		rel="stylesheet" href="{{asset('customer/assets/css/bootstrap.min.css')}}">
+
+		<!-- Fontawesome CSS -->
+		<link rel="stylesheet" href="{{asset('customer/assets/plugins/fontawesome/css/fontawesome.min.css')}}">
+		<link
+		rel="stylesheet" href="{{asset('customer/assets/plugins/fontawesome/css/all.min.css')}}">
+
+		<!-- Main CSS -->
+		<link rel="stylesheet" href="{{asset('customer/assets/css/style.css')}}"> {% block styles %}{% endblock %}
+
+		{# My style #}
+		{% block styleCustom %}{% endblock %}
+
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body>
+		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
+		{# {% for message in app.flashes('notice') %}
+																							<div class="notice">
+																								{{ message }}
+																							</div>
+																						{% endfor %} #}
+
+
+		<!-- Main Wrapper -->
+			<div
+			class="main-wrapper"> <!-- Header -->
+			<header class="header">
+				<nav class="navbar navbar-expand-lg header-nav">
+					<div class="navbar-header">
+						<a id="mobile_btn" href="javascript:void(0);">
+							<span class="bar-icon">
+								<span></span>
+								<span></span>
+								<span></span>
+							</span>
+						</a>
+						<a href="{{path('app_home')}}" class="navbar-brand logo">
+							<img src="{{asset('customer/assets/img/logo.png')}}" class="img-fluid" alt="Logo">
+						</a>
+					</div>
+					<div class="main-menu-wrapper">
+						<div class="menu-header">
+							<a href="{{path('app_home')}}" class="menu-logo">
+								<img src="{{asset('customer/assets/img/logo.png')}}" class="img-fluid" alt="Logo">
+							</a>
+							<a id="menu_close" class="menu-close" href="javascript:void(0);">
+								<i class="fas fa-times"></i>
+							</a>
+						</div>
+						<ul class="main-nav">
+							<li class="{% if app.request.get('_route') == 'app_home' %}active{% endif %}">
+								<a href="{{ path('app_home') }}">Home</a>
+							</li>
+
+							<li class="{% if app.request.get('_route') in ['app_admin_dashboard', 'app_doctor_dashboard', 'app_patient_dashboard'] %}active{% endif %}">
+								<a href="
+																																																											{% if app.user %}
+																																																												{% if _admin_role in app.user.roles %}
+																																																													{{ path('app_admin_dashboard') }}
+																																																												{% elseif _doctor_role in app.user.roles %}
+																																																													{{ path('app_doctor_dashboard') }}
+																																																												{% elseif _patient_role in app.user.roles %}
+																																																													{{ path('app_patient_dashboard') }}
+																																																												{% else %}
+																																																													{{ path('app_home') }}
+																																																												{% endif %}
+																																																											{% else %}
+																																																												{{ path('app_home') }}
+																																																											{% endif %}
+																																																										">
+									{% if app.user %}
+										{% if _admin_role in app.user.roles %}
+											Trang quản trị
+										{% elseif _doctor_role in app.user.roles %}
+											Dashboard cá nhân
+										{% elseif _patient_role in app.user.roles %}
+											Thông tin lịch hẹn
+										{% else %}
+											Chưa xác định
+										{% endif %}
+									{% else %}
+										Đăng nhập
+									{% endif %}
+								</a>
+							</li>
+						</ul>
+
+
+					</div>
+					<ul class="nav header-navbar-rht">
+						<li class="nav-item contact-item">
+							<div class="header-contact-img">
+								<i class="far fa-hospital"></i>
+							</div>
+							<div class="header-contact-detail">
+								<p class="contact-header">Liên hệ</p>
+								<p class="contact-info-header">
+									+84 1900 8080</p>
+							</div>
+						</li>
+						{% if app.user %}
+							<!-- User Menu -->
+							<li class="nav-item dropdown has-arrow logged-item">
+								<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+									<span class="user-img">
+
+										{% if app.user.googleId %}
+											<img class="rounded-circle" src="{{app.user.image ? asset(app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+										{% else %}
+											<img class="rounded-circle" src="{{app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+										{% endif %}
+
+
+									</span>
+								</a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<div class="user-header">
+										<div class="avatar avatar-sm">
+											{% if app.user.googleId %}
+												<img class="rounded-circle" src="{{app.user.image ? asset(app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" width="31" alt="User image">
+											{% else %}
+												<img src="{{ app.user.image ? asset('uploads/users/' ~ app.user.GetImage()) : asset('uploads/users/defaultUser.png')}}" alt="User Image" class="avatar-img rounded-circle">
+											{% endif %}
+
+										</div>
+										<div class="user-text">
+											<h6>{{app.user.getEmail()}}</h6>
+											<p class="text-muted mb-0">
+												{% if _admin_role in app.user.roles %}
+													Admin
+												{% elseif _doctor_role in app.user.roles %}
+													Doctor
+												{% elseif _patient_role in app.user.roles %}
+													Patient
+												{% endif %}
+											</p>
+										</div>
+									</div>
+									{% if _doctor_role in app.user.roles %}
+										<a class="dropdown-item" href="{{ path('app_doctor_dashboard') }}">Dashboard</a>
+									{% elseif _patient_role in app.user.roles %}
+										<a class="dropdown-item" href="{{ path('app_patient_dashboard') }}">Dashboard</a>
+									{% endif %}
+									<a class="dropdown-item" href="{{ path('user_profile_settings') }}">Cài đặt cá nhân</a>
+									<a class="dropdown-item font-weight-bold text-danger" href="{{path('app_logout')}}">Logout</a>
+								</div>
+							</li>
+							<!-- /User Menu -->
+
+						{% else %}
+							<li class="nav-item">
+								<a class="nav-link header-login" href="{{path('app_login')}}">login / Signup
+								</a>
+							</li>
+						{% endif %}
+
+					</ul>
+				</nav>
+			</header>
+			<!-- /Header -->
+
+			{% block body %}{% endblock %}
+
+			<!-- Footer -->
+			<footer
+				class="footer">
+
+				<!-- Footer Top -->
+				<div class="footer-top">
+					<div class="container-fluid">
+						<div class="row">
+							<div
+								class="col-lg-3 col-md-6">
+
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-about">
+									<div class="footer-logo">
+										<img src="{{asset('customer/assets/img/footer-logo.png')}}" alt="logo">
+									</div>
+									<div class="footer-about-content">
+										<p>HOMEX là hệ thống y tế không vì lợi nhuận do Tập đoàn Holino đầu tư phát triển, với tầm nhìn trở thành một hệ thống y tế hàn lâm vươn tầm quốc tế nhằm mang lại chất lượng điều trị xuất sắc và dịch vụ chăm sóc hoàn hảo.
+										</p>
+										<div class="social-icon">
+											<ul>
+												<li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+												<li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<!-- /Footer Widget -->
+
+							</div>
+
+							<div
+								class="col-lg-3 col-md-6">
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-menu">
+									<h2 class="footer-title">Chính Sách & Hỗ Trợ</h2>
+									<ul>
+										<li><a href="privacy-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách bảo mật</a></li>
+										<li><a href="terms.html"><i class="fas fa-angle-double-right"></i>Điều khoản sử dụng</a></li>
+										<li><a href="refund-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách hoàn tiền</a></li>
+										<li><a href="faq.html"><i class="fas fa-angle-double-right"></i>Câu hỏi thường gặp</a></li>
+										<li><a href="contact.html"><i class="fas fa-angle-double-right"></i>Liên hệ hỗ trợ</a></li>
+									</ul>
+								</div>
+								<!-- /Footer Widget -->
+							</div>
+
+							<div
+								class="col-lg-3 col-md-6">
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-menu">
+									<h2 class="footer-title">Thông Tin & Điều Khoản</h2>
+									<ul>
+										<li><a href="about.html"><i class="fas fa-angle-double-right"></i>Giới thiệu về chúng tôi</a></li>
+										<li><a href="data-protection.html"><i class="fas fa-angle-double-right"></i>Bảo vệ dữ liệu cá nhân</a></li>
+										<li><a href="service-policy.html"><i class="fas fa-angle-double-right"></i>Chính sách dịch vụ</a></li>
+										<li><a href="partnership.html"><i class="fas fa-angle-double-right"></i>Hợp tác với chúng tôi</a></li>
+										<li><a href="support.html"><i class="fas fa-angle-double-right"></i>Trung tâm trợ giúp</a></li>
+									</ul>
+								</div>
+								<!-- /Footer Widget -->
+							</div>
+
+
+							<div
+								class="col-lg-3 col-md-6">
+
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-contact">
+									<h2 class="footer-title">Liên Hệ</h2>
+									<div class="footer-contact-info">
+										<div class="footer-address">
+											<span>
+												<i class="fas fa-map-marker-alt"></i>
+											</span>
+											<p>
+												256 Nguyễn Văn Cừ, Ninh Kiều, Cần Thơ
+											</p>
+										</div>
+										<p>
+											<i class="fas fa-phone-alt"></i>
+											+1 315 369 5943
+										</p>
+										<p class="mb-0">
+											<i class="fas fa-envelope"></i>
+											doccure@example.com
+										</p>
+									</div>
+								</div>
+								<!-- /Footer Widget -->
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<!-- /Footer Top -->
+
+				<!-- Footer Bottom -->
+				<div class="footer-bottom">
+					<div
+						class="container-fluid">
+
+						<!-- Copyright -->
+						<div class="copyright">
+							<div class="row">
+								<div class="col-md-6 col-lg-6">
+									<div class="copyright-text">
+										<p class="mb-0">
+											<a href="#">
+												HTTT2211026 | Nguyễn Trần Anh Khoa</a>
+										</p>
+									</div>
+								</div>
+								<div
+									class="col-md-6 col-lg-6">
+
+									<!-- Copyright Menu -->
+									<div class="copyright-menu">
+										<ul class="policy-menu">
+											<li>
+												<a href="term-condition.html">Điều khoản và Điều kiện</a>
+											</li>
+											<li>
+												<a href="privacy-policy.html">Chính sách bảo mật</a>
+											</li>
+										</ul>
+									</div>
+									<!-- /Copyright Menu -->
+
+								</div>
+							</div>
+						</div>
+						<!-- /Copyright -->
+
+					</div>
+				</div>
+				<!-- /Footer Bottom -->
+
+			</footer>
+			<!-- /Footer -->
+
+		</div>
+		<!-- /Main Wrapper -->
+
+		<!-- jQuery -->
+		<script src="{{asset('customer/assets/js/jquery.min.js')}}"></script>
+
+		<!-- Bootstrap Core JS -->
+		<script src="{{asset('customer/assets/js/popper.min.js')}}"></script>
+		<script src="{{asset('customer/assets/js/bootstrap.min.js')}}"></script>
+
+		<!-- Slick JS -->
+		<script src="{{asset('customer/assets/js/slick.js')}}"></script>
+
+		<!-- Sticky Sidebar JS -->
+		<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"></script>
+		<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js')}}"></script>
+
+		{# Sweat Alert #}
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<!-- My: Custom JS -->
+		{% block JSCustom %}{% endblock %}
+
+		<!-- Custom JS -->
+		<script src="{{asset('customer/assets/js/script.js')}}"></script>
+
+	</body>
+</html>

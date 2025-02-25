@@ -1,0 +1,201 @@
+{# {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }} #}
+
+<div class="common-form">
+	<div class="row">
+		<div class="col-sm">
+			{{ form_start(form, {
+                'action': (appointment is defined and appointment.id is not null) 
+					? path('app_admin_appointment_edit', {'id': appointment.id}) 
+					: path('app_admin_appointment_new'),
+                'method': 'POST',
+                'attr': {'novalidate': 'novalidate'}
+            }) }}
+			{# THông tin bệnh nhân #}
+			<div
+				class="row">
+				{# Bệnh nhân #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.patient, 'Bệnh nhân') }}
+					{{ form_widget(form.patient, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patient) }}</div>
+				</div>
+
+				{# Bác sĩ #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.doctor, 'Bác sĩ') }}
+					{{ form_widget(form.doctor, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.doctor) }}</div>
+				</div>
+			</div>
+
+			<div
+				class="row">
+				{# Ngày và giờ hẹn #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.appointmentDate, 'Ngày hẹn') }}
+					{{ form_widget(form.appointmentDate, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.appointmentDate) }}</div>
+				</div>
+
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.appointmentTime, 'Giờ hẹn') }}
+					{{ form_widget(form.appointmentTime, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.appointmentTime) }}</div>
+				</div>
+			</div>
+
+			<div
+				class="row">
+				{# Trạng thái và giá #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.status, 'Trạng thái') }}
+					{{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.status) }}</div>
+				</div>
+
+
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.price) }}
+					<div class="input-group-append">
+						{{ form_widget(form.price) }}
+						<span class="input-group-text" id="basic-addon2">VNĐ</span>
+					</div>
+					<div class="valid-feedback">
+						{{ form_errors(form.price) }}
+					</div>
+				</div>
+
+
+				{# <div class="col-md-6 mb-3">
+					{{ form_label(form.price, 'Giá tiền') }}
+					{{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.price) }}</div>
+				</div> #}
+			</div>
+
+			<div
+				class="row">
+				{# Lý do khám & Ghi chú #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.reason, 'Lý do khám') }}
+					{{ form_widget(form.reason, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.reason) }}</div>
+				</div>
+
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.note, 'Ghi chú') }}
+					{{ form_widget(form.note, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.note) }}</div>
+				</div>
+			</div>
+
+			<div
+				class="row">
+				{# Kết quả & Trạng thái kết quả #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.result, 'Kết quả') }}
+					{{ form_widget(form.result, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.result) }}</div>
+				</div>
+
+			</div>
+
+			<div
+				class="row">
+				{# Thông tin bệnh nhân #}
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientFullname, 'Tên bệnh nhân') }}
+					{{ form_widget(form.patientFullname, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientFullname) }}</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientDateOfBirth, 'Ngày sinh') }}
+					{{ form_widget(form.patientDateOfBirth, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientDateOfBirth) }}</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientGender, 'Giới tính') }}
+					{{ form_widget(form.patientGender, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientGender) }}</div>
+				</div>
+			</div>
+
+			<div
+				class="row">
+				{# Thông tin liên hệ của bệnh nhân #}
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientPhoneNumber, 'Số điện thoại') }}
+					{{ form_widget(form.patientPhoneNumber, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientPhoneNumber) }}</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientEmail, 'Email') }}
+					{{ form_widget(form.patientEmail, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientEmail) }}</div>
+				</div>
+
+				<div class="col-md-4 mb-3">
+					{{ form_label(form.patientAddress, 'Địa chỉ') }}
+					{{ form_widget(form.patientAddress, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.patientAddress) }}</div>
+				</div>
+			</div>
+
+			<div
+				class="row">
+				{# Trạng thái thanh toán #}
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.paymentStatus, 'Trạng thái thanh toán') }}
+					{{ form_widget(form.paymentStatus, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.paymentStatus) }}</div>
+				</div>
+
+				<div class="col-md-6 mb-3">
+					{{ form_label(form.forWho, 'Người khám') }}
+					{{ form_widget(form.forWho, {'attr': {'class': 'form-control'}}) }}
+					<div class="invalid-feedback">{{ form_errors(form.forWho) }}</div>
+				</div>
+			</div>
+
+			{# Nút submit #}
+			<div class="text-center mt-4">
+				<button class="btn btn-primary" type="submit">
+					{{(appointment is defined and appointment.id is not null) 
+					? 'Cập nhật lịch hẹn' : 'Tạo lịch hẹn'}}</button>
+			</div>
+			{{ form_end(form) }}
+		</div>
+	</div>
+
+
+	{# <div class="form-row">
+											<div class="col-md-4 mb-3">
+												{{ form_label(form.specialty) }}
+												<div class="input-group">
+													<div class="input-group-prepend">
+														<span class="input-group-text" id="inputGroupPrepend">
+															<i class="fa fa-briefcase" aria-hidden="true"></i>
+														</span>
+													</div>
+													{{ form_widget(form.specialty) }}
+													{{ form_errors(form.specialty) }}
+												</div>
+											</div>
+						
+											<div class="col-md-4 mb-3">
+												{{ form_label(form.consultationFee) }}
+												<div class="input-group-append">
+													{{ form_widget(form.consultationFee) }}
+													<span class="input-group-text" id="basic-addon2">VNĐ</span>
+												</div>
+												<div class="valid-feedback">
+													{{ form_errors(form.consultationFee) }}
+												</div>
+											</div>
+										</div> #}

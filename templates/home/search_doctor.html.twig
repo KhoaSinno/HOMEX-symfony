@@ -1,0 +1,188 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Tìm kiếm bác sĩ
+{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block body %}
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-bar">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-8 col-12">
+					<nav aria-label="breadcrumb" class="page-breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path('app_home')}}">Trang chủ</a>
+							</li>
+							<li class="breadcrumb-item active" aria-current="page">Tìm kiếm</li>
+						</ol>
+					</nav>
+					<h3 class="breadcrumb-title">
+						{{ count }}
+						kết quả được tìm thấy cho:
+						{{ (search_specialty is iterable ? search_specialty|join(', ') : search_specialty)|capitalize|default('Tất cả chuyên khoa') }}
+						tại
+						{{ search_address|capitalize|default('Tất cả địa điểm') }}
+					</h3>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- /Breadcrumb -->
+
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
+
+			<div class="row">
+				<div
+					class="col-md-12 col-lg-4 col-xl-3 theiaStickySidebar">
+
+					<!-- Search Filter -->
+					<div class="card search-filter">
+						<div class="card-header">
+							<h4 class="card-title mb-0">Bộ lọc tìm kiếm</h4>
+						</div>
+						<div class="card-body">
+							<form method="GET" action="{{ path('app_search_doctor') }}">
+
+								<div class="filter-widget">
+									<div class="cal-icon">
+										<input type="text" class="form-control datetimepicker" name="date" placeholder="Chọn ngày" value="{{ selected_date|default('') }}">
+									</div>
+								</div>
+
+								<div class="filter-widget">
+									<h4>Giới tính</h4>
+									<div>
+										<label class="custom_check">
+											<input type="checkbox" name="gender_type[]" value="male" {{ 'male' in app.request.get('gender_type', []) ? 'checked' : '' }}>
+											<span class="checkmark"></span>
+											Nam
+										</label>
+									</div>
+									<div>
+										<label class="custom_check">
+											<input type="checkbox" name="gender_type[]" value="female" {{ 'female' in app.request.get('gender_type', []) ? 'checked' : '' }}>
+											<span class="checkmark"></span>
+											Nữ
+										</label>
+									</div>
+								</div>
+
+								<div class="filter-widget">
+									<h4>Chuyên khoa</h4>
+									{% set selected_specialists = app.request.get('select_specialist', []) %}
+									{% for specialist in ['Urology', 'Neurology', 'Dentist', 'Orthopedic', 'Cardiologist'] %}
+										<div>
+											<label class="custom_check">
+												<input type="checkbox" name="select_specialist[]" value="{{ specialist }}" {{ specialist in selected_specialists ? 'checked' : '' }}>
+												<span class="checkmark"></span>
+												{{ specialist }}
+											</label>
+										</div>
+									{% endfor %}
+								</div>
+
+								<div class="btn-search">
+									<button type="submit" class="btn btn-block">Tiềm kiếm</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<!-- /Search Filter -->
+
+
+				</div>
+
+				<div class="col-md-12 col-lg-8 col-xl-9">
+
+					{% for doctor in doctors %}
+						<!-- Doctor Widget -->
+						<div class="card">
+							<div class="card-body">
+								<div class="doctor-widget">
+									<div class="doc-info-left">
+										<div class="doctor-img">
+											<a href="{{path('app_doctor_profile', {'id': doctor.id})}}">
+												<img src="{{doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('uploads/users/defaultUser.png') }}" class="img-fluid" alt="User Image">
+
+											</a>
+										</div>
+										<div class="doc-info-cont">
+											<h4 class="doc-name">
+												<a href="{{path('app_doctor_profile', {'id': doctor.id})}}">{{doctor.fullname}}</a>
+											</h4>
+											<p class="doc-speciality">
+												{{doctor.address}}</p>
+											<h5 class="doc-department">
+													<img src="{{ doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
+
+												{{doctor.specialty ?? 'Chưa xác định'}}
+											</h5>
+
+											<div class="clinic-details">
+												<p class="doc-location">
+													<i class="fas fa-map-marker-alt"></i>
+													{{doctor.address}}</p>
+											</div>
+										</div>
+									</div>
+									<div class="doc-info-right">
+										<div class="clini-infos">
+											<ul>
+												<li>
+													<i class="fas fa-map-marker-alt"></i>
+													{{doctor.address ?? 'MDS - Periodontology and Oral Implantology, BDS'}}</li>
+												<li>
+													<i class="far fa-money-bill-alt"></i>
+													{{doctor.consultationFee | currency_vnd}}
+													<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám"></i>
+												</li>
+											</ul>
+										</div>
+										<div
+											class="clinic-booking">
+											{# <a class="view-pro-btn" href="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
+																																													Thông tin BS
+																																												</a> #}
+
+											<a class="apt-btn" href="{{path('app_doctor_profile', {'id': doctor.id})}}">Đặt lịch</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Doctor Widget -->
+
+					{% else %}
+						<p>No doctors found.</p>
+					{% endfor %}
+
+					<div class="load-more text-center">
+						<a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Page Content -->
+{% endblock %}
+
+{% block JSCustom %}
+	<!-- Select2 JS -->
+	<script src="{{asset('customer/assets/plugins/select2/js/select2.min.js')}}"></script>
+
+	<!-- Datetimepicker JS -->
+	<script src="{{asset('customer/assets/js/moment.min.js')}}"></script>
+	<script src="{{asset('customer/assets/js/bootstrap-datetimepicker.min.js')}}"></script>
+
+	<!-- Fancybox JS -->
+	<script src="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.js')}}"></script>
+{% endblock %}

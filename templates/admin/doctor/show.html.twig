@@ -1,0 +1,51 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Thông tin Bác sĩ{% endblock %}
+
+{% block body %}
+    <div class="page-wrapper">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3 class="page-title">Thông tin Bác sĩ</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_doctor_dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active">Thông tin Bác sĩ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="doctor-info">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ asset('uploads/users/' ~ user.image) }}" alt="Ảnh Bác sĩ" class="img-fluid rounded-circle" style="max-width: 100%; height: auto;">
+                    </div>
+                    <div class="col-md-8">
+                        <h4>{{ user.fullname }}</h4>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Số điện thoại:</strong> {{ user.phoneNumber }}</p>
+                        <p><strong>Địa chỉ:</strong> {{ user.address }}</p>
+                        <p><strong>Giới tính:</strong> {{ user.gender }}</p>
+                        <p><strong>Ngày sinh:</strong> {{ user.dateOfBirth|date('d/m/Y') }}</p>
+                        <p><strong>Chuyên khoa:</strong> {{ user.specialty.name }}</p>
+                        <p><strong>Giới thiệu:</strong> {{ user.bio }}</p>
+                        <p><strong>Phí khám:</strong> {{ user.consultationFee | currency_vnd }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="action-links mt-2 text-center">
+                <a href="{{ path('app_doctor_edit', {'id': user.id}) }}" class="btn btn-primary">Chỉnh sửa</a>
+                <a href="{{ path('app_doctor_delete', {'id': user.id}) }}" class="btn btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

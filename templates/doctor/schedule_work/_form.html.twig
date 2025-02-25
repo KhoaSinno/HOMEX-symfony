@@ -1,0 +1,53 @@
+{# {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }} #}
+
+
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+<div class="form-group">
+	{{ form_label(form.maxPatient, 'Số lượng bệnh nhân tối đa', {'label_attr': {'class': 'font-weight-bold'}}) }}
+	{{ form_widget(form.maxPatient, {'attr': {'class': 'form-control', 'placeholder': 'Nhập số bệnh nhân tối đa'}}) }}
+</div>
+
+<div class="form-group  col-md-4">
+	{{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+	{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+	<div class="invalid-feedback d-block">
+		{{ form_errors(form.date) }}
+	</div>
+</div>
+
+{# <div class="form-group">
+	{{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+	{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+</div> #}
+
+
+<div class="form-group">
+	<label class="font-weight-bold required">Chọn khung giờ làm việc</label>
+	<div class="row">
+		{% for choice in form.timeSlots %}
+			<div class="col-md-3 col-sm-4 col-6">
+				<label class="time-slot-card">
+					{{ form_widget(choice, {'attr': {'class': 'd-none'}}) }}
+					<div class="time-slot-content">
+						<span>{{ choice.vars.label }}</span>
+					</div>
+				</label>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+
+<div class="form-group">
+	{{ form_label(form.status, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+	{{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<button type="submit" class="btn btn-primary mt-3">{{ button_label|default('Lưu') }}</button>
+			{{ form_row(form._token) }}
+
+{{ form_end(form, {'render_rest': false}) }}

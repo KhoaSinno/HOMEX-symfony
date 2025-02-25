@@ -1,0 +1,199 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Cuộc hẹn
+{% endblock %}
+
+{% block body %}
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">Cuộc hẹn</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index.html">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Cuộc hẹn</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped table-hover">
+								<tbody>
+									<tr>
+										<th class="bg-primary text-white text-center" colspan="2">Thông tin Cuộc hẹn</th>
+									</tr>
+									<tr>
+										<th class="bg-light">Mã cuộc hẹn</th>
+										<td>{{ appointment.id }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Ngày hẹn</th>
+										<td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Giờ hẹn</th>
+										<td>{{ appointment.appointmentTime }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Ghi chú</th>
+										<td>{{ appointment.note }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Trạng thái</th>
+										<td>
+											{# <span class="badge badge-{% if appointment.status == 'Đã xác nhận' %}success{% else %}warning{% endif %}">
+												{{ appointment.status | convertAppointStatus }}
+											</span> #}
+												{{ appointment.status | status_badge }}
+										</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Giá tiền</th>
+										<td>{{ appointment.price  | currency_vnd}}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Kết quả</th>
+										<td>{{ appointment.result }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Dành cho</th>
+										<td>{{ appointment.forWho | translateForWho }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Lý do</th>
+										<td>{{ appointment.reason }}</td>
+									</tr>
+									<tr>
+										<th class="bg-primary text-white text-center" colspan="2">Thông tin bệnh nhân</th>
+									</tr>
+									<tr>
+										<th class="bg-light">Họ và tên</th>
+										<td>{{ appointment.patientFullname }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Ngày sinh</th>
+										<td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Số điện thoại</th>
+										<td>{{ appointment.patientPhoneNumber }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Địa chỉ</th>
+										<td>{{ appointment.patientAddress }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Giới tính</th>
+										<td>{{ appointment.patientGender }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Email</th>
+										<td>{{ appointment.patientEmail }}</td>
+									</tr>
+									<tr>
+										<th class="bg-light">Trạng thái thanh toán</th>
+										<td>
+											<span class="badge  {{ appointment.paymentStatus | payment_class }} text-white">
+												{{ appointment.paymentStatus | convertPaymentStatus }}
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+	{# <table class="table">
+				        <tbody>
+				            <tr>
+				                <th>Id</th>
+				                <td>{{ appointment.id }}</td>
+				            </tr>
+				            <tr>
+				                <th>AppointmentDate</th>
+				                <td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+				            </tr>
+				            <tr>
+				                <th>AppointmentTime</th>
+				                <td>{{ appointment.appointmentTime }}</td>
+				            </tr>
+				            <tr>
+				                <th>Note</th>
+				                <td>{{ appointment.note }}</td>
+				            </tr>
+				            <tr>
+				                <th>Status</th>
+				                <td>{{ appointment.status }}</td>
+				            </tr>
+				            <tr>
+				                <th>Price</th>
+				                <td>{{ appointment.price }}</td>
+				            </tr>
+				            <tr>
+				                <th>Result</th>
+				                <td>{{ appointment.result }}</td>
+				            </tr>
+				            <tr>
+				                <th>ForWho</th>
+				                <td>{{ appointment.forWho }}</td>
+				            </tr>
+				            <tr>
+				                <th>Reason</th>
+				                <td>{{ appointment.reason }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientFullname</th>
+				                <td>{{ appointment.patientFullname }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientDateOfBirth</th>
+				                <td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientPhoneNumber</th>
+				                <td>{{ appointment.patientPhoneNumber }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientAddress</th>
+				                <td>{{ appointment.patientAddress }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientGender</th>
+				                <td>{{ appointment.patientGender }}</td>
+				            </tr>
+				            <tr>
+				                <th>PatientEmail</th>
+				                <td>{{ appointment.patientEmail }}</td>
+				            </tr>
+				            <tr>
+				                <th>PaymentStatus</th>
+				                <td>{{ appointment.paymentStatus }}</td>
+				            </tr>
+				        </tbody>
+				    </table> #}
+
+	<a href="{{ path('app_admin_appointment') }}">back to list</a>
+
+	<a href="{{ path('app_admin_appointment_edit', {'id': appointment.id}) }}">edit</a>
+
+	{{ include('admin/appointment/_delete_form.html.twig') }}
+{% endblock %}

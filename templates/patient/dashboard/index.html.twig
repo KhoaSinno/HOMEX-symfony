@@ -1,0 +1,215 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Dashboard Bệnh nhân
+{% endblock %}
+
+{% block body %}
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-bar">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-12 col-12">
+					<nav aria-label="breadcrumb" class="page-breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="index-2.html">Trang chủ</a>
+							</li>
+							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+						</ol>
+					</nav>
+					<h2 class="breadcrumb-title">Dashboard</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Breadcrumb -->
+
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
+
+			<div
+				class="row">
+
+				<!-- Profile Sidebar -->
+				<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+					{{ include('_sidebar.html.twig') }}
+				</div>
+				<!-- / Profile Sidebar -->
+
+				<div class="col-md-7 col-lg-8 col-xl-9">
+					<div class="card">
+						<div
+							class="card-body pt-0">
+
+							<!-- Tab Menu -->
+							<nav class="user-tabs mb-4">
+								<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+									<li class="nav-item">
+										<a class="nav-link active" href="#pat_appointments" data-toggle="tab">Các lịch hẹn</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="#pat_billing" data-toggle="tab">Hóa đơn</a>
+									</li>
+								</ul>
+							</nav>
+							<!-- /Tab Menu -->
+
+							<!-- Tab Content -->
+							<div
+								class="tab-content pt-0">
+
+								<!-- Appointment Tab -->
+								<div id="pat_appointments" class="tab-pane fade show active">
+									<div class="card card-table mb-0">
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="table table-hover table-center mb-0">
+													<thead>
+														<tr>
+															<th>Bác sĩ</th>
+															<th>Ngày khám</th>
+															<th>Tổng tiền</th>
+															<th>TT lịch hẹn</th>
+															<th>TT thanh toán</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														{% if pendingAppointments is not empty %}
+
+															{% for ap in pendingAppointments %}
+
+																<tr>
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}" class="avatar avatar-sm mr-2">
+																				<img class="avatar-img rounded-circle" src="{{ap.doctor.image ? asset('uploads/users/' ~ ap.doctor.image) : asset('uploads/users/userDefault.png') }}" alt="User Image">
+																			</a>
+																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}">{{ap.doctor.fullname}}
+																				<span>{{ap.doctor.specialty.name}}</span>
+																			</a>
+																		</h2>
+																	</td>
+																	<td>{{ap.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{ap.appointmentTime}}</span>
+																	</td>
+																	<td>{{ap.price | currency_vnd}}</td>
+																	<td>
+																		{{ap.status | status_badge}}
+																	</td>
+																	<td>
+																		{{ap.paymentStatus | payment_badge}}
+																	</td>
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+																				<i class="fas fa-print"></i>
+																				In
+																			</a>
+																			<a href="{{path('app_appointment_show', {'id': ap.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
+														{% else %}
+															<td colspan="7" class="text-center">Không có lịch hẹn nào</td>
+														{% endif %}
+
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Appointment Tab -->
+
+								<!-- Billing Tab -->
+								<div id="pat_billing" class="tab-pane fade">
+									<div class="card card-table mb-0">
+										<div class="card-body">
+											<div class="table-responsive">
+												<table class="table table-hover table-center mb-0">
+													<thead>
+														<tr>
+															<th>Bác sĩ</th>
+															<th>Ngày khám</th>
+															<th>Tổng tiền</th>
+															<th>TT lịch hẹn</th>
+															<th>TT thanh toán</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														{% if successAppointments is not empty %}
+															{% for ap in successAppointments %}
+
+																<tr>
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}" class="avatar avatar-sm mr-2">
+																				<img class="avatar-img rounded-circle" src="{{ap.doctor.image ? asset('uploads/users/' ~ ap.doctor.image) : asset('uploads/users/userDefault.png') }}" alt="User Image">
+																			</a>
+																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}">{{ap.doctor.fullname}}
+																				<span>{{ap.doctor.specialty.name}}</span>
+																			</a>
+																		</h2>
+																	</td>
+
+																	<td>{{ap.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{ap.appointmentTime}}</span>
+																	</td>
+
+																	<td>{{ap.price | currency_vnd}}</td>
+
+																	<td>
+																		{{ap.status | status_badge}}
+																	</td>
+
+																	<td>
+																		{{ap.paymentStatus | payment_badge}}
+																	</td>
+
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+																				<i class="fas fa-print"></i>
+																				In
+																			</a>
+																			<a href="{{path('app_appointment_show', {'id': ap.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
+														{% else %}
+															<td colspan="7" class="text-center">Không có lịch hẹn nào</td>
+														{% endif %}
+
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Billing Tab -->
+
+							</div>
+							<!-- Tab Content -->
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Page Content -->
+
+{% endblock %}

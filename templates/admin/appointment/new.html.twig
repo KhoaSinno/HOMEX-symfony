@@ -1,0 +1,34 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Tạo cuộc hẹn
+{% endblock %}
+
+{% block body %}
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">Tạo cuộc hẹn</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path('app_admin_dashboard')}}">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Tạo cuộc hẹn</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			{{ include('admin/appointment/_form.html.twig') }}
+
+		</div>
+	</div>
+
+
+{% endblock %}
