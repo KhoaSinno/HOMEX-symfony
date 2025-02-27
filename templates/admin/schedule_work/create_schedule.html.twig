@@ -22,37 +22,15 @@
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
 					</div>
-					{# <div class="col-sm-5 col">
-											<a href="{{ path('app_doctor_new') }}" class="btn btn-primary float-right mt-2">Thêm mới</a>
-										</div> #}
 				</div>
 			</div>
 			<!-- /Page Header -->
-			{# <form method="post" action="{{ path('create_schedule') }}">
-				<label for="doctor_id">Chọn bác sĩ:</label>
-				<select name="doctor_id" id="doctor_id">
-					{% for doctor in doctors %}
-						<option value="{{ doctor.id }}">{{ doctor.fullname }}</option>
-					{% endfor %}
-				</select>
+			<div class="mb-2">
+				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_schedule_work_index')}}">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Trở về</a>
+			</div>
 
-				<label for="date">Ngày khám:</label>
-				<input type="date" name="date" id="date" required>
-
-				<label for="max_patients">Số bệnh nhân tối đa mỗi ca:</label>
-				<input type="number" name="max_patients" id="max_patients" value="1" required>
-
-				<div id="time_slots">
-					{% for slot in time_slots %}
-						<label>
-							<input type="checkbox" name="time_slots[]" value="{{ slot }}">
-							{{ slot }}
-						</label>
-					{% endfor %}
-				</div>
-
-				<button type="submit">Tạo lịch làm việc</button>
-			</form> #}
 			{{ include('admin/schedule_work/_form.html.twig') }}
 
 		</div>

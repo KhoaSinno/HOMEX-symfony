@@ -339,7 +339,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->isDel;
     }
-
+    public function getDel(): bool
+    {
+        return $this->isDel ?? false;
+    }
     public function setDel(?bool $isDel): static
     {
         $this->isDel = $isDel;

@@ -25,15 +25,30 @@ final class AdminDoctorController extends AbstractController
         $this->passHasher = $passHasher;
         $this->imageUploader = $imageUploader;
     }
+    
     #[Route(name: 'app_doctor_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        $doctors = $userRepository->findByRole('ROLE_DOCTOR');
-        // dd($doctors);
+        $doctors = array_filter($userRepository->findByRole('ROLE_DOCTOR'), function($doctor) {
+            return $doctor->getDel() == false || $doctor->getDel() == null;
+        });
+
         return $this->render('admin/doctor/index.html.twig', [
             'doctors' => $doctors,
         ]);
     }
+    #[Route('/listDoctor/Del',name: 'app_doctor_listDel', methods: ['GET'])]
+    public function listDel(UserRepository $userRepository): Response
+    {
+        $doctors = array_filter($userRepository->findByRole('ROLE_DOCTOR'), function($doctor) {
+            return $doctor->getDel() == true;
+        });
+        
+        return $this->render('admin/doctor/listDel.html.twig', [
+            'doctors' => $doctors,
+        ]);
+    }
+
 
     #[Route('/new', name: 'app_doctor_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -55,17 +70,17 @@ final class AdminDoctorController extends AbstractController
             $user->setPassword($this->passHasher->hashPassword($user, $temPass));
 
 
-             /** @var UploadedFile $imageFile */
-             $imageFile = $form->get('image')->getData();
-             $oldImage = $user->getImage();
- 
-             // Xử lý ảnh
-             if ($imageFile) {
-                 $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
-                 if ($newImage) {
-                     $user->setImage($newImage);
-                 }
-             }
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+            $oldImage = $user->getImage();
+
+            // Xử lý ảnh
+            if ($imageFile) {
+                $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                if ($newImage) {
+                    $user->setImage($newImage);
+                }
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -96,18 +111,18 @@ final class AdminDoctorController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-              /** @var UploadedFile $imageFile */
-              $imageFile = $form->get('image')->getData();
-              $oldImage = $user->getImage();
-  
-              // Xử lý ảnh
-              if ($imageFile) {
-                  $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
-                  if ($newImage) {
-                      $user->setImage($newImage);
-                  }
-              }
-              
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+            $oldImage = $user->getImage();
+
+            // Xử lý ảnh
+            if ($imageFile) {
+                $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                if ($newImage) {
+                    $user->setImage($newImage);
+                }
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_doctor_index', [], Response::HTTP_SEE_OTHER);
@@ -119,15 +134,26 @@ final class AdminDoctorController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_doctor_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_doctor_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $user->setDel(true);
-            // $entityManager->remove($user);
+            $entityManager->persist($user);
             $entityManager->flush();
+            $this->addFlash('success', 'Đã cho bác sĩ nghĩ việc!');
+        } else {
+            $this->addFlash('danger', 'Lỗi CSRF, vui lòng thử lại!');
         }
 
         return $this->redirectToRoute('app_doctor_index', [], Response::HTTP_SEE_OTHER);
+
+        // if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
+        //     $user->setDel(true);
+        //     // $entityManager->remove($user);
+        //     $entityManager->flush();
+        // }
+
+        // return $this->redirectToRoute('app_doctor_index', [], Response::HTTP_SEE_OTHER);
     }
 }

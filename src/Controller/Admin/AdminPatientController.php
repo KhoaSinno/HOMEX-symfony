@@ -32,11 +32,24 @@ class AdminPatientController extends AbstractController
     #[Route(name: 'app_admin_patient', methods: ['GET'])]
     public function index(): Response
     {
-        $patients = $this->userRepo->findByRole('ROLE_PATIENT');
+        $patients = array_filter($this->userRepo->findByRole('ROLE_PATIENT'), function ($patient) {
+            return $patient->getDel() == false || $patient->getDel() == null;
+        });
         return $this->render('admin/patient/index.html.twig', [
             'patients' => $patients,
         ]);
     }
+
+    // #[Route('/listPatient/Del', name: 'app_admin_patient_listDel', methods: ['GET'])]
+    // public function listDel(): Response
+    // {
+    //     $patients = array_filter($this->userRepo->findByRole('ROLE_PATIENT'), function ($patient) {
+    //         return $patient->getDel() == true;
+    //     });
+    //     return $this->render('admin/patient/index.html.twig', [
+    //         'patients' => $patients,
+    //     ]);
+    // }
 
     #[Route('/new', name: 'app_admin_patient_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -56,17 +69,17 @@ class AdminPatientController extends AbstractController
             $temPass = "pt" . $user->getPhoneNumber() || "pt" . $user->getDateOfBirth();
             $user->setPassword($this->passHasher->hashPassword($user, $temPass));
 
-              /** @var UploadedFile $imageFile */
-              $imageFile = $form->get('image')->getData();
-              $oldImage = $user->getImage();
-  
-              // Xử lý ảnh
-              if ($imageFile) {
-                  $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
-                  if ($newImage) {
-                      $user->setImage($newImage);
-                  }
-              }
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+            $oldImage = $user->getImage();
+
+            // Xử lý ảnh
+            if ($imageFile) {
+                $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                if ($newImage) {
+                    $user->setImage($newImage);
+                }
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -98,17 +111,17 @@ class AdminPatientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-              /** @var UploadedFile $imageFile */
-              $imageFile = $form->get('image')->getData();
-              $oldImage = $user->getImage();
-  
-              // Xử lý ảnh
-              if ($imageFile) {
-                  $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
-                  if ($newImage) {
-                      $user->setImage($newImage);
-                  }
-              }
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+            $oldImage = $user->getImage();
+
+            // Xử lý ảnh
+            if ($imageFile) {
+                $newImage = $this->imageUploader->uploadImage($imageFile, 'user', $oldImage);
+                if ($newImage) {
+                    $user->setImage($newImage);
+                }
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_admin_patient', [], Response::HTTP_SEE_OTHER);

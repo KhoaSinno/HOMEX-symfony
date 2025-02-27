@@ -29,13 +29,15 @@
 			</div>
 			<!-- Page Header -->
 
+			<div class="mb-2">
+				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_schedule_work_index')}}">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Trở về</a>
+			</div>
+
 			{{ include('admin/schedule_work/_form.html.twig', {'button_label': 'Update'}) }}
 
-			<a class="btn btn-warning btn-sm" href="{{ path('app_schedule_work_index') }}">
-				<i class="fa fa-arrow-left" aria-hidden="true"></i>
-				Trở lại</a>
-
-			{{ include('admin/schedule_work/_delete_form.html.twig') }}
+			{# {{ include('admin/schedule_work/_delete_form.html.twig') }} #}
 		</div>
 	</div>
 

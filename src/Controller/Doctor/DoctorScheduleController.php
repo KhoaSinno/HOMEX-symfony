@@ -39,6 +39,8 @@ final class DoctorScheduleController extends AbstractController
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
             ->getForm();
 

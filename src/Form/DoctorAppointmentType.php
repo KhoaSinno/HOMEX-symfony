@@ -28,11 +28,16 @@ class DoctorAppointmentType extends AbstractType
             ->add('appointmentDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Ngày hẹn',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
             ->add('appointmentTime', null, [
                 'label' => 'Giờ hẹn',
-                'attr' => ['class' => 'form-control']
+                'attr' => [
+                    'class' => 'form-control',
+                    // 'readonly' => true
+                ]
             ])
             ->add('note', TextareaType::class, [
                 'label' => 'Ghi chú',
@@ -42,15 +47,15 @@ class DoctorAppointmentType extends AbstractType
                 'label' => 'Lý do',
                 'attr' => ['class' => 'form-control', 'rows' => 2]
             ])
-            ->add('status', ChoiceType::class, [
-                'label' => 'Trạng thái',
-                'choices' => [
-                    'Chờ xác nhận' => 'pending',
-                    'Đã xác nhận' => 'confirmed',
-                    'Hủy bỏ' => 'cancelled'
-                ],
-                'attr' => ['class' => 'form-control']
-            ])
+            // ->add('status', ChoiceType::class, [
+            //     'label' => 'Trạng thái',
+            //     'choices' => [
+            //         'Chờ xác nhận' => 'pending',
+            //         'Đã xác nhận' => 'confirmed',
+            //         'Hủy bỏ' => 'cancelled'
+            //     ],
+            //     'attr' => ['class' => 'form-control']
+            // ])
             ->add('price', TextType::class, [
                 'label' => 'Giá tiền',
                 'attr' => [
@@ -59,7 +64,7 @@ class DoctorAppointmentType extends AbstractType
                 ]
             ])
             ->add('result', TextareaType::class, [
-                'label' => 'Kết quả',
+                'label' => 'Mô tả kết quả',
                 'attr' => ['class' => 'form-control', 'rows' => 3]
             ])
             ->add('forWho', ChoiceType::class, [
@@ -79,7 +84,9 @@ class DoctorAppointmentType extends AbstractType
             ->add('patientDateOfBirth', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Ngày sinh bệnh nhân',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
             ->add('patientPhoneNumber', null, [
                 'label' => 'Số điện thoại bệnh nhân',
@@ -108,7 +115,7 @@ class DoctorAppointmentType extends AbstractType
                 'required' => true, // Bắt buộc tải lên
                 'attr' => ['class' => 'form-control'],
             ])
-            
+
             // ->add('paymentStatus', ChoiceType::class, [
             //     'label' => 'Trạng thái thanh toán',
             //     'choices' => [
