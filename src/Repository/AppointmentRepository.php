@@ -22,7 +22,7 @@ class AppointmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.patient = :patient')
             ->setParameter('patient', $patient)
-            ->orderBy('a.appointmentDate', 'DESC') 
+            ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -31,11 +31,11 @@ class AppointmentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
             ->andWhere('a.doctor = :doctor')
             ->setParameter('doctor', $doctor)
-            ->orderBy('a.appointmentDate', 'DESC') 
+            ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
     }
-    
+
     public function findInvoices($patient)
     {
         return $this->createQueryBuilder('a')
@@ -50,28 +50,41 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    //    /**
-    //     * @return Appointment[] Returns an array of Appointment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?Appointment
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function countAppointmentsByDoctorAndTime(User $doctor, \DateTime $date, string $timeSlot): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.doctor = :doctor')
+            ->andWhere('a.appointmentDate = :date')
+            ->andWhere('a.appointmentTime = :timeSlot')
+            ->setParameter('doctor', $doctor)
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->setParameter('timeSlot', $timeSlot)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    // Lấy số bệnh nhân đã đặt theo từng khung giờ
+    public function getBookedPatientsByDoctorAndDate(User $doctor, \DateTime $date): array
+    {
+        $query = $this->createQueryBuilder('a')
+            ->select('a.appointmentTime, COUNT(a.id) as bookedCount')
+            ->where('a.doctor = :doctor')
+            ->andWhere('a.appointmentDate = :date')
+            ->groupBy('a.appointmentTime')
+            ->setParameter('doctor', $doctor)
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->getQuery();
+
+        $results = $query->getResult();
+
+        // Chuyển kết quả thành mảng key-value
+        $bookedSlots = [];
+        foreach ($results as $result) {
+            $bookedSlots[$result['appointmentTime']] = (int) $result['bookedCount'];
+        }
+
+        return $bookedSlots;
+    }
 }

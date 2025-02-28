@@ -93,7 +93,7 @@ class AppointmentController extends AbstractController
 
         $appointmentData = [
             'doctorId' => $doctorId,
-            'appointmentDate' => $date->format('Y-m-d'),
+            'appointmentDate' => $date->format('d-m-Y'),
             'appointmentTime' => $timeSlot,
             'patientFullname' => $request->request->get('patientFullname'),
             'patientDateOfBirth' => $request->request->get('patientDateOfBirth'),
@@ -175,7 +175,11 @@ class AppointmentController extends AbstractController
     #[Route('/appointment-success', name: 'appointment_success', methods: ['GET'])]
     public function appointmentSuccess(): Response
     {
-        return $this->render('appointment/success.html.twig');
+        $appointmentSuccess = $this->session->get('appointment_success');
+
+        return $this->render('appointment/success.html.twig', [
+            'appointment' => $appointmentSuccess
+        ]);
     }
 
     // ------------------------------------------------------------------ Test Mail ------------------------------------------------------------------

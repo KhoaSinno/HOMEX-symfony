@@ -2,6 +2,7 @@
 
 namespace App\Controller\Doctor;
 
+use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
 use App\Form\DoctorAppointmentType;
 use App\Repository\AppointmentRepository;
@@ -172,14 +173,84 @@ final class DoctorAppointmentController extends AbstractController
     //     ]);
     // }
 
-    #[Route('/{id}', name: 'app_doctor_appointment_delete', methods: ['POST'])]
-    public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
+
+    #[Route('/show/{id}', name: 'app_doctor_appointment_show')]
+    public function showAppointment(Appointment $appointment): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $appointment->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($appointment);
-            $entityManager->flush();
+        // Kiểm tra nếu không tìm thấy cuộc hẹn
+        if (!$appointment) {
+            throw $this->createNotFoundException('Không tìm thấy cuộc hẹn.');
         }
 
-        return $this->redirectToRoute('app_doctor_appointment', [], Response::HTTP_SEE_OTHER);
+        return $this->render('doctor/dashboard/show_appointment.html.twig', [
+            'appointment' => $appointment,
+        ]);
     }
+
+    #[Route('/{id}/delete', name: 'app_doctor_appointment_delete', methods: ['POST'])]
+    public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isCsrfTokenValid('delete' . $appointment->getId(), $request->getPayload()->getString('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF không hợp lệ!');
+        }
+
+        $dateInput = $appointment->getAppointmentDate()->format('Y-m-d'); // "2025-02-28"
+        $timeSlot = $appointment->getAppointmentTime(); // "7:00-7:30"
+
+        // Lấy giờ bắt đầu
+        $startTime = explode('-', $timeSlot)[0];
+
+        // Xác định múi giờ chung
+        $timezone = new \DateTimeZone("Asia/Ho_Chi_Minh");
+
+        // Tạo thời gian lịch hẹn theo đúng múi giờ
+        try {
+            $appointmentDateTime = new \DateTime("$dateInput $startTime", $timezone);
+        } catch (\Exception $e) {
+            return new Response('Dữ liệu ngày/giờ không hợp lệ', 400);
+        }
+
+        // Lấy thời gian hiện tại cùng múi giờ
+        $now = new \DateTime("now", $timezone);
+
+        // Tính khoảng cách thời gian
+        $interval = $now->diff($appointmentDateTime);
+        $totalMinutes = ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+
+        // Kiểm tra nếu còn dưới 120 phút
+        if ($totalMinutes < 120 && $interval->invert == 1) {
+            $this->addFlash('danger', 'Bạn chỉ có thể hủy lịch hẹn trước 2 giờ.');
+            return $this->redirectToRoute('app_doctor_appointment');
+        }
+
+        // Debug
+        // dump($now, $appointmentDateTime, $interval, $totalMinutes);
+        // die();
+
+
+        // Nếu hợp lệ, hủy lịch
+        $appointment->setStatus(AppointmentConstants::CANCELLED_STATUS);
+        $appointment->setReasonCancel($request->getPayload()->getString('reasonCancel'));
+
+        $entityManager->flush();
+        $this->addFlash('success', 'Lịch hẹn đã được hủy thành công.');
+
+        return $this->redirectToRoute('app_doctor_appointment');
+    }
+
+
+    // #[Route('/{id}/delete', name: 'app_doctor_appointment_delete', methods: ['POST'])]
+    // public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete' . $appointment->getId(), $request->getPayload()->getString('_token'))) {
+    //         $appointment->setStatus(AppointmentConstants::CANCELLED_STATUS);
+    //         $appointment->setReasonCancel($request->getPayload()->getString('reasonCancel'));
+    //         dump($appointment);
+    //         die();
+    //         $entityManager->remove($appointment);
+    //         $entityManager->flush();
+    //     }
+
+    //     return $this->redirectToRoute('app_doctor_appointment', [], Response::HTTP_SEE_OTHER);
+    // }
 }

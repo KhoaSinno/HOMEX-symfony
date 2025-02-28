@@ -35,27 +35,33 @@ class DoctorDashboardController extends AbstractController
         $appointmentsUpcoming = array_filter($appointments, function ($appointment) {
             return $appointment->getAppointmentDate() > new \DateTime();
         });
-       
+
+        $totalAppointments = count($appointments);
+        $totalAppointmentsToday = count($appointmentsToday);
+
+        $totalPatients = count(array_unique(array_map(function ($appointment) {
+            return $appointment->getPatient()->getId();
+        }, $appointments)));
+
+        $totalPatientsToday = count(array_unique(array_map(function ($appointment) {
+            return $appointment->getPatient()->getId();
+        }, $appointmentsToday)));
+
+        $date = new \DateTime();
         return $this->render('doctor/dashboard/index.html.twig', [
             'controller_name' => 'DoctorDashboardController',
             'appointments' => $appointments,
             'appointmentsToday' => $appointmentsToday,
             'appointmentsUpcoming' => $appointmentsUpcoming,
+            'totalAppointments' => $totalAppointments,
+            'totalPatients' => $totalPatients,
+            'totalPatientsToday' => $totalPatientsToday,
+            'totalAppointmentsToday' => $totalAppointmentsToday,
+            'date' => $date,
         ]);
     }
 
-    #[Route('/appointment/show/{id}', name: 'app_doctor_appointment_show')]
-    public function showAppointment(Appointment $appointment): Response
-    {
-        // Kiểm tra nếu không tìm thấy cuộc hẹn
-        if (!$appointment) {
-            throw $this->createNotFoundException('Không tìm thấy cuộc hẹn.');
-        }
     
-        return $this->render('doctor/dashboard/show_appointment.html.twig', [
-            'appointment' => $appointment,
-        ]);
-    }
 
    
 }

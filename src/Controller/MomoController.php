@@ -140,12 +140,14 @@ class MomoController extends AbstractController
             $this->mailService->sendAppointmentConfirmation(
                 $appointmentData['patientEmail'],
                 $user->getFullname(),
-                $appointment->getAppointmentDate()->format('Y-m-d'),
+                $appointment->getAppointmentDate()->format('d-m-Y'),
                 $doctor->getFullName()
             );
 
             // Xóa session sau khi hoàn thành
             $this->session->remove('appointment_data');
+
+            $this->session->set('appointment_success', $appointment);
         } catch (\Throwable $th) {
             throw $th;
         }

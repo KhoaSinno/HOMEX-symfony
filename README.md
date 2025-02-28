@@ -424,3 +424,23 @@ https://test-applinks.momo.vn/payment/v2?action=payWithApp&isScanQR=false&revamp
   "signature" => "7443196e864f75a2e726d52e332607ca322ee1bbf8bb5722d4c5d4c38357e58f"
 ]
 ```
+
+## How to show notice
+
+``` php
+
+{% if app.request.get('_route') == 'app_doctor_appointment' %}
+       {% for label, messages in app.flashes %}
+        {% for message in messages %}
+         <div class="alert alert-{{ label }}">
+          {{ message }}
+         </div>
+        {% endfor %}
+       {% endfor %}
+      {% endif %}
+```
+
+``` php
+            $this->addFlash('danger', 'Bạn chỉ có thể hủy lịch hẹn trước 2 giờ.');
+
+```

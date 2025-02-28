@@ -53,9 +53,9 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Total Patient</h6>
-													<h3>1500</h3>
-													<p class="text-muted">Till Today</p>
+													<h6>Tổng số khách hàng</h6>
+													<h3>{{totalPatients}}</h3>
+													<p class="text-muted">Cho đến nay</p>
 												</div>
 											</div>
 										</div>
@@ -68,9 +68,9 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Today Patient</h6>
-													<h3>160</h3>
-													<p class="text-muted">06, Nov 2019</p>
+													<h6>Số khách hàng hôm nay</h6>
+													<h3>{{totalPatientsToday}}</h3>
+													<p class="text-muted">{{date | date('d-m-Y')}}</p>
 												</div>
 											</div>
 										</div>
@@ -83,9 +83,10 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Appoinments</h6>
-													<h3>85</h3>
-													<p class="text-muted">06, Apr 2019</p>
+													<h6>Số lịch khám hôm nay</h6>
+													<h3>{{totalAppointmentsToday}}</h3>
+													<p class="text-muted">{{date | date('d-m-Y')}}</p>
+
 												</div>
 											</div>
 										</div>
@@ -159,10 +160,11 @@
 																				<i class="fas fa-check"></i>
 																				Duyệt
 																			</a>
-																			<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																			<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ apTo.id }}" data-token="{{ csrf_token('delete' ~ apTo.id) }}">
 																				<i class="fas fa-times"></i>
 																				Hủy
 																			</a>
+
 																		</div>
 																	</td>
 																</tr>
@@ -216,15 +218,17 @@
 																				<i class="far fa-eye"></i>
 																				Chi tiết
 																			</a>
+																			<a href="{{path('app_doctor_appointment_edit', {'id': apUp.id})}}" class="btn btn-sm bg-success-light">
+																				<i class="fas fa-check"></i>
+																				Duyệt
+																			</a>
 
-																			{# <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																																																										<i class="fas fa-check"></i>
-																																																										Duyệt
-																																																									</a> #}
-																			<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																			<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ apUp.id }}" data-token="{{ csrf_token('delete' ~ apUp.id) }}">
 																				<i class="fas fa-times"></i>
 																				Hủy
 																			</a>
+
+
 																		</div>
 																	</td>
 																</tr>
@@ -251,16 +255,89 @@
 
 	</div>
 	<!-- /Page Content -->
+
+
 {% endblock %}
 
 {% block JSCustom %}
-	{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+	{# <!-- jQuery (nếu chưa có) -->
+			<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+			<!-- Bootstrap -->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> #}
 
+	<script>
 
-	<!-- Sticky Sidebar JS --><script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"> </script>
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault(); // Ngăn chặn load lại trang khi click
+
+let appointmentId = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+
+// Hiển thị SweetAlert2 để nhập lý do hủy
+Swal.fire({
+title: "Bạn có chắc muốn hủy lịch hẹn?",
+text: "Vui lòng nhập lý do hủy:",
+icon: "warning",
+input: "text",
+inputPlaceholder: "Nhập lý do hủy...",
+inputAttributes: {
+required: "true"
+},
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xác nhận hủy",
+cancelButtonText: "Thoát",
+preConfirm: (reasonCancel) => {
+if (!reasonCancel) {
+Swal.showValidationMessage("Bạn cần nhập lý do hủy!");
+}
+return reasonCancel;
+}
+}).then((result) => {
+if (result.isConfirmed) {
+let reasonCancel = result.value;
+
+// Tạo form ẩn để gửi request
+let form = document.createElement("form");
+form.method = "post";
+form.action = "/doctor/appointment/" + appointmentId + "/delete";
+
+let methodInput = document.createElement("input");
+methodInput.type = "hidden";
+methodInput.name = "_method";
+methodInput.value = "DELETE";
+
+let tokenInput = document.createElement("input");
+tokenInput.type = "hidden";
+tokenInput.name = "_token";
+tokenInput.value = token;
+
+let reasonInput = document.createElement("input");
+reasonInput.type = "hidden";
+reasonInput.name = "reasonCancel";
+reasonInput.value = reasonCancel;
+
+form.appendChild(methodInput);
+form.appendChild(tokenInput);
+form.appendChild(reasonInput);
+document.body.appendChild(form);
+form.submit();
+}
+});
+});
+});
+});
+	</script>
+
+	<!-- Sticky Sidebar JS -->
+	<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"></script>
 	<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js')}}"></script>
 
 	<!-- Circle Progress JS -->
 	<script src="{{asset('customer/assets/js/circle-progress.min.js')}}"></script>
+
 
 {% endblock %}

@@ -4,10 +4,7 @@
 	Lịch làm việc
 {% endblock %}
 
-{% block styleCustom %}
-
-
-{% endblock %}
+{% block styleCustom %}{% endblock %}
 
 {% block body %}
 	<!-- Main Wrapper -->
@@ -59,102 +56,21 @@
 									</div>
 								</div>
 
-								<div class="card p-4">
+								<div
+									class="card p-4">
 									<!-- Form chọn ngày -->
 									{{ form_start(form, {'method': 'GET'}) }}
-										<div class="form-group col-md-4">
-											{{ form_label(form.date, "Chọn ngày", {'label_attr': {'class': 'font-weight-bold'}}) }}
+									<div class="form-group col-md-4 ">
+										{{ form_label(form.date, "Chọn ngày", {'label_attr': {'class': 'font-weight-bold'}}) }}
+										<div class="d-flex justify-content-center align-items-center">
 											{{ form_widget(form.date, {'attr': {'class': 'form-control schedule-datepicker'}}) }}
 
-											<button type="submit" class="btn btn-primary mt-2">Lọc</button>
+											<button type="submit" class="btn btn-primary ml-3">Lọc</button>
 										</div>
+									</div>
 									{{ form_end(form) }}
 
-									{# {{ form_start(form, {'method': 'GET'}) }}
-									<div class="form-group col-md-4">
-										{{ form_label(form.date, "Chọn ngày", {'label_attr': {'class': 'font-weight-bold'}}) }}
-										{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
 
-										<button type="submit" class="btn btn-primary mt-2">Lọc</button>
-									</div>
-									{{ form_end(form) }} #}
-
-
-									<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
-
-									{% set daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'] %}
-
-									{% for schedule in schedules %}
-										{% set dateObject = (schedule.date|date('U')|date('w'))|number_format(0, '', '') %}
-										{% set dayOfWeek = daysOfWeek[dateObject] %}
-
-										<div id="slot_{{ dateObject }}" class="tab-pane my-4">
-											<h4 class="card-title d-flex justify-content-between">
-												<span>{{ dayOfWeek }} - {{ schedule.date|date('d/m/Y') }}</span>
-											</h4>
-
-											{% if schedule.timeslots is not empty %}
-												<div class="doc-times">
-													{% for slot in schedule.timeslots %}
-														<div class="doc-slot-list" id="schedule_{{ loop.index }}">
-															{{ slot }}
-															<a href="javascript:void(0)" class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
-																<i class="fa fa-times"></i>
-															</a>
-														</div>
-													{% endfor %}
-												</div>
-											{% else %}
-												<p class="text-muted mb-0">Không có lịch hẹn</p>
-											{% endif %}
-										</div>
-
-										<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
-									{% endfor %}
-								</div>
-
-
-								{# <div class="card p-4">
-
-								 <!-- Đây là cách hiển thị ra lịch: Ngày làm việc -->
-									<div class="form-group  col-md-4">
-										{{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-										{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
-										<div class="invalid-feedback d-block">
-											{{ form_errors(form.date) }}
-										</div>
-									</div>
-
-									<form method="GET" id="filterForm">
-										<div class="row justify-content-center align-items-center">
-											<div class="form-group col-3">
-												<label for="month">Chọn tháng:</label>
-												<select id="month" name="month" class="form-control">
-													{% for i in 1..12 %}
-														<option value="{{ i }}" {{ i == currentMonth ? 'selected' : '' }}>Tháng
-															{{ i }}</option>
-													{% endfor %}
-												</select>
-											</div>
-
-											<div class="form-group col-3">
-												<label for="week">Chọn tuần:</label>
-												<select id="week" name="week" class="form-control">
-													{% for i in 1..totalWeeks %}
-														<option value="{{ i }}" {{ i == currentWeek ? 'selected' : '' }}>Tuần
-															{{ i }}</option>
-													{% endfor %}
-												</select>
-											</div>
-
-											<div class="form-group col-3">
-												<label class="text-warning">
-													<i>Thực hiện lọc điều kiện</i>
-												</label>
-												<button type="submit" class="btn btn-primary m-0">Lọc</button>
-											</div>
-										</div>
-									</form>
 									<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
 
 									{% set daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'] %}
@@ -187,10 +103,8 @@
 										</div>
 
 										<span class="d-block w-100 border-bottom" style="border-width: 2px; border-color: #333;"></span>
-
 									{% endfor %}
-
-								</div> #}
+								</div>
 
 
 							</div>
@@ -208,81 +122,77 @@
 
 {% block JSCustom %}
 
-<!-- jQuery (Bắt buộc) -->
-{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+	<!-- Moment.js (Cần thiết cho datetimepicker) --><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"> </script>
 
-<!-- Moment.js (Cần thiết cho datetimepicker) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-
-<!-- Bootstrap Datetimepicker -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+	<!-- Bootstrap Datetimepicker -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 
-<script>
-  $(document).ready(function () {
-    console.log("DOM Loaded, initializing datetimepicker...");
-    
-    // Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
-    moment.updateLocale('vi', {
-        week: { dow: 1 } // dow: 1 => Tuần bắt đầu từ Thứ Hai
-    });
+	<script>
+		$(document).ready(function () {
+console.log("DOM Loaded, initializing datetimepicker...");
 
-    $('.schedule-datepicker').datetimepicker({
-        format: 'YYYY-MM-DD', // Định dạng ngày
-        locale: 'vi', // Tiếng Việt (cần moment.js)
-        showTodayButton: true, // Hiển thị nút "Hôm nay"
-        useCurrent: false, // Không tự động chọn ngày hiện tại
-        sideBySide: true, // Hiển thị giờ/phút cạnh nhau
-        toolbarPlacement: 'top', // Vị trí toolbar
-        showClear: true, // Hiển thị nút "Xóa"
-        showClose: true // Hiển thị nút "Đóng"
-    });
+// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
+moment.updateLocale('vi', {
+week: {
+dow: 1
+} // dow: 1 => Tuần bắt đầu từ Thứ Hai
 });
 
-
-</script>
+$('.schedule-datepicker').datetimepicker({
+format: 'DD-MM-YYYY', // Định dạng ngày
+locale: 'vi', // Tiếng Việt (cần moment.js)
+showTodayButton: true, // Hiển thị nút "Hôm nay"
+useCurrent: false, // Không tự động chọn ngày hiện tại
+sideBySide: true, // Hiển thị giờ/phút cạnh nhau
+toolbarPlacement: 'top', // Vị trí toolbar
+showClear: true, // Hiển thị nút "Xóa"
+showClose: true, // Hiển thị nút "Đóng"
+defaultDate: new Date()
+});
+});
+	</script>
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-		document.querySelectorAll(".delete_schedule").forEach(button => {
-        button.addEventListener("click", function () {
-            let scheduleId = this.getAttribute("data-id");
-            let slot = this.getAttribute("data-slot");
+document.querySelectorAll(".delete_schedule").forEach(button => {
+button.addEventListener("click", function () {
+let scheduleId = this.getAttribute("data-id");
+let slot = this.getAttribute("data-slot");
 
-            Swal.fire({
-                title: "Xác nhận xóa?",
-                text: "Bạn có chắc muốn xóa khung giờ này?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Xóa",
-                cancelButtonText: "Hủy"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/doctor/schedule/delete-slot/${scheduleId}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-Requested-With": "XMLHttpRequest"
-                        },
-                        body: JSON.stringify({ slot: slot })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire("Đã xóa!", "Khung giờ đã được xóa.", "success");
-                            location.reload(); // Hoặc xóa phần tử mà không cần reload
-                        } else {
-                            Swal.fire("Lỗi!", data.message, "error");
-                        }
-                    })
-                    .catch(error => console.error("Lỗi:", error));
-                }
-            });
-        });
-    });
+Swal.fire({
+title: "Xác nhận xóa?",
+text: "Bạn có chắc muốn xóa khung giờ này?",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xóa",
+cancelButtonText: "Hủy"
+}).then((result) => {
+if (result.isConfirmed) {
+fetch (`/doctor/schedule/delete-slot/${scheduleId}`, {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+"X-Requested-With": "XMLHttpRequest"
+},
+body: JSON.stringify(
+{slot: slot}
+)
+}).then(response => response.json()).then(data => {
+if (data.success) {
+Swal.fire("Đã xóa!", "Khung giờ đã được xóa.", "success");
+location.reload(); // Hoặc xóa phần tử mà không cần reload
+} else {
+Swal.fire("Lỗi!", data.message, "error");
+}
+}).catch(error => console.error("Lỗi:", error));
+}
+});
+});
+});
 });
 	</script>
 {% endblock %}

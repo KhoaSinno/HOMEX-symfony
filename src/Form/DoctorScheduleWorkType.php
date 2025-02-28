@@ -21,6 +21,8 @@ class DoctorScheduleWorkType extends AbstractType
             ->add('maxPatient')
             ->add('date', null, [
                 'widget' => 'single_text',
+                'data' => new \DateTime(),
+                'format' => 'dd-MM-yyyy',
             ])
             ->add('timeSlots', ChoiceType::class, [
                 'choices' => array_unique(array_combine($options['time_slots'], $options['time_slots'])), // Loại bỏ trùng
