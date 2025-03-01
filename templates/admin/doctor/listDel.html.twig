@@ -67,9 +67,9 @@
 													</h2>
 												</td>
 
-												<td>{{ doctor.specialty.name ?? 0 }}</td>
+												<td>{{ doctor.specialty.name | specialty_label }}</td>
 												<td>{{ doctor.specialty.clinicNumber ?? 0 }}</td>
-												<td>{{doctor.gender ?? 'Trống'}}</td>
+												<td>{{doctor.gender | gender_label}}</td>
 												<td>{{ doctor.consultationFee is not null ? (doctor.consultationFee | currency_vnd) : 'Trống' }}</td>
 
 

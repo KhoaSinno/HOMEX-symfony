@@ -64,11 +64,18 @@ class ScheduleWork
         return $this->status;
     }
 
-    public function setStatus(ScheduleStatus $status): self
+    public function setStatus(ScheduleStatus|string $status): self
     {
-        $this->status = $status;
+        $this->status = is_string($status) ? ScheduleStatus::from($status) : $status;
         return $this;
     }
+
+
+    // public function setStatus(ScheduleStatus $status): self
+    // {
+    //     $this->status = $status;
+    //     return $this;
+    // }
 
     public function getDoctor(): ?User
     {

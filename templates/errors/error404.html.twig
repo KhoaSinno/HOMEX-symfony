@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Không tìm thấy trang</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 120px;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        p {
+            font-size: 22px;
+            margin-bottom: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff4b2b;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .button:hover {
+            background: #ff2e63;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>404</h1>
+    <p>Oops! Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.</p>
+    <a href="javascript:history.back()" class="button">🔙 Quay lại trang trước</a>
+</body>
+</html>

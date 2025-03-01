@@ -97,10 +97,18 @@
 											<th class="bg-light">Lý do</th>
 											<td>{{ appointment.reason }}</td>
 										</tr>
-										<tr>
-											<th class="bg-light text-warning">Kết quả</th>
-											<td class="font-weight-bold">{{ appointment.result }}</td>
-										</tr>
+										{% if appointment.result %}
+											<tr>
+												<th class="bg-light text-warning">Kết quả</th>
+												<td class="font-weight-bold">{{ appointment.result }}</td>
+											</tr>
+										{% endif %}
+										{% if appointment.reasonCancel %}
+											<tr>
+												<th class="bg-light text-danger">Lý do hủy</th>
+												<td class="font-weight-bold">{{ appointment.reasonCancel }}</td>
+											</tr>
+										{% endif %}
 										<tr>
 											<th class="bg-primary text-white text-center" colspan="2">Thông tin bệnh nhân</th>
 										</tr>

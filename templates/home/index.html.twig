@@ -62,12 +62,12 @@
 							<!-- Slider Item -->
 							<div class="speicality-item text-center">
 								<div class="speicality-img">
-									<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{specialty.name}}">
+									<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{specialty.name | specialty_label}}">
 									<span>
 										<i class="fa fa-circle" aria-hidden="true"></i>
 									</span>
 								</div>
-								<p>{{specialty.name}}</p>
+								<p>{{specialty.name | specialty_label}}</p>
 							</div>
 							<!-- /Slider Item -->
 

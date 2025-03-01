@@ -53,7 +53,7 @@
 							{{ user.dateOfBirth|date('d/m/Y') }}</p>
 						<p>
 							<strong>Chuyên khoa:</strong>
-							{{ user.specialty.name }}</p>
+							{{ user.specialty.name | specialty_label }}</p>
 						<p>
 							<strong>Giới thiệu:</strong>
 							{{ user.bio }}</p>

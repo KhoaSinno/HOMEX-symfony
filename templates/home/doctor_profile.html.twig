@@ -45,7 +45,7 @@
 							<div class="doc-info-cont">
 								<h4 class="doc-name">{{doctor.fullname}}</h4>
 								<p class="doc-speciality">BDS, MDS - Oral & Maxillofacial Surgery</p>
-								<p class="doc-department"><img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">{{doctor.specialty.name ?? 'Chưa biết'}}</p>
+								<p class="doc-department"><img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">{{doctor.specialty.name | specialty_label}}</p>
 
 								<div class="clinic-details">
 									<p class="doc-location">

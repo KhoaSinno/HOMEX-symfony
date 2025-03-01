@@ -50,7 +50,7 @@
 												<td>
 													<h2 class="table-avatar">
 														<a href="profile.html" class="avatar avatar-sm mr-2">
-															<img class="avatar-img" src="{{ specialty.image ? asset('uploads/specialty/' ~ specialty.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ specialty.name }}">
+															<img class="avatar-img" src="{{ specialty.image ? asset('uploads/specialty/' ~ specialty.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ specialty.name | specialty_label }}">
 														</a>
 														<a href="profile.html">{{ specialty.name }}</a>
 													</h2>
@@ -263,7 +263,7 @@ $(document).on('submit', '.ajax-form', function(e) {
 									<div class="position-relative" style="display: inline-block; width: 100px;">
 										<img id="imagePreview-edit-{{ specialty.id }}" 
 											src="{{ specialty.image ? asset('uploads/specialty/' ~ specialty.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" 
-											alt="{{ specialty.name }}" 
+											alt="{{ specialty.name | specialty_label}}" 
 											class="img-fluid" 
 											style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;">
 

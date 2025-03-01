@@ -38,6 +38,7 @@
 
 
 				<div class="col-md-7 col-lg-8 col-xl-9">
+
 					<div
 						class="card">
 						<!-- Page Header -->
@@ -55,7 +56,12 @@
 							</div>
 						</div>
 						<!-- /Page Header -->
-
+						<div class="mb-2">
+							<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_admin_appointment')}}">
+								<i class="fa fa-arrow-left" aria-hidden="true"></i>
+								Trở về</a>
+						</div>
+						
 						<div class="card">
 							<div class="table-responsive">
 								<table class="table table-bordered table-striped table-hover">
@@ -97,10 +103,18 @@
 											<th class="bg-light">Lý do</th>
 											<td>{{ appointment.reason }}</td>
 										</tr>
-										<tr>
-											<th class="bg-light text-warning">Kết quả</th>
-											<td class="font-weight-bold">{{ appointment.result }}</td>
-										</tr>
+										{% if appointment.result %}
+											<tr>
+												<th class="bg-light text-warning">Kết quả</th>
+												<td class="font-weight-bold">{{ appointment.result }}</td>
+											</tr>
+										{% endif %}
+										{% if appointment.reasonCancel %}
+											<tr>
+												<th class="bg-light text-danger">Lý do hủy</th>
+												<td class="font-weight-bold">{{ appointment.reasonCancel }}</td>
+											</tr>
+										{% endif %}
 										<tr>
 											<th class="bg-primary text-white text-center" colspan="2">Thông tin bệnh nhân</th>
 										</tr>

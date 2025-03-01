@@ -42,12 +42,12 @@
 							<!-- Appointment List -->
 							<div class="appointment-list">
 								<div class="profile-info-widget">
-									<a href="patient-profile.html" class="booking-doc-img">
+									<a href="{{path('app_doctor_patient_show',{'id':app.id})}}" class="booking-doc-img">
 										<img src="{{app.patient.image ? asset('uploads/users/' ~ app.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
 									</a>
 									<div class="profile-det-info">
 										<h3>
-											<a href="patient-profile.html">{{app.patient.fullname}}</a>
+											<a href="{{path('app_doctor_patient_show',{'id':app.id})}}">{{app.patient.fullname}}</a>
 										</h3>
 										<div class="patient-details">
 											<h5>
@@ -67,18 +67,22 @@
 									</div>
 								</div>
 								<div class="appointment-action">
-									<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
+									<a href="{{path('app_doctor_appointment_show', {'id':app.id})}}" class="btn btn-sm bg-info-light">
 										<i class="far fa-eye"></i>
-										Chi tiết
+										Xem
 									</a>
-									<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+									<a href="{{path('app_doctor_appointment_edit', {'id': app.id})}}" class="btn btn-sm bg-success-light">
 										<i class="fas fa-check"></i>
 										Duyệt
 									</a>
-									<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+									<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ app.id }}" data-token="{{ csrf_token('delete' ~ app.id) }}">
 										<i class="fas fa-times"></i>
 										Hủy
 									</a>
+									{# <a href="{{path('app_doctor_appointment_delete', {'id':app.id})}}" class="btn btn-sm bg-danger-light">
+																																					<i class="fas fa-times"></i>
+																																					Hủy
+																																				</a> #}
 								</div>
 							</div>
 							<!-- /Appointment List -->
@@ -96,4 +100,73 @@
 	<!-- /Page Content -->
 
 
+{% endblock %}
+
+
+{% block JSCustom %}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault(); // Ngăn chặn load lại trang khi click
+
+let appointmentId = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+
+// Hiển thị SweetAlert2 để nhập lý do hủy
+Swal.fire({
+title: "Bạn có chắc muốn hủy lịch hẹn?",
+text: "Vui lòng nhập lý do hủy:",
+icon: "warning",
+input: "text",
+inputPlaceholder: "Nhập lý do hủy...",
+inputAttributes: {
+required: "true"
+},
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xác nhận hủy",
+cancelButtonText: "Thoát",
+preConfirm: (reasonCancel) => {
+if (!reasonCancel) {
+Swal.showValidationMessage("Bạn cần nhập lý do hủy!");
+}
+return reasonCancel;
+}
+}).then((result) => {
+if (result.isConfirmed) {
+let reasonCancel = result.value;
+
+// Tạo form ẩn để gửi request
+let form = document.createElement("form");
+form.method = "post";
+form.action = "/doctor/appointment/" + appointmentId + "/delete";
+
+let methodInput = document.createElement("input");
+methodInput.type = "hidden";
+methodInput.name = "_method";
+methodInput.value = "DELETE";
+
+let tokenInput = document.createElement("input");
+tokenInput.type = "hidden";
+tokenInput.name = "_token";
+tokenInput.value = token;
+
+let reasonInput = document.createElement("input");
+reasonInput.type = "hidden";
+reasonInput.name = "reasonCancel";
+reasonInput.value = reasonCancel;
+
+form.appendChild(methodInput);
+form.appendChild(tokenInput);
+form.appendChild(reasonInput);
+document.body.appendChild(form);
+form.submit();
+}
+});
+});
+});
+});
+	</script>
 {% endblock %}

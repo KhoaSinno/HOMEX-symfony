@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,21 +31,28 @@ class ScheduleWorkType extends AbstractType
             ])
             ->add('date', null, [
                 'widget' => 'single_text',
+                'label' => 'Chọn ngày làm việc',
             ])
-            ->add('maxPatient')
+            ->add('maxPatient', null, [
+                'label' => 'Số BN tối đa/ giờ khám',
+            ])
             ->add('timeSlots', ChoiceType::class, [
                 'choices' => array_combine($options['time_slots'], $options['time_slots']),
                 'expanded' => true,
                 'multiple' => true,
                 'label' => 'Chọn khung giờ làm việc',
             ])
-            ->add('status', ChoiceType::class, [
-                'choices' => ScheduleStatus::getChoices(),
-                'expanded' => true,
-                'multiple' => false,
-                'label' => 'Trạng thái',
-                'data' => $schedule->getStatus() ?? ScheduleStatus::AVAILABLE, // Gán Enum thay vì string
+            ->add('status', HiddenType::class, [
+                'data' => $schedule->getStatus()?->value ?? ScheduleStatus::AVAILABLE->value,
             ])
+            
+            // ->add('status', ChoiceType::class, [
+            //     'choices' => ScheduleStatus::getChoices(),
+            //     'expanded' => true,
+            //     'multiple' => false,
+            //     'label' => 'Trạng thái',
+            //     'data' => $schedule->getStatus() ?? ScheduleStatus::AVAILABLE, // Gán Enum thay vì string
+            // ])
 
             // ->add('status', ChoiceType::class, [
             //     'choices' => [

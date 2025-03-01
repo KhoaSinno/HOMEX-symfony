@@ -87,4 +87,32 @@ class AppointmentRepository extends ServiceEntityRepository
 
         return $bookedSlots;
     }
+
+    // Tổng doanh thu toàn bộ
+    public function getTotalRevenue(): float
+    {
+        return $this->createQueryBuilder('a')
+            ->select('SUM(a.price)')
+            ->where('a.status = :confirmed')
+            ->andWhere('a.paymentStatus = :paid')
+            ->setParameter('confirmed', 'confirmed')
+            ->setParameter('paid', 'paid')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
+
+    // Tổng doanh thu theo bác sĩ
+    public function getTotalRevenueByDoctor(User $doctor): float
+    {
+        return $this->createQueryBuilder('a')
+            ->select('SUM(a.price)')
+            ->where('a.doctor = :doctor')
+            ->andWhere('a.status = :confirmed')
+            ->andWhere('a.paymentStatus = :paid')
+            ->setParameter('doctor', $doctor)
+            ->setParameter('confirmed', 'confirmed')
+            ->setParameter('paid', 'paid')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

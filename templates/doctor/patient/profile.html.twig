@@ -24,7 +24,6 @@
 								<div class="profile-info-widget">
 									<a href="#" class="booking-doc-img">
 										{% if patient.googleId %}
-
 											<img src="{{patient.image ? asset(patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
 										{% else %}
 
@@ -78,7 +77,7 @@
 												{{ appointment.doctor.fullname }}
 											</h5>
 											<span class="d-block text-sm text-muted">
-												{{ appointment.doctor.specialty.name }}
+												{{ appointment.doctor.specialty.name | specialty_label}}
 											</span>
 											<span class="d-block text-sm text-muted">
 												{{ appointment.appointmentDate|date('d-m-Y') }}
@@ -146,7 +145,7 @@
 																			<img class="avatar-img rounded-circle" src="{{app.doctor.image ? asset('uploads/users/' ~ app.doctor.image) : asset('uploads/users/default.png')}}" alt="User Image">
 																		</a>
 																		<a href="{{path('user_profile_settings')}}">{{app.doctor.fullname}}
-																			<span>{{app.doctor.specialty.name}}</span>
+																			<span>{{app.doctor.specialty.name | specialty_label}}</span>
 																		</a>
 																	</h2>
 																</td>
@@ -216,7 +215,7 @@
 
 																		<a href="{{ path('user_profile_settings') }}">
 																			<span class="d-block text-info">
-																				{{ invoice.doctor.specialty.name }}
+																				{{ invoice.doctor.specialty.name  | specialty_label}}
 																			</span>
 																			{{ invoice.doctor.fullname }}
 																		</a>

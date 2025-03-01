@@ -91,7 +91,7 @@
 													{% for slot in schedule.timeslots %}
 														<div class="doc-slot-list" id="schedule_{{ loop.index }}">
 															{{ slot }}
-															<a href="javascript:void(0)" class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
+															<a  class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
 																<i class="fa fa-times"></i>
 															</a>
 														</div>
