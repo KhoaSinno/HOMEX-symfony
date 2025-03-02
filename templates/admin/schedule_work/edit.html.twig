@@ -42,3 +42,58 @@
 	</div>
 
 {% endblock %}
+
+
+{% block JSCustom %}
+<script>
+    $(document).ready(function () {
+        let doctorId = "{{ doctorId }}"; // 🔥 Nhận doctorId từ Twig
+		let date = "{{ date }}"; // 🔥 Nhận date từ Twig
+        $('#schedule_work_slotDuration').on('change', function () {
+            let duration = $(this).val();
+
+            $.ajax({
+                url: "{{ path('generate_time_slots_edit') }}",
+                method: "POST",
+                data: { duration: duration, doctorId: doctorId, date: date }, // 🔥 Gửi doctorId sang Controller
+                success: function (response) {
+                    console.log("API phản hồi:", response);
+					console.log("Danh sách timeSlots:", response.timeSlots);
+                    let slotsContainer = $(".time-slot-container");
+                    slotsContainer.empty();
+
+                   /** response.timeSlots.forEach(function (slot, index) {
+                        let isChecked = slot.checked ? 'checked' : '';
+                        let slotHtml = `
+                            <div class="time-slot-item">
+                                <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot.time}" ${isChecked}>
+                                <label for="schedule_work_timeSlots_${index}">${slot.time}</label>
+                            </div>
+                        `;
+                        slotsContainer.append(slotHtml);
+                    });
+					*/
+						
+					response.timeSlots.forEach(function (slot, index) {
+					let checkedAttr = slot.checked ? 'checked' : ''; // Nếu checked: true thì tích sẵn
+
+					let slotHtml = `
+						<div class="time-slot-item">
+							<input type="checkbox" id="schedule_work_timeSlots_${index}" 
+								name="schedule_work[timeSlots][]" 
+								value="${slot.time}" ${checkedAttr}>
+							<label for="schedule_work_timeSlots_${index}">${slot.time}</label>
+						</div>
+					`;
+					slotsContainer.append(slotHtml);
+				});
+                },
+                error: function () {
+                    alert("Có lỗi xảy ra khi lấy Time Slots!");
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

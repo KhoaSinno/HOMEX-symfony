@@ -45,6 +45,17 @@ class ScheduleWorkType extends AbstractType
             ->add('status', HiddenType::class, [
                 'data' => $schedule->getStatus()?->value ?? ScheduleStatus::AVAILABLE->value,
             ])
+            ->add('slotDuration', ChoiceType::class, [
+                'label' => 'Thời gian khám (phút)',
+                'choices' => [
+                    '10 phút' => 10,
+                    '15 phút' => 15,
+                    '30 phút' => 30,
+                ],
+                'attr' => ['class' => 'form-control', 'id' => 'slot-duration'],
+                'required' => true,
+                'mapped' => false, // Không map vào entity, khỏi cần chỉnh sửa chi
+            ])
             
             // ->add('status', ChoiceType::class, [
             //     'choices' => ScheduleStatus::getChoices(),

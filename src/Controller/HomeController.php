@@ -162,7 +162,6 @@ class HomeController extends AbstractController
         //     "7:00-7:30" => true,   // Disable vì đã có 2 người đặt
         //     "8:00-8:30" => false   // Vẫn đặt được vì mới có 1 người đặt
         // ]
-        
 
         return $this->render('home/doctor_profile.html.twig', [
             'doctor' => $doctor,

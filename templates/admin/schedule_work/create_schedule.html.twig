@@ -37,3 +37,73 @@
 	</div>
 
 {% endblock %}
+
+{% block JSCustom %}
+	<script>
+   $(document).ready(function () {
+    $('#schedule_work_slotDuration').on('change', function () {
+        let duration = $(this).val();
+
+        console.log("Thay đổi số phút khám:", duration);
+
+        $.ajax({
+            url: "{{ path('generate_time_slots_create') }}", // Route Symfony gọi API
+            method: "POST",
+            data: { duration: duration },
+            success: function (response) {
+                console.log("API phản hồi:", response); // Debug API response
+
+                let slotsContainer = $(".time-slot-container");
+                slotsContainer.empty(); // Xóa khung giờ cũ
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+            },
+            error: function () {
+                alert("Có lỗi xảy ra khi lấy Time Slots!");
+            }
+        });
+    });
+});
+{# $(document).ready(function () {
+    $('#schedule_work_slotDuration, #schedule_work_doctor, #schedule_work_date').on('change', function () {
+        let duration = $(this).val();
+        let selectedDate = $('#schedule_work_date').val();
+        let doctorId = $('#schedule_work_doctor').val();
+
+        if (!doctorId || !selectedDate) return;
+
+        $.ajax({
+            url: "{{ path('generate_time_slots') }}",
+            method: "POST",
+            data: { duration: duration, date: selectedDate, doctorId: doctorId },
+            success: function (response) {
+                let slotsContainer = $(".time-slot-container");
+                slotsContainer.empty(); // Xóa khung giờ cũ
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+            },
+            error: function () {
+                alert("Lỗi khi lấy Time Slots!");
+            }
+        });
+    });
+}); #}
+
+</script>
+{% endblock %}
