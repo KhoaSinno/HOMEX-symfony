@@ -51,7 +51,10 @@
 		let date = "{{ date }}"; // 🔥 Nhận date từ Twig
         $('#schedule_work_slotDuration').on('change', function () {
             let duration = $(this).val();
-
+			if (duration === "all") {
+						// Nếu chọn "Tất cả thời gian", reload lại trang
+						location.reload();
+					}
             $.ajax({
                 url: "{{ path('generate_time_slots_edit') }}",
                 method: "POST",

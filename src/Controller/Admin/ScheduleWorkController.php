@@ -54,44 +54,64 @@ final class ScheduleWorkController extends AbstractController
 
 
 
+
     // create schedule work
     #[Route('/create', name: 'app_create_schedule', methods: ['GET', 'POST'])]
+
     public function createSchedule(Request $request): Response
     {
-       
-        
-        
-        $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 10);
+        $duration = $request->request->getInt('schedule_work[slotDuration]', 10);
+
+        // dump($duration); die();
+
+        $timeSlots_10 = $this->scheduleService->generateTimeSlots('07:00', '17:00', 10);
+        $timeSlots_15 = $this->scheduleService->generateTimeSlots('07:00', '17:00', 20);
+        $combinedTimeSlots = array_merge($timeSlots_10, $timeSlots_15);
+
         $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
         $scheduleWork = new ScheduleWork();
-        $scheduleWork->setStatus(ScheduleStatus::AVAILABLE); // Mặc định là AVAILABLE
+        $scheduleWork->setStatus(ScheduleStatus::AVAILABLE);
 
+        $data = $request->request->all();
+     
+       
         $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
-            'time_slots' => $timeSlots,
+            'time_slots' => $combinedTimeSlots,
             'doctors' => $doctors,
         ]);
+
         $form->handleRequest($request);
 
-        // dump($request->request->all()); // Xem toàn bộ dữ liệu request
-        // dump($form->get('timeSlots')->getData()); // Xem dữ liệu trong form
-        // die();
-        
-        // if ($form->isSubmitted()) {
-        //     dump($form->get('timeSlots')->getData()); // Dữ liệu nhận từ request
-        //     dump($timeSlots); // Danh sách time_slots hợp lệ
-        //     die();
-        // }
-        
+       
+
+        if($form->isSubmitted()) {
+            dump($combinedTimeSlots); 
+            dump($data);
+            dump($form->get('timeSlots')->getData()); // Kiểm tra dữ liệu form
+            dump($request->request->all()); // Kiểm tra dữ liệu từ request
+            // die();
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            dump($scheduleWork->getTimeSlots()); // Kiểm tra xem entity có dữ liệu không
+            // die();
+        }
+
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // dump($scheduleWork->getTimeSlots());
-            // die();
-
             $doctor = $scheduleWork->getDoctor();
             $date = $scheduleWork->getDate();
             $status = $form->get('status')->getData();
             $status = $status instanceof ScheduleStatus ? $status : ScheduleStatus::from($status);
 
+            // 🔹 Lấy `timeSlots` từ form và đảm bảo nó là một mảng hợp lệ
+            $timeSlots = $scheduleWork->getTimeSlots();
+            if (is_string($timeSlots)) {
+                $timeSlots = json_decode($timeSlots, true);
+            }
+            $timeSlots = is_array($timeSlots) ? $timeSlots : [];
+
+            $scheduleWork->setTimeSlots($timeSlots);
             $scheduleWork->setStatus($status);
 
             // 🔹 Kiểm tra xem bác sĩ này đã có lịch trong ngày đó chưa
@@ -101,22 +121,16 @@ final class ScheduleWorkController extends AbstractController
             ]);
 
             if ($existingSchedule) {
-                // 🔹 Nếu đã có lịch, gộp danh sách TimeSlots
                 $mergedTimeSlots = array_merge($existingSchedule->getTimeSlots(), $scheduleWork->getTimeSlots());
-
-                // Loại bỏ trùng lặp và sắp xếp lại
                 $newTimeSlots = array_values(array_unique($mergedTimeSlots));
                 usort($newTimeSlots, function ($a, $b) {
                     return strtotime(explode('-', $a)[0]) - strtotime(explode('-', $b)[0]);
                 });
 
-                // Cập nhật lại lịch hiện có
                 $existingSchedule->setTimeSlots($newTimeSlots);
                 $existingSchedule->setStatus($status);
-
-                $this->em->flush(); // Lưu thay đổi
+                $this->em->flush();
             } else {
-                // 🔹 Nếu chưa có lịch, tạo mới
                 $this->em->persist($scheduleWork);
                 $this->em->flush();
             }
@@ -128,6 +142,76 @@ final class ScheduleWorkController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+
+    // public function createSchedule(Request $request): Response
+    // {
+    //     // Lấy duration từ request (hoặc session để lưu lần trước)
+    //     // $duration = $request->query->getInt('duration', 10); // Default = 30 phút
+    //     $duration = $request->request->getInt('schedule_work[slotDuration]', 10); // Lấy duration từ request
+
+    //     $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', $duration);
+
+    //     $doctors = $this->userRepository->findByRole('ROLE_DOCTOR');
+    //     $scheduleWork = new ScheduleWork();
+    //     $scheduleWork->setStatus(ScheduleStatus::AVAILABLE); // Mặc định là AVAILABLE
+
+    //     $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
+    //         'time_slots' => $timeSlots,
+    //         'doctors' => $doctors,
+    //     ]);
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted()) {
+    //         dump($request->request->all()); die(); // Xem dữ liệu gửi lên
+    //     }
+
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         // dump($scheduleWork->getTimeSlots());
+    //         // die();
+
+    //         $doctor = $scheduleWork->getDoctor();
+    //         $date = $scheduleWork->getDate();
+    //         $status = $form->get('status')->getData();
+    //         $status = $status instanceof ScheduleStatus ? $status : ScheduleStatus::from($status);
+
+    //         $scheduleWork->setStatus($status);
+
+    //         // 🔹 Kiểm tra xem bác sĩ này đã có lịch trong ngày đó chưa
+    //         $existingSchedule = $this->em->getRepository(ScheduleWork::class)->findOneBy([
+    //             'doctor' => $doctor,
+    //             'date' => $date,
+    //         ]);
+
+    //         if ($existingSchedule) {
+    //             // 🔹 Nếu đã có lịch, gộp danh sách TimeSlots
+    //             $mergedTimeSlots = array_merge($existingSchedule->getTimeSlots(), $scheduleWork->getTimeSlots());
+
+    //             // Loại bỏ trùng lặp và sắp xếp lại
+    //             $newTimeSlots = array_values(array_unique($mergedTimeSlots));
+    //             usort($newTimeSlots, function ($a, $b) {
+    //                 return strtotime(explode('-', $a)[0]) - strtotime(explode('-', $b)[0]);
+    //             });
+
+    //             // Cập nhật lại lịch hiện có
+    //             $existingSchedule->setTimeSlots($newTimeSlots);
+    //             $existingSchedule->setStatus($status);
+
+    //             $this->em->flush(); // Lưu thay đổi
+    //         } else {
+    //             // 🔹 Nếu chưa có lịch, tạo mới
+    //             $this->em->persist($scheduleWork);
+    //             $this->em->flush();
+    //         }
+
+    //         return $this->redirectToRoute('app_schedule_work_index');
+    //     }
+
+    //     return $this->render('admin/schedule_work/create_schedule.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
 
 
@@ -208,20 +292,22 @@ final class ScheduleWorkController extends AbstractController
         $date = $scheduleWork->getDate() ? $scheduleWork->getDate()->format('Y-m-d') : null;
 
         // 🔹 Lấy danh sách TimeSlots đã chọn từ DB
-        $selectedTimeSlots = $scheduleWork->getTimeSlots(); 
+        $selectedTimeSlots = $scheduleWork->getTimeSlots();
 
         // 🔹 Tạo danh sách TimeSlots mới (chỉ 10 phút)
-        $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 10);
+        $timeSlots_10 = $this->scheduleService->generateTimeSlots('07:00', '17:00', 10);
+        $timeSlots_15 = $this->scheduleService->generateTimeSlots('07:00', '17:00', 20);
+        $combinedTimeSlots = array_merge($timeSlots_10, $timeSlots_15);
 
         // 🔹 Gộp danh sách mới với danh sách đã chọn trước đó
         $mergedTimeSlots = array_map(fn($slot) => [
             'time' => $slot,
             'checked' => in_array($slot, $selectedTimeSlots),
-        ], $timeSlots);
+        ], $combinedTimeSlots);
 
         // dump($mergedTimeSlots);
         // die();
-        
+
 
         // 🔹 Truyền danh sách timeslot dạng chuỗi vào form
         $form = $this->createForm(ScheduleWorkType::class, $scheduleWork, [
@@ -279,7 +365,7 @@ final class ScheduleWorkController extends AbstractController
             'checked' => in_array($slot, $selectedTimeSlots),
         ], $timeSlots);
 
-        return $this->json(['timeSlots' => $updatedSlots, 'selectedTimeSlots' => $selectedTimeSlots, 'ok'=>true]);
+        return $this->json(['timeSlots' => $updatedSlots, 'selectedTimeSlots' => $selectedTimeSlots]);
     }
 
 

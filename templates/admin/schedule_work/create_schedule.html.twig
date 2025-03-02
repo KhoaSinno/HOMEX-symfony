@@ -40,7 +40,129 @@
 
 {% block JSCustom %}
 	<script>
-   $(document).ready(function () {
+
+$(document).ready(function () {
+    let slotsContainer = $(".time-slot-container");
+    let ajaxRequest = null; // Biến để lưu request AJAX hiện tại
+
+    $('#schedule_work_slotDuration').on('change', function () {
+        let duration = $(this).val();
+
+    if (duration === "all") {
+            // Nếu chọn "Tất cả thời gian", reload lại trang
+            location.reload();
+        }
+
+        // 🔹 Lưu lại danh sách các time slot đã chọn trước khi gọi API
+        let selectedSlots = [];
+        $('.time-slot-container input:checked').each(function () {
+            selectedSlots.push($(this).val());
+        });
+
+        // Nếu có request trước đó, hủy nó
+        if (ajaxRequest !== null) {
+            ajaxRequest.abort();
+        }
+
+        ajaxRequest = $.ajax({
+            url: "{{ path('generate_time_slots_create') }}",
+            method: "POST",
+            data: { duration: duration },
+            beforeSend: function () {
+                console.log("⏳ Đang tải...");
+                slotsContainer.html("<p>⏳ Đang tải khung giờ...</p>");
+            },
+            success: function (response) {
+                console.log("✅ API Response:", response);
+
+                slotsContainer.empty();
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let isChecked = selectedSlots.includes(slot) ? "checked" : ""; // 🔹 Giữ lại trạng thái chọn
+
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}" ${isChecked}>
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+
+                console.log("📝 Time Slots in Form:", $(".time-slot-container").html());
+            },
+            error: function (xhr, status) {
+                if (status !== "abort") {
+                    alert("❌ Lỗi khi lấy Time Slots!");
+                }
+            },
+            complete: function () {
+                ajaxRequest = null;
+            }
+        });
+    });
+
+    // 🛠 Cập nhật danh sách trước khi submit
+    $('form').on('submit', function () {
+        let selectedSlots = [];
+        $('.time-slot-container input:checked').each(function () {
+            selectedSlots.push($(this).val());
+        });
+
+        $("#hidden_timeSlots").val(JSON.stringify(selectedSlots));
+    });
+});
+
+
+    {# $(document).ready(function () {
+        let slotsContainer = $(".time-slot-container");
+
+        $('#schedule_work_slotDuration').on('change', function () {
+            let duration = $(this).val();
+
+            $.ajax({
+        url: "{{ path('generate_time_slots_create') }}",
+        method: "POST",
+        data: { duration: duration },
+        success: function (response) {
+            console.log("✅ API Response:", response); // Kiểm tra dữ liệu nhận được
+
+            let slotsContainer = $(".time-slot-container");
+            slotsContainer.empty();
+
+            response.timeSlots.forEach(function (slot, index) {
+                let slotHtml = `
+                    <div class="time-slot-item">
+                        <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                        <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                    </div>
+                `;
+                slotsContainer.append(slotHtml);
+            });
+
+            console.log("📝 Time Slots in Form:", $(".time-slot-container").html()); // Kiểm tra danh sách trong DOM
+        },
+        error: function () {
+            alert("❌ Lỗi khi lấy Time Slots!");
+        }
+    });
+
+        });
+
+        // 🛠 Cập nhật danh sách trước khi submit
+        $('form').on('submit', function () {
+            let selectedSlots = [];
+            $('.time-slot-container input:checked').each(function () {
+                selectedSlots.push($(this).val());
+            });
+
+            $("#hidden_timeSlots").val(JSON.stringify(selectedSlots));
+        });
+    }); #}
+
+
+
+   {# $(document).ready(function () {
     $('#schedule_work_slotDuration').on('change', function () {
         let duration = $(this).val();
 
@@ -71,7 +193,11 @@
             }
         });
     });
-});
+}); #}
+
+
+
+{# older #}
 {# $(document).ready(function () {
     $('#schedule_work_slotDuration, #schedule_work_doctor, #schedule_work_date').on('change', function () {
         let duration = $(this).val();

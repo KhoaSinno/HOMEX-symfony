@@ -31,7 +31,7 @@
 				<!-- Khám trong -->
 				<div class="form-group col-md-4">
 					{{ form_label(form.slotDuration, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-					{{ form_widget(form.slotDuration, {'attr': {'class': 'form-control', 'id': 'slot-duration'}}) }}
+					{{ form_widget(form.slotDuration, {'attr': {'class': 'form-control', 'id': 'slotDuration'}}) }}
 					<div class="invalid-feedback d-block">
 						{{ form_errors(form.slotDuration) }}
 					</div>
@@ -47,12 +47,12 @@
 				</div>
 
 				{# <div class="form-group col-12">
-					{{ form_label(form.status, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-					{{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
-					<div class="invalid-feedback d-block">
-						{{ form_errors(form.status) }}
-					</div>
-				</div> #}
+									{{ form_label(form.status, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+									{{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+									<div class="invalid-feedback d-block">
+										{{ form_errors(form.status) }}
+									</div>
+								</div> #}
 
 				{{ form_widget(form.status, {'attr': {'type': 'hidden', 'value': form.status.vars.value }}) }}
 
@@ -72,6 +72,9 @@
 						{{ form_errors(form.timeSlots) }}
 					</div>
 				</div>
+
+				<!-- Input ẩn để gửi danh sách timeSlots -->
+				  {# <input type="hidden" id="hidden_timeSlots" name="schedule_work[timeSlots]"> #}
 
 				{{ form_row(form._token) }}
 
