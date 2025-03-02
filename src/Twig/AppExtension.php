@@ -74,9 +74,10 @@ class AppExtension extends AbstractExtension
     public function statusBadge(string $status): string
     {
         return match ($status) {
-            'pending' => '<span class="badge badge-pill bg-warning-light">Chờ xác nhận</span>',
-            'cancelled' => '<span class="badge badge-pill bg-danger-light">Đã hủy</span>',
-            'confirmed' => '<span class="badge badge-pill bg-success-light">Xác nhận</span>',
+            'pending' => '<span class="badge badge-pill bg-danger-light">Chờ khám</span>',
+            'active' => '<span class="badge badge-pill bg-warning-light">Đang khám</span>',
+            'cancelled' => '<span class="badge badge-pill bg-success-light">Đã hủy cuộc hẹn</span>',
+            'confirmed' => '<span class="badge badge-pill bg-secondary-light">Khám xong</span>',
             default => '<span class="badge badge-pill bg-secondary-light">Trống</span>',
         };
     }

@@ -103,7 +103,6 @@ class HomeController extends AbstractController
 
 
     #[Route('/home/doctor_profile', name: 'app_doctor_profile')]
-
     public function doctorProfile(
         Request $request,
         UserRepository $userRepository,
@@ -138,38 +137,29 @@ class HomeController extends AbstractController
         $timeSlots = $selectedDate ? $scheduleWorkRepository->getTimeSlotsByDoctorAndDate($doctor, $selectedDate) : [];
 
         // Lấy số lượng bệnh nhân đã đặt theo từng khung giờ
-        $bookedSlots = $selectedDate ? $appointmentRepository->getBookedPatientsByDoctorAndDate($doctor, $selectedDate) : [];
+        // $bookedSlots = $selectedDate ? $appointmentRepository->getBookedPatientsByDoctorAndDate($doctor, $selectedDate) : [];
+
+        // Lấy trạng thái từng khung giờ đã được đặt
+        $slotStatuses = $selectedDate ? $appointmentRepository->getSlotStatusesByDoctorAndDate($doctor, $selectedDate) : [];
 
         /**
-         * BookedSlots: return 
+         * Kết quả giả định từ DB:
          * [
-         * "7:00-7:30" => 2,
-         * "8:00-8:30" => 1
+         *   "7:00-7:30" => "pending",   // Chờ khám
+         *   "8:00-8:30" => "active",    // Đang khám
+         *   "9:00-9:30" => "completed", // Đã khám xong
+         *   "10:00-10:30" => "cancelled" // Hủy khám
          * ]
-         * 
          */
-        // Lấy maxPatient từ bảng ScheduleWork
-        $maxPatient = $scheduleWorkRepository->getMaxPatientByDoctorAndDate($doctor, $selectedDate);
-
-        // Xác định giờ nào cần disabled
-        $disabledSlots = [];
-        foreach ($timeSlots as $slot) {
-            $bookedCount = $bookedSlots[$slot] ?? 0;
-            $disabledSlots[$slot] = $bookedCount >= $maxPatient;
-        }
-
-        // [
-        //     "7:00-7:30" => true,   // Disable vì đã có 2 người đặt
-        //     "8:00-8:30" => false   // Vẫn đặt được vì mới có 1 người đặt
-        // ]
 
         return $this->render('home/doctor_profile.html.twig', [
             'doctor' => $doctor,
             'availableDates' => $availableDates,
             'selectedDate' => $selectedDate,
             'timeSlots' => $timeSlots,
-            'disabledSlots' => $disabledSlots,
+            'slotStatuses' => $slotStatuses, // Truyền trạng thái slot vào view
         ]);
+        
     }
 
     // public function doctorProfile(
@@ -178,7 +168,6 @@ class HomeController extends AbstractController
     //     ScheduleWorkRepository $scheduleWorkRepository,
     //     AppointmentRepository $appointmentRepository
     // ): Response {
-
     //     $id = $request->query->get('id');
     //     $doctor = $userRepository->find($id);
 
@@ -186,92 +175,60 @@ class HomeController extends AbstractController
     //         throw $this->createNotFoundException('Bác sĩ không tồn tại');
     //     }
 
-    //     // Lấy tất cả các ngày có lịch khám của bác sĩ
+    //     // Lấy danh sách ngày làm việc của bác sĩ (chỉ lấy từ hiện tại trở đi)
     //     $availableDates = $scheduleWorkRepository->getAvailableDatesByDoctor($doctor);
-
     //     $timezone = new \DateTimeZone("Asia/Ho_Chi_Minh");
-
-    //     // Chỉ lấy ngày trong tương lai
     //     $today = new \DateTime("now", $timezone);
     //     $today->setTime(0, 0, 0);
-    //     $availableDates = array_filter($availableDates, function ($date) use ($today) {
-    //         $dateObj = new \DateTime($date);
-    //         return $dateObj >= $today; // Chỉ lấy ngày >= hôm nay
-    //     });
+    //     $availableDates = array_values(array_filter($availableDates, function ($date) use ($today) {
+    //         return new \DateTime($date) >= $today;
+    //     }));
 
-    //     // Chuyển về mảng tuần tự (tránh lỗi index khi filter)
-    //     $availableDates = array_values($availableDates);
-
-    //     // Kiểm tra xem có ngày nào được chọn không
+    //     // Xử lý ngày được chọn
     //     $selectedDate = $request->query->get('date');
     //     if ($selectedDate) {
     //         $selectedDate = \DateTime::createFromFormat('Y-m-d', $selectedDate);
     //     } else {
-    //         // Nếu không có ngày chọn, mặc định lấy ngày đầu tiên có trong lịch bác sĩ
     //         $selectedDate = !empty($availableDates) ? new \DateTime($availableDates[0]) : null;
     //     }
 
-    //     // Lấy các khung giờ làm việc của bác sĩ
+    //     // Lấy danh sách khung giờ làm việc
     //     $timeSlots = $selectedDate ? $scheduleWorkRepository->getTimeSlotsByDoctorAndDate($doctor, $selectedDate) : [];
+
+    //     // Lấy số lượng bệnh nhân đã đặt theo từng khung giờ
+    //     $bookedSlots = $selectedDate ? $appointmentRepository->getBookedPatientsByDoctorAndDate($doctor, $selectedDate) : [];
+
+    //     /**
+    //      * BookedSlots: return 
+    //      * [
+    //      * "7:00-7:30" => 2,
+    //      * "8:00-8:30" => 1
+    //      * ]
+    //      * 
+    //      */
+    //     // Lấy maxPatient từ bảng ScheduleWork
+    //     $maxPatient = $scheduleWorkRepository->getMaxPatientByDoctorAndDate($doctor, $selectedDate);
+
+    //     // Xác định giờ nào cần disabled
+    //     $disabledSlots = [];
+    //     foreach ($timeSlots as $slot) {
+    //         $bookedCount = $bookedSlots[$slot] ?? 0;
+    //         $disabledSlots[$slot] = $bookedCount >= $maxPatient;
+    //     }
+
+    //     // [
+    //     //     "7:00-7:30" => true,   // Disable vì đã có 2 người đặt
+    //     //     "8:00-8:30" => false   // Vẫn đặt được vì mới có 1 người đặt
+    //     // ]
 
     //     return $this->render('home/doctor_profile.html.twig', [
     //         'doctor' => $doctor,
     //         'availableDates' => $availableDates,
     //         'selectedDate' => $selectedDate,
     //         'timeSlots' => $timeSlots,
-    //     ]);
-    // }
-
-    // public function doctorProfile(
-    //     Request $request,
-    //     UserRepository $userRepository,
-    //     ScheduleWorkRepository $scheduleWorkRepository
-    // ): Response {
-
-    //     $id = $request->query->get('id');
-    //     $doctor = $userRepository->find($id);
-
-    //     if (!$doctor) {
-    //         throw $this->createNotFoundException('Bác sĩ không tồn tại');
-    //     }
-
-    //     // Lấy tất cả các ngày có lịch khám của bác sĩ
-    //     $availableDates = $scheduleWorkRepository->getAvailableDatesByDoctor($doctor);
-
-    //     // Kiểm tra xem có ngày nào được chọn không
-    //     $selectedDate = $request->query->get('date');
-    //     if ($selectedDate) {
-    //         $selectedDate = \DateTime::createFromFormat('Y-m-d', $selectedDate);
-    //     } else {
-    //         // Nếu không có ngày chọn, mặc định lấy ngày đầu tiên có trong lịch bác sĩ
-    //         $selectedDate = !empty($availableDates) ? new \DateTime($availableDates[0]) : null;
-    //     }
-
-    //     // Lấy các khung giờ làm việc của bác sĩ
-    //     $timeSlots = $selectedDate ? $scheduleWorkRepository->getTimeSlotsByDoctorAndDate($doctor, $selectedDate) : [];
-
-    //     return $this->render('home/doctor_profile.html.twig', [
-    //         'doctor' => $doctor,
-    //         'availableDates' => $availableDates,
-    //         'selectedDate' => $selectedDate,
-    //         'timeSlots' => $timeSlots,
+    //         'disabledSlots' => $disabledSlots,
     //     ]);
     // }
 
 
-
-
-
-
-
-
-    // public function searchDoctor(UserRepository $userRepository, Request $request): Response
-    // {
-    //     $specialtyId = $request->query->get('specialty');
-    //     $doctors = $userRepository->findBySpecialty($specialtyId);
-
-    //     return $this->render('home/search_doctor.html.twig', [
-    //         'doctors' => $doctors,
-    //     ]);
-    // }
 }

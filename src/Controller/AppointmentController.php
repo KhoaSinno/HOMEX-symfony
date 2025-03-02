@@ -200,39 +200,39 @@ class AppointmentController extends AbstractController
 
     // ------------------------------------------------------------------ Case substitutions business logic ------------------------------------------------------------------
     // flow Book trực tiếp ko confirm 
-    #[Route('/book-appointment', name: 'book_appointment', methods: ['POST'])]
-    public function bookAppointment(Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        // Kiểm tra user đã đăng nhập chưa
-        $user = $this->getUser();
+    // #[Route('/book-appointment', name: 'book_appointment', methods: ['POST'])]
+    // public function bookAppointment(Request $request, EntityManagerInterface $em): JsonResponse
+    // {
+    //     // Kiểm tra user đã đăng nhập chưa
+    //     $user = $this->getUser();
 
-        if (!$user || !in_array('ROLE_PATIENT', $user->getRoles())) {
-            return new JsonResponse(['success' => false, 'message' => 'Bạn cần đăng nhập với vai trò bệnh nhân'], 403);
-        }
+    //     if (!$user || !in_array('ROLE_PATIENT', $user->getRoles())) {
+    //         return new JsonResponse(['success' => false, 'message' => 'Bạn cần đăng nhập với vai trò bệnh nhân'], 403);
+    //     }
 
-        // Lấy dữ liệu từ request
-        $data = json_decode($request->getContent(), true);
-        if (!isset($data['doctorId'], $data['date'], $data['timeSlot'])) {
-            return new JsonResponse(['success' => false, 'message' => 'Dữ liệu không hợp lệ'], 400);
-        }
+    //     // Lấy dữ liệu từ request
+    //     $data = json_decode($request->getContent(), true);
+    //     if (!isset($data['doctorId'], $data['date'], $data['timeSlot'])) {
+    //         return new JsonResponse(['success' => false, 'message' => 'Dữ liệu không hợp lệ'], 400);
+    //     }
 
-        $doctor = $em->getRepository(User::class)->find($data['doctorId']);
-        if (!$doctor || !in_array('ROLE_DOCTOR', $doctor->getRoles())) {
-            return new JsonResponse(['success' => false, 'message' => 'Không tìm thấy bác sĩ'], 404);
-        }
+    //     $doctor = $em->getRepository(User::class)->find($data['doctorId']);
+    //     if (!$doctor || !in_array('ROLE_DOCTOR', $doctor->getRoles())) {
+    //         return new JsonResponse(['success' => false, 'message' => 'Không tìm thấy bác sĩ'], 404);
+    //     }
 
-        // Tạo đối tượng Appointment
-        $appointment = new Appointment();
-        $appointment->setPatient($user);
-        $appointment->setDoctor($doctor);
-        $appointment->setAppointmentDate(new \DateTime($data['date']));
-        $appointment->setAppointmentTime($data['timeSlot']);
-        $appointment->setStatus('Pending');
+    //     // Tạo đối tượng Appointment
+    //     $appointment = new Appointment();
+    //     $appointment->setPatient($user);
+    //     $appointment->setDoctor($doctor);
+    //     $appointment->setAppointmentDate(new \DateTime($data['date']));
+    //     $appointment->setAppointmentTime($data['timeSlot']);
+    //     $appointment->setStatus('Pending');
 
-        // Lưu vào DB
-        $em->persist($appointment);
-        $em->flush();
+    //     // Lưu vào DB
+    //     $em->persist($appointment);
+    //     $em->flush();
 
-        return new JsonResponse(['success' => true, 'message' => 'Đặt lịch thành công']);
-    }
+    //     return new JsonResponse(['success' => true, 'message' => 'Đặt lịch thành công']);
+    // }
 }

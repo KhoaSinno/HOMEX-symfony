@@ -27,7 +27,7 @@ final class DoctorAppointmentController extends AbstractController
     public function index(AppointmentRepository $appointmentRepository): Response
     {
         return $this->render('doctor/appointment/index.html.twig', [
-            'appointments' => $appointmentRepository->findAll(),
+            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::PENDING_STATUS, 'paymentStatus' => AppointmentConstants::PAID_STATUS]),
         ]);
     }
 
@@ -73,24 +73,32 @@ final class DoctorAppointmentController extends AbstractController
             throw new \LogicException('Cuộc hẹn này không có bác sĩ nào.');
         }
 
+        if($appointment->getStatus() == AppointmentConstants::PENDING_STATUS) {
+            $appointment->setStatus(AppointmentConstants::ACTIVE_STATUS);
+            $entityManager->flush();
+        }
+
         $patientEmail = $patient ? $patient->getEmail() : null;
         $patientDate = $appointment->getAppointmentDate() ? $appointment->getAppointmentDate()->format('dmY') : '';
         // $securePassword = hash_hmac('sha256', $patientDate, 'secret_key');
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['resultFile']->getData();
-
+            
             if ($file && $file->isValid()) {
+              
+                // Tạo file ZIP và gửi email
                 $zipFileName = 'HOMEX_Ket_qua_' . $patient->getFullname() . '.zip';
                 $zipFilePath = sys_get_temp_dir() . '/' . $zipFileName;
 
-                // **Tạo file ZIP và đặt mật khẩu**
+                // Tạo file ZIP và đặt mật khẩu
                 $zip = new ZipFile();
                 $zip->addFile($file->getPathname(), $file->getClientOriginalName())
                     ->setPassword($patientDate)
                     ->saveAsFile($zipFilePath)
                     ->close();
 
+                // Send email xác nhận
                 try {
                     $this->mailService->sendAppointmentResult(
                         $patientEmail,
@@ -105,12 +113,16 @@ final class DoctorAppointmentController extends AbstractController
                     if (file_exists($zipFilePath)) {
                         unlink($zipFilePath);
                     }
+                    
+                    // Thành công tất thì mới gửi file
+                    $appointment->setStatus(AppointmentConstants::COMPLETED_STATUS);
+                    $entityManager->flush();
+    
                 }
 
                 return $this->redirectToRoute('app_doctor_dashboard');
             }
 
-            $entityManager->flush();
 
             return $this->redirectToRoute('app_doctor_appointment', [], Response::HTTP_SEE_OTHER);
         }
@@ -118,60 +130,9 @@ final class DoctorAppointmentController extends AbstractController
         return $this->render('doctor/appointment/edit.html.twig', [
             'appointment' => $appointment,
             'form' => $form,
+            'patient' => $patient,
         ]);
     }
-
-    // public function edit(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
-    // {
-    //     $form = $this->createForm(DoctorAppointmentType::class, $appointment);
-    //     $form->handleRequest($request);
-    //     $patientDate = $appointment->getAppointmentDate() ? $appointment->getAppointmentDate()->format('dmY') : ''; // Này phải trả về định dạng: 14072004
-
-    //     $patientEmail = $appointment->getPatient()->getEmail();
-
-    //     $doctor = $appointment->getDoctor();
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $file = $form['resultFile']->getData();
-
-    //         if ($file) {
-    //             $zipFileName = 'result_' . time() . '.zip';
-    //             $zipFilePath = sys_get_temp_dir() . '/' . $zipFileName;
-
-    //             // **Tạo file ZIP và đặt mật khẩu**
-    //             $zip = new ZipFile();
-    //             $zip->addFile($file->getPathname(), $file->getClientOriginalName()) // Thêm file vào ZIP
-    //                 ->setPassword($patientDate) // Đặt mật khẩu
-    //                 ->saveAsFile($zipFilePath) // Lưu file ZIP
-    //                 ->close();
-
-    //             // Gửi email xác nhận
-    //             $this->mailService->sendAppointmentResult(
-    //                 $patientEmail,
-    //                 $doctor->getFullname(),
-    //                 $appointment->getAppointmentDate()->format('d-m-Y'),
-    //                 $doctor->getFullName(),
-    //                 $zipFilePath,
-    //                 $zipFileName,
-    //                 $patientDate
-    //             );
-
-    //             // **Xóa file sau khi gửi để tránh lưu trữ**
-    //             unlink($zipFilePath);
-
-    //             return $this->redirectToRoute('app_doctor_dashboard');
-    //         }
-
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute('app_doctor_appointment', [], Response::HTTP_SEE_OTHER);
-    //     }
-
-    //     return $this->render('doctor/appointment/edit.html.twig', [
-    //         'appointment' => $appointment,
-    //         'form' => $form,
-    //     ]);
-    // }
 
 
     #[Route('/show/{id}', name: 'app_doctor_appointment_show')]
@@ -239,18 +200,4 @@ final class DoctorAppointmentController extends AbstractController
     }
 
 
-    // #[Route('/{id}/delete', name: 'app_doctor_appointment_delete', methods: ['POST'])]
-    // public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
-    // {
-    //     if ($this->isCsrfTokenValid('delete' . $appointment->getId(), $request->getPayload()->getString('_token'))) {
-    //         $appointment->setStatus(AppointmentConstants::CANCELLED_STATUS);
-    //         $appointment->setReasonCancel($request->getPayload()->getString('reasonCancel'));
-    //         dump($appointment);
-    //         die();
-    //         $entityManager->remove($appointment);
-    //         $entityManager->flush();
-    //     }
-
-    //     return $this->redirectToRoute('app_doctor_appointment', [], Response::HTTP_SEE_OTHER);
-    // }
 }

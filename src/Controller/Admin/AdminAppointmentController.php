@@ -35,7 +35,7 @@ final class AdminAppointmentController extends AbstractController
     public function listSuccess(AppointmentRepository $appointmentRepository): Response
     {
         return $this->render('admin/appointment/listSuccess.html.twig', [
-            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::CONFIRMED_STATUS]),
+            'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::COMPLETED_STATUS]),
         ]);
     }
 
@@ -99,7 +99,7 @@ final class AdminAppointmentController extends AbstractController
     public function approve(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('approve' . $appointment->getId(), $request->request->get('_token'))) {
-            $appointment->setStatus(AppointmentConstants::CONFIRMED_STATUS);
+            $appointment->setStatus(AppointmentConstants::COMPLETED_STATUS);
             $appointment->setPaymentStatus(AppointmentConstants::PAID_STATUS);
             $entityManager->persist($appointment);
             $entityManager->flush();

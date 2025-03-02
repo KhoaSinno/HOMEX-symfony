@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -30,12 +31,16 @@ class AppointmentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.doctor = :doctor')
+            ->andWhere('a.status = :pending') 
+            ->andWhere('a.paymentStatus = :paid') 
             ->setParameter('doctor', $doctor)
+            ->setParameter('pending', AppointmentConstants::PENDING_STATUS) 
+            ->setParameter('paid', AppointmentConstants::PAID_STATUS) 
             ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
     }
-
+    
     public function findInvoices($patient)
     {
         return $this->createQueryBuilder('a')
@@ -114,5 +119,25 @@ class AppointmentRepository extends ServiceEntityRepository
             ->setParameter('paid', 'paid')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function getSlotStatusesByDoctorAndDate(User $doctor, \DateTime $date): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('a.appointmentTime, a.status')
+            ->where('a.doctor = :doctor')
+            ->andWhere('a.appointmentDate = :date')
+            ->setParameter('doctor', $doctor)
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->getQuery();
+
+        $appointments = $qb->getResult();
+
+        $slotStatuses = [];
+        foreach ($appointments as $appointment) {
+            $slotStatuses[$appointment['appointmentTime']] = $appointment['status'];
+        }
+
+        return $slotStatuses;
     }
 }

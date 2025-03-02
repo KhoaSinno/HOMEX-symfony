@@ -20,15 +20,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class MomoController extends AbstractController
 {
     private MomoService $momoService;
-    private MomoRepository $momoRepository;
     private SessionInterface $session;
     private EntityManagerInterface $em;
     private MailService $mailService;
 
-    public function __construct(MomoService $momoService, MomoRepository $momoRepository, RequestStack $session, EntityManagerInterface $em, MailService $mailService)
+    public function __construct(MomoService $momoService, RequestStack $session, EntityManagerInterface $em, MailService $mailService)
     {
         $this->momoService = $momoService;
-        $this->momoRepository = $momoRepository;
         $this->session = $session->getSession();
         $this->em = $em;
         $this->mailService = $mailService;
@@ -39,9 +37,6 @@ class MomoController extends AbstractController
     {
         // Lấy dữ liệu từ MoMo
         $data = json_decode($request->getContent(), true);
-
-        // Log hoặc xử lý dữ liệu thanh toán
-        // file_put_contents('momo_log.txt', print_r($data, true), FILE_APPEND);
 
         return new JsonResponse(['message' => 'IPN received'], 200);
     }
@@ -105,7 +100,7 @@ class MomoController extends AbstractController
         // Laays dữ liệu từ MoMo
         $momoData = $this->session->get('response_momo');
         if ($momoData['resultCode'] !== 0) {
-            return $this->redirectToRoute('app_patient_dashboard', ['error' => 'Lỗi trong quá trình thanh toán']);
+            return $this->redirectToRoute('app_patient_dashboard', ['error' => 'Thanh toán không thành công']);
         }
 
         // Tạo cuộc hẹn mới và lưu vào database
@@ -130,7 +125,7 @@ class MomoController extends AbstractController
             $appointment->setAppointmentDate(new \DateTime($appointmentData['appointmentDate']));
             $appointment->setAppointmentTime($appointmentData['appointmentTime']);
             $appointment->setPrice($doctor->getConsultationFee());
-            $appointment->setStatus(AppointmentConstants::PENDING_STATUS); // Chờ bác sĩ trả kết quá
+            $appointment->setStatus(AppointmentConstants::PENDING_STATUS); // Đã đặt lịch
             $appointment->setPaymentStatus(AppointmentConstants::PAID_STATUS); // Đã thanh toán
 
             $this->em->persist($appointment);
@@ -155,25 +150,4 @@ class MomoController extends AbstractController
         return $this->redirectToRoute('appointment_success');
     }
 
-    // #[Route('/payment/momo/post', name: 'momo_post', methods: ['GET'])]
-    // public function momoPost(Request $request): RedirectResponse
-    // {
-    //     $user = $this->getUser();
-    //     if (!$user instanceof User) {
-    //         return $this->redirectToRoute('app_login');
-    //     }
-
-    //     if ($request->query->get('resultCode') == 1006) {
-    //         $customerId = $user->getId();
-    //         $momoStatus = 0; // Chờ duyệt
-    //         $linkData = json_encode($request->query->all());
-
-    //         // Lưu vào database
-    //         $this->momoRepository->storeMomoInfo($customerId, $momoStatus, $linkData);
-
-    //         return $this->redirectToRoute('app_patient_dashboard', ['success' => 'Thanh toán MoMo thành công, vui lòng chờ duyệt!']);
-    //     }
-
-    //     return $this->redirectToRoute('app_patient_dashboard', ['error' => 'Lỗi trong quá trình nạp MoMo.']);
-    // }
 }

@@ -94,6 +94,30 @@
 						{% if timeSlots is not empty %}
 							<div class="time-slot-buttons">
 								{% for slot in timeSlots %}
+									{% set status = slotStatuses[slot] ?? 'default' %}
+									{% set color = {
+										'completed': 'btn-secondary',   
+										'active': 'btn-warning',      
+										'pending': 'btn-danger',    
+										'cancelled': 'btn-success',
+										'default': 'btn-info'        
+									}[status] %}
+
+									{% set isDisabled = status in ['pending', 'active', 'completed'] %}
+
+								<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %}disabled{% endif %}>
+									{{ slot }}
+								</button>
+								{% endfor %}
+							</div>
+						{% else %}
+							<p>Không có lịch khám trong ngày này.</p>
+						{% endif %}
+
+						{# <h3>Chọn giờ khám</h3>
+						{% if timeSlots is not empty %}
+							<div class="time-slot-buttons">
+								{% for slot in timeSlots %}
 									<button class="time-slot-btn btn btn-info btn-sm my-2" {% if disabledSlots[slot] %} disabled {% endif %}>
 										{{ slot }}
 									</button>
@@ -103,32 +127,7 @@
 							<p>Không có lịch khám trong ngày này.</p>
 						{% endif %}
 
-						{# <h3>Chọn giờ khám</h3>
-												{% if timeSlots is not empty %}
-													<div class="time-slot-buttons">
-														{% for slot in timeSlots %}
-															<button class="time-slot-btn btn btn-info btn-sm my-2 {% if slot in disabledSlots %}disabled btn-secondary{% endif %}" {% if slot in disabledSlots %} disabled {% endif %}>
-																{{ slot }}
-															</button>
-														{% endfor %}
-													</div>
-												{% else %}
-													<p>Không có lịch khám trong ngày này.</p>
-												{% endif %} #}
-
-						{# 
-									<h3>Chọn giờ khám</h3>
-									{% if timeSlots is not empty %}
-										<div class="time-slot-buttons">
-											{% for slot in timeSlots %}
-												<button class="time-slot-btn btn btn-info btn-sm my-2">
-													{{ slot }}
-												</button>
-											{% endfor %}
-										</div>
-									{% else %}
-										<p>Không có lịch khám trong ngày này.</p>
-									{% endif %} #}
+						 #}
 					</div>
 
 				</div>
@@ -167,21 +166,6 @@
 										<p>{{doctor.bio}}</p>
 									</div>
 									<!-- /About Details -->
-
-								<!-- Specializations List -->
-									{# <div class="service-list">
-																												<h4>Chuyên khoa</h4>
-																												<ul class="clearfix">
-																													<li>Children Care</li>
-																													<li>Dental Care</li>
-																													<li>Oral and Maxillofacial Surgery
-																													</li>
-																													<li>Orthodontist</li>
-																													<li>Periodontist</li>
-																													<li>Prosthodontics</li>
-																												</ul>
-																											</div> #}
-									<!-- /Specializations List -->
 
 								</div>
 							</div>

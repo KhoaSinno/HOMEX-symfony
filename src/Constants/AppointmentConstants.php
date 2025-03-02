@@ -8,9 +8,10 @@ class AppointmentConstants
     public const FOR_WHO_RELATION = 'family';
 
     // Appointments status
-    public const PENDING_STATUS = 'pending';
-    public const CONFIRMED_STATUS = 'confirmed';
-    public const CANCELLED_STATUS = 'cancelled';
+    public const PENDING_STATUS = 'pending';        // Chờ xác nhận
+    public const ACTIVE_STATUS = 'active';          // Đang khám
+    public const COMPLETED_STATUS = 'completed';    // Đã khám xong
+    public const CANCELLED_STATUS = 'cancelled';    // Đã hủy
 
     // Payment status
     public const UNPAID_STATUS = 'unpaid';
@@ -21,10 +22,12 @@ class AppointmentConstants
         self::FOR_WHO_RELATION => 'Người thân',
     ];
 
+    // Danh sách trạng thái hiển thị
     public const APPOINTMENT_STATUS_LABELS = [
-        self::PENDING_STATUS => 'Chờ xác nhận',
-        self::CONFIRMED_STATUS => 'Đã xác nhận',
-        self::CANCELLED_STATUS => 'Đã hủy',
+        self::PENDING_STATUS => 'Chờ khám',   // Khi đặt lịch, chờ bác sĩ duyệt
+        self::ACTIVE_STATUS => 'Đang khám',       // Khi bệnh nhân đang khám
+        self::COMPLETED_STATUS => 'Đã khám xong', // Khám xong và kết thúc
+        self::CANCELLED_STATUS => 'Đã hủy',       // Cuộc hẹn bị hủy
     ];
 
     public const PAYMENT_STATUS_LABELS = [
