@@ -22,40 +22,214 @@
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
 					</div>
-					{# <div class="col-sm-5 col">
-											<a href="{{ path('app_doctor_new') }}" class="btn btn-primary float-right mt-2">Thêm mới</a>
-										</div> #}
 				</div>
 			</div>
 			<!-- /Page Header -->
-			{# <form method="post" action="{{ path('create_schedule') }}">
-				<label for="doctor_id">Chọn bác sĩ:</label>
-				<select name="doctor_id" id="doctor_id">
-					{% for doctor in doctors %}
-						<option value="{{ doctor.id }}">{{ doctor.fullname }}</option>
-					{% endfor %}
-				</select>
+			<div class="mb-2">
+				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_schedule_work_index')}}">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Trở về</a>
+			</div>
 
-				<label for="date">Ngày khám:</label>
-				<input type="date" name="date" id="date" required>
-
-				<label for="max_patients">Số bệnh nhân tối đa mỗi ca:</label>
-				<input type="number" name="max_patients" id="max_patients" value="1" required>
-
-				<div id="time_slots">
-					{% for slot in time_slots %}
-						<label>
-							<input type="checkbox" name="time_slots[]" value="{{ slot }}">
-							{{ slot }}
-						</label>
-					{% endfor %}
-				</div>
-
-				<button type="submit">Tạo lịch làm việc</button>
-			</form> #}
 			{{ include('admin/schedule_work/_form.html.twig') }}
 
 		</div>
 	</div>
 
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+
+$(document).ready(function () {
+    let slotsContainer = $(".time-slot-container");
+    let ajaxRequest = null; // Biến để lưu request AJAX hiện tại
+
+    $('#schedule_work_slotDuration').on('change', function () {
+        let duration = $(this).val();
+
+    if (duration === "all") {
+            // Nếu chọn "Tất cả thời gian", reload lại trang
+            location.reload();
+        }
+
+        // 🔹 Lưu lại danh sách các time slot đã chọn trước khi gọi API
+        let selectedSlots = [];
+        $('.time-slot-container input:checked').each(function () {
+            selectedSlots.push($(this).val());
+        });
+
+        // Nếu có request trước đó, hủy nó
+        if (ajaxRequest !== null) {
+            ajaxRequest.abort();
+        }
+
+        ajaxRequest = $.ajax({
+            url: "{{ path('generate_time_slots_create') }}",
+            method: "POST",
+            data: { duration: duration },
+            beforeSend: function () {
+                console.log("⏳ Đang tải...");
+                slotsContainer.html("<p>⏳ Đang tải khung giờ...</p>");
+            },
+            success: function (response) {
+                console.log("✅ API Response:", response);
+
+                slotsContainer.empty();
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let isChecked = selectedSlots.includes(slot) ? "checked" : ""; // 🔹 Giữ lại trạng thái chọn
+
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}" ${isChecked}>
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+
+                console.log("📝 Time Slots in Form:", $(".time-slot-container").html());
+            },
+            error: function (xhr, status) {
+                if (status !== "abort") {
+                    alert("❌ Lỗi khi lấy Time Slots!");
+                }
+            },
+            complete: function () {
+                ajaxRequest = null;
+            }
+        });
+    });
+
+    // 🛠 Cập nhật danh sách trước khi submit
+    $('form').on('submit', function () {
+        let selectedSlots = [];
+        $('.time-slot-container input:checked').each(function () {
+            selectedSlots.push($(this).val());
+        });
+
+        $("#hidden_timeSlots").val(JSON.stringify(selectedSlots));
+    });
+});
+
+
+    {# $(document).ready(function () {
+        let slotsContainer = $(".time-slot-container");
+
+        $('#schedule_work_slotDuration').on('change', function () {
+            let duration = $(this).val();
+
+            $.ajax({
+        url: "{{ path('generate_time_slots_create') }}",
+        method: "POST",
+        data: { duration: duration },
+        success: function (response) {
+            console.log("✅ API Response:", response); // Kiểm tra dữ liệu nhận được
+
+            let slotsContainer = $(".time-slot-container");
+            slotsContainer.empty();
+
+            response.timeSlots.forEach(function (slot, index) {
+                let slotHtml = `
+                    <div class="time-slot-item">
+                        <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                        <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                    </div>
+                `;
+                slotsContainer.append(slotHtml);
+            });
+
+            console.log("📝 Time Slots in Form:", $(".time-slot-container").html()); // Kiểm tra danh sách trong DOM
+        },
+        error: function () {
+            alert("❌ Lỗi khi lấy Time Slots!");
+        }
+    });
+
+        });
+
+        // 🛠 Cập nhật danh sách trước khi submit
+        $('form').on('submit', function () {
+            let selectedSlots = [];
+            $('.time-slot-container input:checked').each(function () {
+                selectedSlots.push($(this).val());
+            });
+
+            $("#hidden_timeSlots").val(JSON.stringify(selectedSlots));
+        });
+    }); #}
+
+
+
+   {# $(document).ready(function () {
+    $('#schedule_work_slotDuration').on('change', function () {
+        let duration = $(this).val();
+
+        console.log("Thay đổi số phút khám:", duration);
+
+        $.ajax({
+            url: "{{ path('generate_time_slots_create') }}", // Route Symfony gọi API
+            method: "POST",
+            data: { duration: duration },
+            success: function (response) {
+                console.log("API phản hồi:", response); // Debug API response
+
+                let slotsContainer = $(".time-slot-container");
+                slotsContainer.empty(); // Xóa khung giờ cũ
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+            },
+            error: function () {
+                alert("Có lỗi xảy ra khi lấy Time Slots!");
+            }
+        });
+    });
+}); #}
+
+
+
+{# older #}
+{# $(document).ready(function () {
+    $('#schedule_work_slotDuration, #schedule_work_doctor, #schedule_work_date').on('change', function () {
+        let duration = $(this).val();
+        let selectedDate = $('#schedule_work_date').val();
+        let doctorId = $('#schedule_work_doctor').val();
+
+        if (!doctorId || !selectedDate) return;
+
+        $.ajax({
+            url: "{{ path('generate_time_slots') }}",
+            method: "POST",
+            data: { duration: duration, date: selectedDate, doctorId: doctorId },
+            success: function (response) {
+                let slotsContainer = $(".time-slot-container");
+                slotsContainer.empty(); // Xóa khung giờ cũ
+
+                response.timeSlots.forEach(function (slot, index) {
+                    let slotHtml = `
+                        <div class="time-slot-item">
+                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
+                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
+                        </div>
+                    `;
+                    slotsContainer.append(slotHtml);
+                });
+            },
+            error: function () {
+                alert("Lỗi khi lấy Time Slots!");
+            }
+        });
+    });
+}); #}
+
+</script>
 {% endblock %}

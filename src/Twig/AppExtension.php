@@ -15,6 +15,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('currency_vnd', [$this, 'formatCurrencyVND']),
             new TwigFilter('translateForWho', [$this, 'translateForWho']),
             new TwigFilter('gender_label', [$this, 'mappingGender']),
+            new TwigFilter('specialty_label', [$this, 'mappingSpecialty']),
 
             // Status badge cho Appoinment
             new TwigFilter('convertAppointStatus', [$this, 'convertAppointStatus']),
@@ -55,17 +56,29 @@ class AppExtension extends AbstractExtension
         return match ($gender) {
             'Male' => 'Nam',
             'Female' => 'Nữ',
-            default => 'Không xác định',
+            default => 'Trống',
+        };
+    }
+    public function mappingSpecialty(string $specialty): string
+    {
+        return match ($specialty) {
+            'Urology' => 'Tiết niệu',
+            'Neurology' => 'Thần kinh',
+            'Orthopedic' => 'Chỉnh hình',
+            'Cardiologist' => 'Tim mạch',
+            'Dentist' => 'Nha khoa',
+            default => 'Trống',
         };
     }
     // Status badge cho Appoinment
     public function statusBadge(string $status): string
     {
         return match ($status) {
-            'pending' => '<span class="badge badge-pill bg-warning-light">Chờ xác nhận</span>',
-            'cancelled' => '<span class="badge badge-pill bg-danger-light">Đã hủy</span>',
-            'confirmed' => '<span class="badge badge-pill bg-success-light">Xác nhận</span>',
-            default => '<span class="badge badge-pill bg-secondary-light">Không xác định</span>',
+            'pending' => '<span class="badge badge-pill bg-danger-light">Chờ khám</span>',
+            'active' => '<span class="badge badge-pill bg-warning-light">Đang khám</span>',
+            'cancelled' => '<span class="badge badge-pill bg-success-light">Đã hủy cuộc hẹn</span>',
+            'completed' => '<span class="badge badge-pill bg-secondary text-white">Khám xong</span>',
+            default => '<span class="badge badge-pill bg-secondary text-white">Trống</span>',
         };
     }
 
@@ -84,7 +97,7 @@ class AppExtension extends AbstractExtension
         return match ($status) {
             'paid' => '<span class="badge badge-pill bg-success-light">Đã thanh toán</span>',
             'unpaid' => '<span class="badge badge-pill bg-danger-light">Chưa thanh toán</span>',
-            default => '<span class="badge badge-pill bg-secondary-light">Không xác định</span>',
+            default => '<span class="badge badge-pill bg-secondary-light">Trống</span>',
         };
     }
 }

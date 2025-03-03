@@ -76,9 +76,9 @@
 													</td>
 													<td>{{ap.price | currency_vnd}}</td>
 													<td class="text-center">
-														<span class="badge badge-pill {{ ap.paymentStatus | payment_class }} inv-badge">{{ap.paymentStatus | convertPaymentStatus}}</span>
+														{{ap.paymentStatus | payment_badge}}
 													</td>
-													<td>{{ap.status}}</td>
+													<td>{{ap.status | status_badge}}</td>
 													<td>
 														<div class="actions">
 															<a href="#" class="btn btn-sm bg-success-light approve-btn" data-id="{{ ap.id }}" data-token="{{ csrf_token('approve' ~ ap.id) }}" data-toggle="modal" data-target="#approve_modal">
@@ -98,7 +98,7 @@
 
 															<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ ap.id }}" data-token="{{ csrf_token('delete' ~ ap.id) }}" data-toggle="modal" data-target="#delete_modal">
 																<i class="fe fe-trash"></i>
-																Xóa
+																Hủy
 															</a>
 
 														</div>
@@ -132,7 +132,7 @@
 					<div class="form-content p-2">
 						<h4 class="modal-title">Xác nhận xóa</h4>
 						<p class="mb-4">Bạn có chắc chắn muốn xóa lịch hẹn này?</p>
-						<form id="delete_form" method="post">
+						<form id="delete_form" method="post" class="text-center">
 							<input
 							type="hidden" name="_method" value="DELETE">
 							{# Giả lập DELETE #}
@@ -155,10 +155,10 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-body">
-					<div class="form-content p-2">
+					<div class="form-content p-2 text-center">
 						<h4 class="modal-title">Xác nhận duyệt cuộc hẹn này</h4>
 						<p class="mb-4">Bạn có chắc chắn muốn duyệt lịch hẹn này?</p>
-						<form id="approve_form" method="post">
+						<form id="approve_form" method="post" class="text-center">
 							<input
 							type="hidden" name="_method" value="APPROVE">
 							{# Giả lập APPROVE #}

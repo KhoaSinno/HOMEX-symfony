@@ -22,22 +22,38 @@
 				<div class="col-md-7 col-lg-8 col-xl-9">
 					<div class="appointments">
 
+						<div class="card p-3 radius-10">
+							<h3>Danh sách lịch hẹn</h3>
+						</div>
+
+						{% if app.request.get('_route') == 'app_doctor_appointment' %}
+							{% for label, messages in app.flashes %}
+								{% for message in messages %}
+									<div class="alert alert-{{ label }}">
+										{{ message }}
+									</div>
+								{% endfor %}
+							{% endfor %}
+						{% endif %}
+
+
 						{% for app in appointments %}
 
 							<!-- Appointment List -->
 							<div class="appointment-list">
 								<div class="profile-info-widget">
-									<a href="patient-profile.html" class="booking-doc-img">
+									<a href="{{path('app_doctor_patient_show',{'id':app.id})}}" class="booking-doc-img">
 										<img src="{{app.patient.image ? asset('uploads/users/' ~ app.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
 									</a>
 									<div class="profile-det-info">
 										<h3>
-											<a href="patient-profile.html">{{app.patient.fullname}}</a>
+											<a href="{{path('app_doctor_patient_show',{'id':app.id})}}">{{app.patient.fullname}}</a>
 										</h3>
 										<div class="patient-details">
 											<h5>
 												<i class="far fa-clock"></i>
-												{{app.appointmentTime ?? 'Trống'}} </h5>
+												{{app.appointmentTime ?? 'Trống'}}
+											</h5>
 											<h5>
 												<i class="fas fa-map-marker-alt"></i>
 												{{app.patient.address ?? 'Trống'}}</h5>
@@ -51,15 +67,15 @@
 									</div>
 								</div>
 								<div class="appointment-action">
-									<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
+									<a href="{{path('app_doctor_appointment_show', {'id':app.id})}}" class="btn btn-sm bg-info-light">
 										<i class="far fa-eye"></i>
-										Chi tiết
+										Xem
 									</a>
-									<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+									<a href="{{path('app_doctor_appointment_edit', {'id': app.id})}}" class="btn btn-sm bg-success-light">
 										<i class="fas fa-check"></i>
 										Duyệt
 									</a>
-									<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+									<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ app.id }}" data-token="{{ csrf_token('delete' ~ app.id) }}">
 										<i class="fas fa-times"></i>
 										Hủy
 									</a>
@@ -79,61 +95,74 @@
 	</div>
 	<!-- /Page Content -->
 
-	{# <table class="table">
-		        <thead>
-		            <tr>
-		                <th>Id</th>
-		                <th>AppointmentDate</th>
-		                <th>AppointmentTime</th>
-		                <th>Note</th>
-		                <th>Status</th>
-		                <th>Price</th>
-		                <th>Result</th>
-		                <th>ForWho</th>
-		                <th>Reason</th>
-		                <th>PatientFullname</th>
-		                <th>PatientDateOfBirth</th>
-		                <th>PatientPhoneNumber</th>
-		                <th>PatientAddress</th>
-		                <th>PatientGender</th>
-		                <th>PatientEmail</th>
-		                <th>PaymentStatus</th>
-		                <th>InvoiceNumber</th>
-		                <th>actions</th>
-		            </tr>
-		        </thead>
-		        <tbody>
-		        {% for appointment in appointments %}
-		            <tr>
-		                <td>{{ appointment.id }}</td>
-		                <td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
-		                <td>{{ appointment.appointmentTime }}</td>
-		                <td>{{ appointment.note }}</td>
-		                <td>{{ appointment.status }}</td>
-		                <td>{{ appointment.price }}</td>
-		                <td>{{ appointment.result }}</td>
-		                <td>{{ appointment.forWho }}</td>
-		                <td>{{ appointment.reason }}</td>
-		                <td>{{ appointment.patientFullname }}</td>
-		                <td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
-		                <td>{{ appointment.patientPhoneNumber }}</td>
-		                <td>{{ appointment.patientAddress }}</td>
-		                <td>{{ appointment.patientGender }}</td>
-		                <td>{{ appointment.patientEmail }}</td>
-		                <td>{{ appointment.paymentStatus }}</td>
-		                <td>{{ appointment.invoiceNumber }}</td>
-		                <td>
-		                    <a href="{{ path('app_doctor_appointment_show', {'id': appointment.id}) }}">show</a>
-		                    <a href="{{ path('app_doctor_appointment_edit', {'id': appointment.id}) }}">edit</a>
-		                </td>
-		            </tr>
-		        {% else %}
-		            <tr>
-		                <td colspan="18">no records found</td>
-		            </tr>
-		        {% endfor %}
-		        </tbody>
-		    </table>
-		
-		    <a href="{{ path('app_doctor_appointment_new') }}">Create new</a> #}
+
+{% endblock %}
+
+
+{% block JSCustom %}
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault(); // Ngăn chặn load lại trang khi click
+
+let appointmentId = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+
+// Hiển thị SweetAlert2 để nhập lý do hủy
+Swal.fire({
+title: "Bạn có chắc muốn hủy lịch hẹn?",
+text: "Vui lòng nhập lý do hủy:",
+icon: "warning",
+input: "text",
+inputPlaceholder: "Nhập lý do hủy...",
+inputAttributes: {
+required: "true"
+},
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xác nhận hủy",
+cancelButtonText: "Thoát",
+preConfirm: (reasonCancel) => {
+if (!reasonCancel) {
+Swal.showValidationMessage("Bạn cần nhập lý do hủy!");
+}
+return reasonCancel;
+}
+}).then((result) => {
+if (result.isConfirmed) {
+let reasonCancel = result.value;
+
+// Tạo form ẩn để gửi request
+let form = document.createElement("form");
+form.method = "post";
+form.action = "/doctor/appointment/" + appointmentId + "/delete";
+
+let methodInput = document.createElement("input");
+methodInput.type = "hidden";
+methodInput.name = "_method";
+methodInput.value = "DELETE";
+
+let tokenInput = document.createElement("input");
+tokenInput.type = "hidden";
+tokenInput.name = "_token";
+tokenInput.value = token;
+
+let reasonInput = document.createElement("input");
+reasonInput.type = "hidden";
+reasonInput.name = "reasonCancel";
+reasonInput.value = reasonCancel;
+
+form.appendChild(methodInput);
+form.appendChild(tokenInput);
+form.appendChild(reasonInput);
+document.body.appendChild(form);
+form.submit();
+}
+});
+});
+});
+});
+	</script>
 {% endblock %}

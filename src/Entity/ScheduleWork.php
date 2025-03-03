@@ -18,9 +18,6 @@ class ScheduleWork
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column]
-    private ?int $maxPatient = null;
-
     #[ORM\Column(enumType: ScheduleStatus::class, options: ["default" => "Available"])]
     private ScheduleStatus $status = ScheduleStatus::AVAILABLE;
 
@@ -47,28 +44,23 @@ class ScheduleWork
         return $this;
     }
 
-    public function getMaxPatient(): ?int
-    {
-        return $this->maxPatient;
-    }
-
-    public function setMaxPatient(int $maxPatient): static
-    {
-        $this->maxPatient = $maxPatient;
-
-        return $this;
-    }
-
     public function getStatus(): ScheduleStatus
     {
         return $this->status;
     }
 
-    public function setStatus(ScheduleStatus $status): self
+    public function setStatus(ScheduleStatus|string $status): self
     {
-        $this->status = $status;
+        $this->status = is_string($status) ? ScheduleStatus::from($status) : $status;
         return $this;
     }
+
+
+    // public function setStatus(ScheduleStatus $status): self
+    // {
+    //     $this->status = $status;
+    //     return $this;
+    // }
 
     public function getDoctor(): ?User
     {

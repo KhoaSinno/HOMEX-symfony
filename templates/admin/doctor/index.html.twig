@@ -22,7 +22,10 @@
 						</ul>
 					</div>
 					<div class="col-sm-5 col">
-						<a href="{{ path('app_doctor_new') }}" class="btn btn-primary float-right mt-2">Thêm mới</a>
+						<a href="{{ path('app_doctor_listDel') }}" class="btn btn-danger float-right m-2">
+							<i class="fe fe-trash"></i>
+							BS ngừng làm việc</a>
+						<a href="{{ path('app_doctor_new') }}" class="btn btn-primary float-right m-2">Thêm mới</a>
 					</div>
 				</div>
 			</div>
@@ -58,9 +61,9 @@
 													</h2>
 												</td>
 
-												<td>{{ doctor.specialty.name ?? 0 }}</td>
-												<td>{{ doctor.specialty.clinicNumber ?? 0 }}</td>
-												<td>{{doctor.gender ?? 'Trống'}}</td>
+												<td>{{ doctor.specialty.name | specialty_label }}</td>
+												<td>{{ doctor.specialty.clinicNumber ?? 'Trống' }}</td>
+												<td>{{doctor.gender ? doctor.gender | gender_label : 'Trống'}}</td>
 												<td>{{ doctor.consultationFee is not null ? (doctor.consultationFee | currency_vnd) : 'Trống' }}</td>
 
 
@@ -74,7 +77,8 @@
 															<i class="fe fe-pencil"></i>
 															Sửa
 														</a>
-														<a class="btn btn-sm bg-danger-light">
+
+														<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ doctor.id }}" data-token="{{ csrf_token('delete' ~ doctor.id) }}" data-toggle="modal" data-target="#delete_modal">
 															<i class="fe fe-trash"></i>
 															Xóa
 														</a>
@@ -97,4 +101,50 @@
 		</div>
 	</div>
 </div>
-<!-- /Page Wrapper -->{% endblock %}
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="form-content p-2">
+					<h4 class="modal-title">Xác nhận xóa</h4>
+					<p class="mb-4">Bạn có chắc chắn muốn cho bác sĩ này nghỉ việc?</p>
+					<form id="delete_form" method="post" class="text-center">
+						<input
+						type="hidden" name="_method" value="DELETE">
+						{# Giả lập DELETE #}
+						<input
+						type="hidden" name="_token" id="delete_token">
+						{# Chứa CSRF Token #}
+						<button type="submit" class="btn btn-primary">Xóa</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+					</form>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- /Delete Modal -->
+<!-- /Page Wrapper -->{% endblock %}{% block JSCustom %}
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function () {
+let id = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+let form = document.getElementById("delete_form");
+
+// Cập nhật action đúng URL
+form.action = "/admin/doctor/" + id + "/delete";
+
+// Thêm CSRF Token vào input
+document.getElementById("delete_token").value = token;
+});
+});
+});
+</script>{% endblock %}

@@ -61,8 +61,8 @@
 								</a>
 
 							</td>
-							<td>{{ s.date ? s.date|date('Y-m-d') : '' }}</td>
-							<td>{{ s.maxPatient }}</td>
+							<td>{{ s.date ? s.date|date('d-m-Y') : '' }}</td>
+							{# <td>{{ s.maxPatient }}</td> #}
 							<td>
 								{% if s.timeSlots %}
 									{% for slot in s.timeSlots %}
@@ -82,17 +82,12 @@
 								{% endif %}
 							</td>
 							<td class="text-center">
-								<div
-									class="actions">
-									{# <a class="btn btn-sm bg-info-light" href="{{ path('app_schedule_work_show', {'id': s.id}) }}">
-																												<i class="fa fa-info-circle" aria-hidden="true"></i>
-																												Xem
-																											</a> #}
+								<div class="actions">
 									<a class="btn btn-sm bg-success-light m-md-3" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
 										<i class="fe fe-pencil"></i>
 										Sửa
 									</a>
-									<a href="#" class="btn btn-sm bg-danger-light delete-schedule" data-id="{{ s.id }}" data-token="{{ csrf_token('delete' ~ s.id) }}">
+									<a class="btn btn-sm bg-danger-light delete-schedule" data-id="{{ s.id }}" data-token="{{ csrf_token('delete' ~ s.id) }}">
 										<i class="fe fe-trash"></i>
 										Xóa
 									</a>
@@ -116,40 +111,40 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-document.querySelectorAll(".delete-schedule").forEach(button => {
-button.addEventListener("click", function (event) {
-event.preventDefault();
-let scheduleId = this.getAttribute("data-id");
-let csrfToken = this.getAttribute("data-token");
+		document.querySelectorAll(".delete-schedule").forEach(button => {
+		button.addEventListener("click", function (event) {
+		event.preventDefault();
+		let scheduleId = this.getAttribute("data-id");
+		let csrfToken = this.getAttribute("data-token");
 
-Swal.fire({
-title: "Bạn có chắc chắn muốn xóa?",
-text: "Hành động này không thể hoàn tác!",
-icon: "warning",
-showCancelButton: true,
-confirmButtonColor: "#d33",
-cancelButtonColor: "#3085d6",
-confirmButtonText: "Xóa",
-cancelButtonText: "Hủy"
-}).then((result) => {
-if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
-let form = document.createElement("form");
-form.method = "POST";
-form.action = `/admin/schedule_work/${scheduleId}`;
-document.body.appendChild(form);
+		Swal.fire({
+		title: "Bạn có chắc chắn muốn xóa?",
+		text: "Hành động này không thể hoàn tác!",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#d33",
+		cancelButtonColor: "#3085d6",
+		confirmButtonText: "Xóa",
+		cancelButtonText: "Hủy"
+		}).then((result) => {
+		if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
+		let form = document.createElement("form");
+		form.method = "POST";
+		form.action = `/admin/schedule_work/${scheduleId}`;
+		document.body.appendChild(form);
 
-let csrfInput = document.createElement("input");
-csrfInput.type = "hidden";
-csrfInput.name = "_token";
-csrfInput.value = csrfToken;
-form.appendChild(csrfInput);
+		let csrfInput = document.createElement("input");
+		csrfInput.type = "hidden";
+		csrfInput.name = "_token";
+		csrfInput.value = csrfToken;
+		form.appendChild(csrfInput);
 
-form.submit();
-}
-});
-});
-});
-});
+		form.submit();
+		}
+		});
+		});
+		});
+		});
 	</script>
 
 {% endblock %}

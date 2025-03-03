@@ -36,7 +36,7 @@ class PatientDashboardController extends AbstractController
     
         $successAppointments = $this->appointmentRepo->findBy([
             'patient' => $user,
-            'status' => AppointmentConstants::CONFIRMED_STATUS,
+            'status' => AppointmentConstants::COMPLETED_STATUS,
         ]);
         
     

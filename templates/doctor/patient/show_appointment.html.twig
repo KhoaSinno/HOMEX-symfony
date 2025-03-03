@@ -1,0 +1,209 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Chi tiết hóa đơn
+{% endblock %}
+
+{% block body %}
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-bar">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-12 col-12">
+					<nav aria-label="breadcrumb" class="page-breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path('app_home')}}">Trang chủ</a>
+							</li>
+							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+						</ol>
+					</nav>
+					<h2 class="breadcrumb-title">Dashboard</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Breadcrumb -->
+
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
+			<div
+				class="row">
+
+				<!-- Profile Sidebar -->
+				<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+					{# {{ include('_sidebar.html.twig') }} #}
+
+					<!-- Profile Widget -->
+						<div class="card widget-profile pat-widget-profile"> <div class="card-body">
+							<div class="pro-widget-content">
+								<div class="profile-info-widget">
+									<a href="#" class="booking-doc-img">
+										{% if appointment.patient.googleId %}
+
+											<img src="{{appointment.patient.image ? asset(appointment.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+										{% else %}
+
+											<img src="{{appointment.patient.image ? asset('uploads/users/' ~ appointment.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+										{% endif %}
+									</a>
+									<div class="profile-det-info">
+										<h3>{{appointment.patient.fullname}}</h3>
+
+										<div class="patient-details">
+											<h5>
+												<b>Mã BN :</b>
+												#P{{appointment.patient.id}}</h5>
+											<h5 class="mb-0">
+												<i class="fas fa-map-marker-alt"></i>
+												{{appointment.patient.address}}</h5>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="patient-info">
+								<ul>
+									<li>Số điện thoại
+										<span>{{appointment.patient.phoneNumber ?? 'Trống'}}</span>
+									</li>
+									<li>Tuổi - Giới tính
+										<span>{{appointment.patient.dateOfBirth ? appointment.patient.dateOfBirth|date('d/m/Y') : 'Trống'}},
+											{{appointment.patient.gender ?? 'Trống'}}</span>
+									</li>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Profile Widget -->
+				</div>
+				<!-- / Profile Sidebar -->
+
+
+				<div class="col-md-7 col-lg-8 col-xl-9">
+					<div
+						class="card">
+						<!-- Page Header -->
+						<div class="page-header">
+							<div class="row">
+								<div class="col-sm-12">
+									<h3 class="page-title p-2">Chi tiết  hóa đơn</h3>
+									<ul class="breadcrumb">
+										<li class="breadcrumb-item">
+											<a href="{{path('app_patient_dashboard')}}">Dashboard</a>
+										</li>
+										<li class="breadcrumb-item active">Chi tiết  hóa đơn</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- /Page Header -->
+
+						<div class="m-2">
+							<a class="btn btn-sm btn-warning rounded mr-2" href="javascript:history.back();">
+								<i class="fa fa-arrow-left" aria-hidden="true"></i>
+								Trở về
+							</a>
+						</div>
+
+
+						<div class="card">
+							<div class="table-responsive">
+								<table class="table table-bordered table-striped table-hover">
+									<tbody>
+										<tr>
+											<th class="bg-primary text-white text-center" colspan="2">Thông tin Cuộc hẹn</th>
+										</tr>
+										<tr>
+											<th class="bg-light">Mã cuộc hẹn</th>
+											<td>{{ appointment.id }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Ngày hẹn</th>
+											<td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('Y-m-d') : '' }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Giờ hẹn</th>
+											<td>{{ appointment.appointmentTime }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Ghi chú</th>
+											<td>{{ appointment.note }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Trạng thái</th>
+											<td>
+												{{ appointment.status | status_badge }}
+											</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Giá tiền</th>
+											<td>{{ appointment.price  | currency_vnd}}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Dành cho</th>
+											<td>{{ appointment.forWho | translateForWho }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Lý do</th>
+											<td>{{ appointment.reason }}</td>
+										</tr>
+										{% if appointment.result %}
+											<tr>
+												<th class="bg-light text-warning">Kết quả</th>
+												<td class="font-weight-bold">{{ appointment.result }}</td>
+											</tr>
+										{% endif %}
+										{% if appointment.reasonCancel %}
+											<tr>
+												<th class="bg-light text-danger">Lý do hủy</th>
+												<td class="font-weight-bold">{{ appointment.reasonCancel }}</td>
+											</tr>
+										{% endif %}
+										<tr>
+											<th class="bg-primary text-white text-center" colspan="2">Thông tin bệnh nhân</th>
+										</tr>
+										<tr>
+											<th class="bg-light">Họ và tên</th>
+											<td>{{ appointment.patientFullname }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Ngày sinh</th>
+											<td>{{ appointment.patientDateOfBirth ? appointment.patientDateOfBirth|date('Y-m-d') : '' }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Số điện thoại</th>
+											<td>{{ appointment.patientPhoneNumber }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Địa chỉ</th>
+											<td>{{ appointment.patientAddress }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Giới tính</th>
+											<td>{{ appointment.patientGender | gender_label }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Email</th>
+											<td>{{ appointment.patientEmail }}</td>
+										</tr>
+										<tr>
+											<th class="bg-light">Trạng thái thanh toán</th>
+											<td>
+												<span class="badge  {{ appointment.paymentStatus | payment_class }} text-white">
+													{{ appointment.paymentStatus | convertPaymentStatus }}
+												</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+{% endblock %}

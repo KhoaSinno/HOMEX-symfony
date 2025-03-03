@@ -21,13 +21,16 @@
 		<!-- Feathericon CSS -->
 		<link rel="stylesheet" href="{{asset('admin/assets/css/feathericon.min.css')}}">
 
-
 		<!-- Datatables CSS -->
 		<link
 		rel="stylesheet" href="{{asset('admin/assets/plugins/datatables/datatables.min.css')}}"> <!-- Main CSS -->
 		<link rel="stylesheet" href="{{asset('admin/assets/css/style.css')}}">
 
 		{% block StyleCustom %}{% endblock %}
+
+		{# ck editor #}
+		<script src="{{asset('ckeditor/ckeditor.js')}}"></script>
+
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -348,6 +351,7 @@
 		<!-- My Custom JS -->
 		{% block JSCustom %}{% endblock %}
 
+	
 		<!-- Custom JS sys-->
 		<script src="{{asset('admin/assets/js/script.js')}}"></script>
 	</body>

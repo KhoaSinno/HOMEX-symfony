@@ -27,6 +27,11 @@
 		{# My style #}
 		{% block styleCustom %}{% endblock %}
 
+		
+		{# ck editor #}
+		<script src="{{asset('ckeditor/ckeditor.js')}}"></script>
+
+
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}

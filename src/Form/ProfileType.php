@@ -28,11 +28,11 @@ class ProfileType extends AbstractType
                 'choices' => [
                     'Nam' => 'male',
                     'Nữ' => 'female',
-                    'Khác' => 'other', 
+                    'Khác' => 'other',
                 ],
                 'expanded' => false, // false: dạng dropdown, true: radio button
                 'multiple' => false, // Chỉ chọn 1 giá trị
-                'attr' => ['class' => 'form-control'], 
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('address', TextType::class, ['label' => 'Địa chỉ'])
             ->add('image', FileType::class, [
@@ -42,7 +42,7 @@ class ProfileType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new File([
-                        'maxSize' => '2M', 
+                        'maxSize' => '2M',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
@@ -51,10 +51,12 @@ class ProfileType extends AbstractType
                     ])
                 ],
             ])
-            ->add('dateOfBirth', DateType::class, [ 
+            ->add('dateOfBirth', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Ngày sinh',
-                'required' => false, 
+                'required' => false,
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ]);
 
         // Nếu user là Doctor thì thêm các trường bio và consultationFee

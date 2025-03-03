@@ -3,10 +3,7 @@
 namespace App\Form;
 
 use App\Entity\ScheduleWork;
-use App\Entity\User;
 use App\Enum\ScheduleStatus;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,10 +15,17 @@ class DoctorScheduleWorkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('maxPatient')
-            ->add('date', null, [
+            ->add('date', DateType::class, [
                 'widget' => 'single_text',
+                'attr' => ['class' => 'form-control schedule-datepicker'],
+                'required' => true,
+                'input' => 'datetime', // Chuyển đổi giá trị thành DateTime
+                'format' => 'dd-MM-yyyy', // tau định nghĩa format ngày tháng năm, thì tất cả nơi khi ref thì phải đúng format này
+                'html5' => false, // Dùng thư viện Datepicker nên đéo thể nào bật date engine của web đc
             ])
+            
+            
+            
             ->add('timeSlots', ChoiceType::class, [
                 'choices' => array_unique(array_combine($options['time_slots'], $options['time_slots'])), // Loại bỏ trùng
                 'expanded' => true,

@@ -16,6 +16,7 @@ class SpecialtyFixtures extends Fixture
         $specialty_Urology->setImage('urology_logo.png');
         $specialty_Urology->setClinicNumber('C01');
         $manager->persist($specialty_Urology);
+        $this->addReference('specialty-urology', $specialty_Urology);
         
         // Neurology
         $specialty_Neurology = new Specialty();
@@ -23,6 +24,7 @@ class SpecialtyFixtures extends Fixture
         $specialty_Neurology->setImage('neurology_logo.png');
         $specialty_Neurology->setClinicNumber('C02');
         $manager->persist($specialty_Neurology);
+        $this->addReference('specialty-neurology', $specialty_Neurology);
         
         // Orthopedic
         $specialty_Orthopedic = new Specialty();
@@ -30,6 +32,7 @@ class SpecialtyFixtures extends Fixture
         $specialty_Orthopedic->setImage('orthopedic_logo.png');
         $specialty_Orthopedic->setClinicNumber('C03');
         $manager->persist($specialty_Orthopedic);
+        $this->addReference('specialty-orthopedic', $specialty_Orthopedic);
         
         // Cardiologist
         $specialty_Cardiologist = new Specialty();
@@ -37,7 +40,6 @@ class SpecialtyFixtures extends Fixture
         $specialty_Cardiologist->setImage('cardiologist_logo.png');
         $specialty_Cardiologist->setClinicNumber('C04');
         $manager->persist($specialty_Cardiologist);
-        
         // Lưu reference để dùng cho DoctorFixture
         $this->addReference('specialty-cardiology', $specialty_Cardiologist);
 
@@ -47,6 +49,7 @@ class SpecialtyFixtures extends Fixture
         $specialty_Dentist->setImage('dentist_logo.png');
         $specialty_Dentist->setClinicNumber('C05');
         $manager->persist($specialty_Dentist);
+        $this->addReference('specialty-dentist', $specialty_Dentist);
 
         $manager->flush();
     }

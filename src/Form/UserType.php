@@ -76,7 +76,9 @@ class UserType extends AbstractType
                 'label' => 'Ngày sinh',
                 'widget' => 'single_text', // Hiển thị input dạng date
                 'required' => true,
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
         ;
 
@@ -93,6 +95,14 @@ class UserType extends AbstractType
 
                 ->add('bio', TextareaType::class, [
                     'label' => 'Giới thiệu',
+                    'attr' => [
+                        'class' => 'form-control',
+                        'rows' => 5, // Số dòng hiển thị mặc định
+                        'placeholder' => 'Nhập giới thiệu về bản thân...',
+                    ],
+                ])
+                ->add('qualification', TextareaType::class, [
+                    'label' => 'Thế mạnh chuyên môn',
                     'attr' => [
                         'class' => 'form-control',
                         'rows' => 5, // Số dòng hiển thị mặc định

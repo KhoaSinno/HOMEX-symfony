@@ -25,6 +25,11 @@
 				</div>
 			</div>
 			<!-- /Page Header -->
+			<div class="mb-2">
+				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_admin_appointment')}}">
+					<i class="fa fa-arrow-left" aria-hidden="true"></i>
+					Trở về</a>
+			</div>
 
 			<div class="row">
 				<div class="col-sm-12">
@@ -53,12 +58,12 @@
 												<td>
 													<h2 class="table-avatar">
 														<a href="{{path('app_admin_patient_show', {'id': ap.patient.id})}}" class="avatar avatar-sm mr-2">
-														
-																{% if ap.patient.googleId %}
-																	<img class="rounded-circle" style="width: 50px; height: 50px;" src="{{ap.patient.image ? asset(ap.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
-																{% else %}
-																	<img class="avatar-img rounded-circle" src="{{ap.patient.image ? asset('uploads/users/' ~ ap.patient.image) : asset('uploads/users/default.png')}}" alt="Hình ảnh bệnh nhân">
-																{% endif %}
+
+															{% if ap.patient.googleId %}
+																<img class="rounded-circle" style="width: 50px; height: 50px;" src="{{ap.patient.image ? asset(ap.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
+															{% else %}
+																<img class="avatar-img rounded-circle" src="{{ap.patient.image ? asset('uploads/users/' ~ ap.patient.image) : asset('uploads/users/default.png')}}" alt="Hình ảnh bệnh nhân">
+															{% endif %}
 														</a>
 														<a class="ml-2" href="{{path('app_admin_patient_show', {'id': ap.patient.id})}}">{{ap.patient.fullname}}</a>
 													</h2>

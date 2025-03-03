@@ -17,18 +17,18 @@
 						<img id="preview-image" src="{{ user.image ? asset('uploads/users/' ~ user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 						<label for="validationCustom04">Ảnh đại diện</label>
 					</div>
-				<div class="col-md-4 mb-3 text-left">
-					{{ form_label(form.image) }}
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text" id="inputGroupPrepend">
-								<i class="fa fa-picture-o" aria-hidden="true"></i>
-							</span>
+					<div class="col-md-4 mb-3 text-left">
+						{{ form_label(form.image) }}
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="inputGroupPrepend">
+									<i class="fa fa-picture-o" aria-hidden="true"></i>
+								</span>
+							</div>
+							{{ form_widget(form.image) }}
+							{{ form_errors(form.image) }}
 						</div>
-						{{ form_widget(form.image) }}
-						{{ form_errors(form.image) }}
 					</div>
-				</div>
 				</div>
 			</div>
 
@@ -112,14 +112,32 @@
 						{{ form_errors(form.consultationFee) }}
 					</div>
 				</div>
+				
+				<div class="col-12 mb-3">
+					{{ form_label(form.qualification) }}
+					{{ form_widget(form.qualification) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.qualification) }}
+					</div>
+				</div>
 
 				<div class="col-12 mb-3">
+					{{ form_label(form.bio) }}
+					{{ form_widget(form.bio, {'attr': {'id': 'bio-editor'}}) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.bio) }}
+					</div>
+				</div>
+
+				
+				{# <div class="col-12 mb-3">
 					{{ form_label(form.bio) }}
 					{{ form_widget(form.bio) }}
 					<div class="valid-feedback">
 						{{ form_errors(form.bio) }}
 					</div>
-				</div>
+				</div> #}
+
 			</div>
 			{# Button submit #}
 			<div class="form-row">
@@ -133,6 +151,11 @@
 </div>
 
 {% block JSCustom %}
+
+				<script>
+					CKEDITOR.replace('user_bio');
+				</script>
+
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {

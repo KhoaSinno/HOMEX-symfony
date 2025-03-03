@@ -24,7 +24,6 @@
 								<div class="profile-info-widget">
 									<a href="#" class="booking-doc-img">
 										{% if patient.googleId %}
-
 											<img src="{{patient.image ? asset(patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
 										{% else %}
 
@@ -54,9 +53,6 @@
 										<span>{{patient.dateOfBirth ? patient.dateOfBirth|date('d/m/Y') : 'Trống'}},
 											{{patient.gender ?? 'Trống'}}</span>
 									</li>
-									{# <li>Nhóm máu
-																		                                        <span>AB+</span>
-																		                                    </li> #}
 								</ul>
 							</div>
 						</div>
@@ -81,10 +77,10 @@
 												{{ appointment.doctor.fullname }}
 											</h5>
 											<span class="d-block text-sm text-muted">
-												{{ appointment.doctor.specialty.name }}
+												{{ appointment.doctor.specialty.name | specialty_label}}
 											</span>
 											<span class="d-block text-sm text-muted">
-												{{ appointment.appointmentDate|date('d M Y H:i A') }}
+												{{ appointment.appointmentDate|date('d-m-Y') }}
 											</span>
 										</div>
 									</div>
@@ -99,7 +95,14 @@
 				</div>
 
 				<div class="col-md-7 col-lg-8 col-xl-9 dct-appoinment">
+					<div class="m-2">
+						<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_doctor_patient')}}">
+							<i class="fa fa-arrow-left" aria-hidden="true"></i>
+							Trở về</a>
+					</div>
 					<div class="card">
+
+
 						<div class="card-body pt-0">
 							<div class="user-tabs">
 								<ul class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap">
@@ -126,7 +129,6 @@
 													<thead>
 														<tr>
 															<th>Bác sĩ</th>
-															<th>Ngày đặt hẹn</th>
 															<th>Ngày khám</th>
 															<th>Tổng tiền</th>
 															<th>Trạng thái</th>
@@ -143,25 +145,27 @@
 																			<img class="avatar-img rounded-circle" src="{{app.doctor.image ? asset('uploads/users/' ~ app.doctor.image) : asset('uploads/users/default.png')}}" alt="User Image">
 																		</a>
 																		<a href="{{path('user_profile_settings')}}">{{app.doctor.fullname}}
-																			<span>{{app.doctor.specialty.name}}</span>
+																			<span>{{app.doctor.specialty.name | specialty_label}}</span>
 																		</a>
 																	</h2>
 																</td>
-																<td>Chưa set thuộc tính</td>
 																<td>{{ app.appointmentDate | date('d/m/Y') }}
 																	<span class="d-block text-info">{{app.appointmentTime}}</span>
 																</td>
 																<td>{{app.price | currency_vnd}}</td>
 																<td>{{ app.status | status_badge | raw }}</td>
 
-																{# <td>
-																																<span class="badge badge-pill bg-success-light">Xác nhận</span>
-																															</td> #}
+
 																<td class="text-right">
 																	<div class="table-action">
-																		<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																			<i class="far fa-edit"></i>
-																			Sửa
+																		<a href="{{path('app_doctor_patient_appointment_show', {'id':app.id})}}" class="btn btn-sm bg-info-light">
+																			<i class="far fa-eye"></i>
+																			Xem
+																		</a>
+
+																		<a href="{{path('app_doctor_appointment_edit', {'id': app.id})}}" class="btn btn-sm bg-success-light">
+																			<i class="fas fa-check"></i>
+																			Duyệt
 																		</a>
 																	</div>
 																</td>
@@ -172,99 +176,6 @@
 															</tr>
 														{% endfor %}
 
-														{# <tr>
-																													<td>
-																														<h2 class="table-avatar">
-																															<a href="{{path('user_profile_settings')}}" class="avatar avatar-sm mr-2">
-																																<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
-																															</a>
-																															<a href="{{path('user_profile_settings')}}">Dr. Darren Elder
-																																<span>Dental</span>
-																															</a>
-																														</h2>
-																													</td>
-																													<td>11 Nov 2019
-																														<span class="d-block text-info">11.00 AM</span>
-																													</td>
-																													<td>10 Nov 2019</td>
-																													<td>$400</td>
-																													<td>13 Nov 2019</td>
-																													<td>
-																														<span class="badge badge-pill bg-danger-light">Cancelled</span>
-																													</td>
-																													<td class="text-right">
-																														<div class="table-action">
-																															<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																																<i class="far fa-edit"></i>
-																																Edit
-																															</a>
-																														</div>
-																													</td>
-																												</tr>
-																												<tr>
-																													<td>
-																														<h2 class="table-avatar">
-																															<a href="{{path('user_profile_settings')}}" class="avatar avatar-sm mr-2">
-																																<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
-																															</a>
-																															<a href="{{path('user_profile_settings')}}">Dr. Darren Elder
-																																<span>Dental</span>
-																															</a>
-																														</h2>
-																													</td>
-																													<td>10 Nov 2019
-																														<span class="d-block text-info">3.00 PM</span>
-																													</td>
-																													<td>10 Nov 2019</td>
-																													<td>$350</td>
-																													<td>12 Nov 2019</td>
-																													<td>
-																														<span class="badge badge-pill bg-warning-light">Pending</span>
-																													</td>
-																													<td class="text-right">
-																														<div class="table-action">
-																															<a href="edit-prescription.html" class="btn btn-sm bg-success-light">
-																																<i class="far fa-edit"></i>
-																																Edit
-																															</a>
-																															<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																																<i class="far fa-trash-alt"></i>
-																																Cancel
-																															</a>
-																														</div>
-																													</td>
-																												</tr>
-																												
-																												<tr>
-																													<td>
-																														<h2 class="table-avatar">
-																															<a href="{{path('user_profile_settings')}}" class="avatar avatar-sm mr-2">
-																																<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
-																															</a>
-																															<a href="{{path('user_profile_settings')}}">Dr. Darren Elder
-																																<span>Dental</span>
-																															</a>
-																														</h2>
-																													</td>
-																													<td>7 Nov 2019
-																														<span class="d-block text-info">9.00 PM</span>
-																													</td>
-																													<td>7 Nov 2019</td>
-																													<td>$275</td>
-																													<td>9 Nov 2019</td>
-																													<td>
-																														<span class="badge badge-pill bg-info-light">Completed</span>
-																													</td>
-																													<td class="text-right">
-																														<div class="table-action">
-																															<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-																																<i class="far fa-clock"></i>
-																																Reschedule
-																															</a>
-																														</div>
-																													</td>
-																												</tr> #}
-
 													</tbody>
 												</table>
 											</div>
@@ -274,11 +185,8 @@
 								<!-- /Appointment Tab -->
 
 								<!-- Billing Tab -->
-								<div
-									class="tab-pane" id="billing">
-									{# <div class="text-right">
-																			<a class="add-new-btn" href="add-billing.html">Add Billing</a>
-																		</div> #}
+								<div class="tab-pane" id="billing">
+
 									<div class="card card-table mb-0">
 										<div class="card-body">
 											<div class="table-responsive">
@@ -289,7 +197,6 @@
 															<th>Mã HĐ</th>
 															<th>Bác sĩ</th>
 															<th>Tổng tiền</th>
-															{# <th>Thanh toán vào</th> #}
 															<th></th>
 														</tr>
 													</thead>
@@ -305,29 +212,29 @@
 																		<a href="{{path('user_profile_settings')}}" class="avatar avatar-sm mr-2">
 																			<img class="avatar-img rounded-circle" src="{{invoice.doctor.image ? asset('uploads/users/' ~ invoice.doctor.image) : asset('uploads/users/default.png')}}" alt="User Image">
 																		</a>
-																		<a{{invoice.doctor.specialty.name}}</span href="{{path('user_profile_settings')}}" {{invoice.doctor.fullname}} <a>></a>
+
+																		<a href="{{ path('user_profile_settings') }}">
+																			<span class="d-block text-info">
+																				{{ invoice.doctor.specialty.name  | specialty_label}}
+																			</span>
+																			{{ invoice.doctor.fullname }}
+																		</a>
+																		<div class="d-flex flex-column"></div>
+
 																	</h2>
 																</td>
-																<td>{{invoice.price}}</td>
-																{# <td>Ngày thanh toán</td> #}
+																<td>{{invoice.price | currency_vnd}}</td>
 																<td class="text-right">
 																	<div class="table-action">
 																		<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
 																			<i class="fas fa-print"></i>
-																			Print
+																			In
 																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+																		<a href="{{path('app_doctor_patient_appointment_show', {'id':invoice.id})}}" class="btn btn-sm bg-info-light">
 																			<i class="far fa-eye"></i>
-																			View
+																			Xem
 																		</a>
-																		<a href="edit-billing.html" class="btn btn-sm bg-success-light">
-																			<i class="fas fa-edit"></i>
-																			Edit
-																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																			<i class="far fa-trash-alt"></i>
-																			Delete
-																		</a>
+
 																	</div>
 																</td>
 															</tr>

@@ -29,7 +29,9 @@ class AppointmentType extends AbstractType
             ->add('appointmentDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Ngày hẹn',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
             ->add('appointmentTime', null, [
                 'label' => 'Giờ hẹn',
@@ -77,7 +79,9 @@ class AppointmentType extends AbstractType
             ->add('patientDateOfBirth', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Ngày sinh bệnh nhân',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'format' => 'dd/MM/yyyy',
+                'html5' => false,
             ])
             ->add('patientPhoneNumber', null, [
                 'label' => 'Số điện thoại bệnh nhân',
@@ -112,14 +116,14 @@ class AppointmentType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'fullname',
                 'label' => 'Bệnh nhân',
-                'choices'=> $this->userRepo->findUserByRole('ROLE_PATIENT'), 
+                'choices' => $this->userRepo->findUserByRole('ROLE_PATIENT'),
                 'attr' => ['class' => 'form-control']
             ])
             ->add('doctor', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'fullname',
                 'label' => 'Bác sĩ phụ trách',
-                'choices'=> $this->userRepo->findUserByRole('ROLE_DOCTOR'), 
+                'choices' => $this->userRepo->findUserByRole('ROLE_DOCTOR'),
                 'attr' => ['class' => 'form-control']
             ]);
     }

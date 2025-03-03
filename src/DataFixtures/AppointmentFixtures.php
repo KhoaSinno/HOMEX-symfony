@@ -34,9 +34,9 @@ class AppointmentFixtures extends Fixture implements DependentFixtureInterface
         $appointment->setPatientEmail($patient->getEmail());
         $appointment->setReason('Khám định kỳ');
         $appointment->setStatus(AppointmentConstants::PENDING_STATUS); // Trạng thái chờ xác nhận
-        $appointment->setPaymentStatus(AppointmentConstants::UNPAID_STATUS); // Chưa thanh toán
+        $appointment->setPaymentStatus(AppointmentConstants::PAID_STATUS); // Chưa thanh toán
         $appointment->setForWho(AppointmentConstants::FOR_WHO_SELF); // Dành cho chính bệnh nhân
-
+        // $appointment->setPatientGender('male');
         $manager->persist($appointment);
         $manager->flush();
     }

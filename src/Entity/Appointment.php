@@ -68,6 +68,9 @@ class Appointment
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $invoiceNumber = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $reasonCancel = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -285,6 +288,18 @@ class Appointment
     public function setInvoiceNumber(?string $invoiceNumber): static
     {
         $this->invoiceNumber = $invoiceNumber;
+
+        return $this;
+    }
+
+    public function getReasonCancel(): ?string
+    {
+        return $this->reasonCancel;
+    }
+
+    public function setReasonCancel(?string $reasonCancel): static
+    {
+        $this->reasonCancel = $reasonCancel;
 
         return $this;
     }

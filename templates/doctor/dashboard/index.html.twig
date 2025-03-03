@@ -53,9 +53,9 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Total Patient</h6>
-													<h3>1500</h3>
-													<p class="text-muted">Till Today</p>
+													<h6>Tổng số khách hàng</h6>
+													<h3>{{totalPatients}}</h3>
+													<p class="text-muted">Cho đến nay</p>
 												</div>
 											</div>
 										</div>
@@ -68,9 +68,9 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Today Patient</h6>
-													<h3>160</h3>
-													<p class="text-muted">06, Nov 2019</p>
+													<h6>Số khách hàng hôm nay</h6>
+													<h3>{{totalPatientsToday}}</h3>
+													<p class="text-muted">{{date | date('d-m-Y')}}</p>
 												</div>
 											</div>
 										</div>
@@ -83,9 +83,10 @@
 													</div>
 												</div>
 												<div class="dash-widget-info">
-													<h6>Appoinments</h6>
-													<h3>85</h3>
-													<p class="text-muted">06, Apr 2019</p>
+													<h6>Số lịch khám hôm nay</h6>
+													<h3>{{totalAppointmentsToday}}</h3>
+													<p class="text-muted">{{date | date('d-m-Y')}}</p>
+
 												</div>
 											</div>
 										</div>
@@ -97,23 +98,86 @@
 
 					<div class="row">
 						<div class="col-md-12">
-							<h4 class="mb-4">Patient Appoinment</h4>
+							<h4 class="mb-4">Lịch hẹn bệnh nhân</h4>
 							<div
 								class="appointment-tab">
 
 								<!-- Appointment Tab -->
 								<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
 									<li class="nav-item">
-										<a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+										<a class="nav-link" href="#today-appointments" data-toggle="tab">Hôm nay</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link" href="#today-appointments" data-toggle="tab">Today</a>
+										<a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Sắp tới</a>
 									</li>
 								</ul>
 								<!-- /Appointment Tab -->
 
 								<div
 									class="tab-content">
+
+
+									<!-- Today Appointment Tab -->
+									<div class="tab-pane" id="today-appointments">
+										<div class="card card-table mb-0">
+											<div class="card-body">
+												<div class="table-responsive">
+													<table class="table table-hover table-center mb-0">
+														<thead>
+															<tr class="text-center">
+																<th>Tên BN</th>
+																<th>Ngày khám</th>
+																<th>Chuẩn đoán</th>
+																<th class="text-center">Tổng tiền</th>
+																<th></th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for apTo in appointmentsToday %}
+
+																<tr>
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="{{path('app_doctor_patient_show',{'id':apTo.id})}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ apTo.patient.image ? asset('uploads/users/' ~ apTo.patient.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image"></a>
+																			<a href="{{path('app_doctor_patient_show',{'id':apTo.id})}}">{{apTo.patient.fullname}}
+																				<span>#P{{apTo.patient.id}}</span>
+																			</a>
+																		</h2>
+																	</td>
+																	<td>{{apTo.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{apTo.appointmentTime}}</span>
+																	</td>
+																	<td>{{apTo.result}}</td>
+																	<td class="text-center">{{apTo.price | currency_vnd}}</td>
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="{{path('app_doctor_appointment_show', {'id': apTo.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+
+																			<a href="{{path('app_doctor_appointment_edit', {'id': apTo.id})}}" class="btn btn-sm bg-success-light">
+																				<i class="fas fa-check"></i>
+																				Duyệt
+																			</a>
+																			<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ apTo.id }}" data-token="{{ csrf_token('delete' ~ apTo.id) }}">
+																				<i class="fas fa-times"></i>
+																				Hủy
+																			</a>
+
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
+
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- /Today Appointment Tab -->
+
 
 									<!-- Upcoming Appointment Tab -->
 									<div class="tab-pane show active" id="upcoming-appointments">
@@ -122,49 +186,53 @@
 												<div class="table-responsive">
 													<table class="table table-hover table-center mb-0">
 														<thead>
-															<tr>
-																<th>Patient Name</th>
-																<th>Appt Date</th>
-																<th>Purpose</th>
-																<th>Type</th>
-																<th class="text-center">Paid Amount</th>
+															<tr class="text-center">
+																<th>Tên BN</th>
+																<th>Ngày khám</th>
+																<th>Chuẩn đoán</th>
+
+																<th class="text-center">Tổng tiền</th>
 																<th></th>
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
-																<td>
-																	<h2 class="table-avatar">
-																		<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{asset('customer/assets/img/patients/patient.jpg')}}" alt="User Image"></a>
-																		<a href="patient-profile.html">Richard Wilson
-																			<span>#PT0016</span>
-																		</a>
-																	</h2>
-																</td>
-																<td>11 Nov 2019
-																	<span class="d-block text-info">10.00 AM</span>
-																</td>
-																<td>General</td>
-																<td>New Patient</td>
-																<td class="text-center">$150</td>
-																<td class="text-right">
-																	<div class="table-action">
-																		<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-																			<i class="far fa-eye"></i>
-																			View
-																		</a>
 
-																		<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																			<i class="fas fa-check"></i>
-																			Accept
-																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																			<i class="fas fa-times"></i>
-																			Cancel
-																		</a>
-																	</div>
-																</td>
-															</tr>
+															{% for apUp in appointmentsUpcoming %}
+																<tr class="text-center">
+																	<td>
+																		<h2 class="table-avatar">
+																			<a href="{{path('app_doctor_patient_show',{'id':apUp.id})}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ apUp.patient.image ? asset('uploads/users/' ~ apUp.patient.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image"></a>
+																			<a href="{{path('app_doctor_patient_show',{'id':apUp.id})}}">{{apUp.patient.fullname}}
+																				<span>#P{{apUp.patient.id}}</span>
+																			</a>
+																		</h2>
+																	</td>
+																	<td>{{apUp.appointmentDate|date('d/m/Y')}}
+																		<span class="d-block text-info">{{apUp.appointmentTime}}</span>
+																	</td>
+																	<td>{{apUp.result}}</td>
+																	<td class="text-center">{{apUp.price | currency_vnd}}</td>
+																	<td class="text-right">
+																		<div class="table-action">
+																			<a href="{{path('app_doctor_appointment_show', {'id': apUp.id})}}" class="btn btn-sm bg-info-light">
+																				<i class="far fa-eye"></i>
+																				Chi tiết
+																			</a>
+																			<a href="{{path('app_doctor_appointment_edit', {'id': apUp.id})}}" class="btn btn-sm bg-success-light">
+																				<i class="fas fa-check"></i>
+																				Duyệt
+																			</a>
+
+																			<a href="#" class="btn btn-sm bg-danger-light delete-btn" data-id="{{ apUp.id }}" data-token="{{ csrf_token('delete' ~ apUp.id) }}">
+																				<i class="fas fa-times"></i>
+																				Hủy
+																			</a>
+
+
+																		</div>
+																	</td>
+																</tr>
+															{% endfor %}
 
 														</tbody>
 													</table>
@@ -174,64 +242,6 @@
 									</div>
 									<!-- /Upcoming Appointment Tab -->
 
-									<!-- Today Appointment Tab -->
-									<div class="tab-pane" id="today-appointments">
-										<div class="card card-table mb-0">
-											<div class="card-body">
-												<div class="table-responsive">
-													<table class="table table-hover table-center mb-0">
-														<thead>
-															<tr>
-																<th>Patient Name</th>
-																<th>Appt Date</th>
-																<th>Purpose</th>
-																<th>Type</th>
-																<th class="text-center">Paid Amount</th>
-																<th></th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>
-																	<h2 class="table-avatar">
-																		<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{asset('customer/assets/img/patients/patient6.jpg')}}" alt="User Image"></a>
-																		<a href="patient-profile.html">Elsie Gilley
-																			<span>#PT0006</span>
-																		</a>
-																	</h2>
-																</td>
-																<td>14 Nov 2019
-																	<span class="d-block text-info">6.00 PM</span>
-																</td>
-																<td>Fever</td>
-																<td>Old Patient</td>
-																<td class="text-center">$300</td>
-																<td class="text-right">
-																	<div class="table-action">
-																		<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-																			<i class="far fa-eye"></i>
-																			View
-																		</a>
-
-																		<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																			<i class="fas fa-check"></i>
-																			Accept
-																		</a>
-																		<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																			<i class="fas fa-times"></i>
-																			Cancel
-																		</a>
-																	</div>
-																</td>
-															</tr>
-
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!-- /Today Appointment Tab -->
 
 								</div>
 							</div>
@@ -245,11 +255,82 @@
 
 	</div>
 	<!-- /Page Content -->
+
+
 {% endblock %}
 
 {% block JSCustom %}
-	{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+	{# <!-- jQuery (nếu chưa có) -->
+					<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+					<!-- Bootstrap -->
+					<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> #}
 
+	<script>
+
+		document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll(".delete-btn").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault(); // Ngăn chặn load lại trang khi click
+
+let appointmentId = this.getAttribute("data-id");
+let token = this.getAttribute("data-token");
+
+// Hiển thị SweetAlert2 để nhập lý do hủy
+Swal.fire({
+title: "Bạn có chắc muốn hủy lịch hẹn?",
+text: "Vui lòng nhập lý do hủy:",
+icon: "warning",
+input: "text",
+inputPlaceholder: "Nhập lý do hủy...",
+inputAttributes: {
+required: "true"
+},
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xác nhận hủy",
+cancelButtonText: "Thoát",
+preConfirm: (reasonCancel) => {
+if (!reasonCancel) {
+Swal.showValidationMessage("Bạn cần nhập lý do hủy!");
+}
+return reasonCancel;
+}
+}).then((result) => {
+if (result.isConfirmed) {
+let reasonCancel = result.value;
+
+// Tạo form ẩn để gửi request
+let form = document.createElement("form");
+form.method = "post";
+form.action = "/doctor/appointment/" + appointmentId + "/delete";
+
+let methodInput = document.createElement("input");
+methodInput.type = "hidden";
+methodInput.name = "_method";
+methodInput.value = "DELETE";
+
+let tokenInput = document.createElement("input");
+tokenInput.type = "hidden";
+tokenInput.name = "_token";
+tokenInput.value = token;
+
+let reasonInput = document.createElement("input");
+reasonInput.type = "hidden";
+reasonInput.name = "reasonCancel";
+reasonInput.value = reasonCancel;
+
+form.appendChild(methodInput);
+form.appendChild(tokenInput);
+form.appendChild(reasonInput);
+document.body.appendChild(form);
+form.submit();
+}
+});
+});
+});
+});
+	</script>
 
 	<!-- Sticky Sidebar JS -->
 	<script src="{{asset('customer/assets/plugins/theia-sticky-sidebar/ResizeSensor.js')}}"></script>
@@ -257,5 +338,6 @@
 
 	<!-- Circle Progress JS -->
 	<script src="{{asset('customer/assets/js/circle-progress.min.js')}}"></script>
+
 
 {% endblock %}

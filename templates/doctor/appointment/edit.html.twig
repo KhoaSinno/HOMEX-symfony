@@ -1,14 +1,54 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseCustomer.html.twig' %}
 
-{% block title %}Edit Appointment
+{% block title %}Cập nhật lịch hẹn
 {% endblock %}
 
 {% block body %}
-	<h1>Edit Appointment</h1>
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-bar">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-12 col-12">
+					<nav aria-label="breadcrumb" class="page-breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path('app_home')}}">Home</a>
+							</li>
+							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+						</ol>
+					</nav>
+					<h2 class="breadcrumb-title">Dashboard</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Breadcrumb -->
 
-	{{ include('doctor/appointment/_form.html.twig', {'button_label': 'Update'}) }}
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
 
-	<a href="{{ path('app_doctor_appointment') }}">back to list</a>
+			<div class="row">
+				<div
+					class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
 
-	{{ include('doctor/appointment/_delete_form.html.twig') }}
+					<!-- Profile Sidebar -->
+					{% include '_sidebar.html.twig' %}
+					<!-- /Profile Sidebar -->
+
+				</div>
+				<div class="col-md-7 col-lg-8 col-xl-9">
+					{{ include('doctor/appointment/_form.html.twig', {'button_label': 'Cập nhật'}) }}
+
+				</div>
+
+
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Page Content -->
+
+
 {% endblock %}

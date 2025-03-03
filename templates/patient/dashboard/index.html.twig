@@ -12,7 +12,7 @@
 					<nav aria-label="breadcrumb" class="page-breadcrumb">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="index-2.html">Trang chủ</a>
+								<a href="{{path('app_home')}}">Trang chủ</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 						</ol>
@@ -87,7 +87,7 @@
 																				<img class="avatar-img rounded-circle" src="{{ap.doctor.image ? asset('uploads/users/' ~ ap.doctor.image) : asset('uploads/users/userDefault.png') }}" alt="User Image">
 																			</a>
 																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}">{{ap.doctor.fullname}}
-																				<span>{{ap.doctor.specialty.name}}</span>
+																				<span>{{ap.doctor.specialty.name | specialty_label}}</span>
 																			</a>
 																		</h2>
 																	</td>
@@ -154,7 +154,7 @@
 																				<img class="avatar-img rounded-circle" src="{{ap.doctor.image ? asset('uploads/users/' ~ ap.doctor.image) : asset('uploads/users/userDefault.png') }}" alt="User Image">
 																			</a>
 																			<a href="{{ path('app_doctor_profile', {id: ap.doctor.id}) }}">{{ap.doctor.fullname}}
-																				<span>{{ap.doctor.specialty.name}}</span>
+																				<span>{{ap.doctor.specialty.name | specialty_label}}</span>
 																			</a>
 																		</h2>
 																	</td>

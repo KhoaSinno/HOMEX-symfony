@@ -82,7 +82,7 @@
 											<label class="custom_check">
 												<input type="checkbox" name="select_specialist[]" value="{{ specialist }}" {{ specialist in selected_specialists ? 'checked' : '' }}>
 												<span class="checkmark"></span>
-												{{ specialist }}
+												{{ specialist | specialty_label }}
 											</label>
 										</div>
 									{% endfor %}
