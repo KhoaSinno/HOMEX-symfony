@@ -172,6 +172,12 @@
 {% endblock %}
 
 {% block JSCustom %}
+
+		<script>
+			CKEDITOR.replace('profile_bio');
+		</script>
+
+
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {

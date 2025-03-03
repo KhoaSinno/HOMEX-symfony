@@ -56,7 +56,7 @@
 							{{ user.specialty.name | specialty_label }}</p>
 						<p>
 							<strong>Giới thiệu:</strong>
-							{{ user.bio }}</p>
+							{{ user.bio | raw }}</p>
 						<p>
 							<strong>Phí khám:</strong>
 							{{ user.consultationFee | currency_vnd }}</p>
@@ -71,4 +71,11 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
+
+
+{% block JSCustom %}
+	<script>
+		CKEDITOR.replace('user_bio');
+	</script>
 {% endblock %}

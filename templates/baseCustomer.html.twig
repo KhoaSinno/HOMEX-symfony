@@ -27,6 +27,11 @@
 		{# My style #}
 		{% block styleCustom %}{% endblock %}
 
+		
+		{# ck editor #}
+		<script src="{{asset('ckeditor/ckeditor.js')}}"></script>
+
+
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -346,7 +351,6 @@
 
 		{# Sweat Alert #}
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 		<!-- My: Custom JS -->
 		{% block JSCustom %}{% endblock %}

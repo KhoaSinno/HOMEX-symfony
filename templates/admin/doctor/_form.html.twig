@@ -123,11 +123,20 @@
 
 				<div class="col-12 mb-3">
 					{{ form_label(form.bio) }}
-					{{ form_widget(form.bio) }}
+					{{ form_widget(form.bio, {'attr': {'id': 'bio-editor'}}) }}
 					<div class="valid-feedback">
 						{{ form_errors(form.bio) }}
 					</div>
 				</div>
+
+				
+				{# <div class="col-12 mb-3">
+					{{ form_label(form.bio) }}
+					{{ form_widget(form.bio) }}
+					<div class="valid-feedback">
+						{{ form_errors(form.bio) }}
+					</div>
+				</div> #}
 
 			</div>
 			{# Button submit #}
@@ -142,6 +151,11 @@
 </div>
 
 {% block JSCustom %}
+
+				<script>
+					CKEDITOR.replace('user_bio');
+				</script>
+
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
