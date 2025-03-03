@@ -26,16 +26,16 @@ class ScheduleWorkType extends AbstractType
                         ->where("u.roles LIKE :role") // Tìm kiếm các user có chứa ROLE_DOCTOR trong roles
                         ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm chuỗi chứa ROLE_DOCTOR
                 },
-                'choice_label' => 'fullname',  // Hiển thị fullname của bác sĩ
+                'choice_label' => 'fullname',  
                 'label' => 'Chọn bác sĩ',
             ])
             ->add('date', null, [
                 'widget' => 'single_text',
                 'label' => 'Chọn ngày làm việc',
             ])
-            ->add('maxPatient', null, [
-                'label' => 'Số BN tối đa/ giờ khám',
-            ])
+            // ->add('maxPatient', null, [
+            //     'label' => 'Số BN tối đa/ giờ khám',
+            // ])
             // ->add('timeSlots', ChoiceType::class, [
             //     'choices' => array_combine($options['time_slots'], $options['time_slots']),
             //     'expanded' => true,

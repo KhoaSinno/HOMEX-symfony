@@ -50,17 +50,17 @@ class ScheduleWorkRepository extends ServiceEntityRepository
         return $result && isset($result['timeSlots']) ? $result['timeSlots'] : [];
     }
 
-    public function getMaxPatientByDoctorAndDate(User $doctor, \DateTime $date): ?int
-    {
-        return $this->createQueryBuilder('s')
-            ->select('s.maxPatient')
-            ->where('s.doctor = :doctor')
-            ->andWhere('s.date = :date')
-            ->setParameter('doctor', $doctor)
-            ->setParameter('date', $date->format('Y-m-d'))
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
+    // public function getMaxPatientByDoctorAndDate(User $doctor, \DateTime $date): ?int
+    // {
+    //     return $this->createQueryBuilder('s')
+    //         ->select('s.maxPatient')
+    //         ->where('s.doctor = :doctor')
+    //         ->andWhere('s.date = :date')
+    //         ->setParameter('doctor', $doctor)
+    //         ->setParameter('date', $date->format('Y-m-d'))
+    //         ->getQuery()
+    //         ->getSingleScalarResult();
+    // }
 
 // Lấy số bệnh nhân đã đặt theo từng khung giờ
     // public function getBookedPatientsByDoctorAndDate(User $doctor, \DateTime $date, string $timeSlot): int

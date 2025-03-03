@@ -62,7 +62,7 @@
 
 							</td>
 							<td>{{ s.date ? s.date|date('d-m-Y') : '' }}</td>
-							<td>{{ s.maxPatient }}</td>
+							{# <td>{{ s.maxPatient }}</td> #}
 							<td>
 								{% if s.timeSlots %}
 									{% for slot in s.timeSlots %}

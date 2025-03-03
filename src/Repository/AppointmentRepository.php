@@ -98,9 +98,9 @@ class AppointmentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->select('SUM(a.price)')
-            ->where('a.status = :confirmed')
+            ->where('a.status = :completed')
             ->andWhere('a.paymentStatus = :paid')
-            ->setParameter('confirmed', 'confirmed')
+            ->setParameter('completed', 'completed')
             ->setParameter('paid', 'paid')
             ->getQuery()
             ->getSingleScalarResult() ?? 0;

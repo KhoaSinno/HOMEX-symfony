@@ -15,7 +15,6 @@ class DoctorScheduleWorkType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('maxPatient')
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control schedule-datepicker'],

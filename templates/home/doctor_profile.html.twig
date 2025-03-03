@@ -66,7 +66,7 @@
 										{{doctor.address}}</li>
 									<li>
 										<i class="far fa-money-bill-alt"></i>
-										{{doctor.consultationFee | currency_vnd}}/30 phút
+										{{doctor.consultationFee | currency_vnd}}
 									</li>
 								</ul>
 							</div>
@@ -163,7 +163,7 @@
 									<!-- About Details -->
 									<div class="widget about-widget">
 										<h4 class="widget-title">Về bác sĩ</h4>
-										<p>{{doctor.bio}}</p>
+										<p>{{doctor.bio | raw}}</p>
 									</div>
 									<!-- /About Details -->
 
