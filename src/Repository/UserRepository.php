@@ -63,9 +63,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if (!empty($criteria['specialty'])) {
             if (is_array($criteria['specialty'])) {
-                // Nếu specialty là mảng, dùng IN
-                $qb->andWhere('u.specialty IN (:specialty)')
-                    ->setParameter('specialty', $criteria['specialty']);
+                // Nếu specialty là mảng, dùng IN => tìm kiếm với nhiều chuyên khoa ấy mà, mà Business không có nên để thừa cũng chả sao
+                $qb->join('u.specialty', 's')  // Join bảng specialty với alias 's'
+                    ->andWhere('s.name IN (:specialty)')
+                    ->setParameter('specialty', (array) $criteria['specialty']);  // Đảm bảo là mảng
+
             } else {
                 // Nếu specialty không phải mảng, dùng LIKE
                 $qb->innerJoin('u.specialty', 's') // Thực hiện join với bảng specialty
