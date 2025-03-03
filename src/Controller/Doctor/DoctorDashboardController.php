@@ -2,7 +2,6 @@
 
 namespace App\Controller\Doctor;
 
-use App\Entity\Appointment;
 use App\Entity\User;
 use App\Repository\AppointmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
