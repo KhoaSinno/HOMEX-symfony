@@ -17,7 +17,7 @@
 					<nav aria-label="breadcrumb" class="page-breadcrumb">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="index-2.html">Home</a>
+								<a href="{{path('app_home')}}">Trang chủ</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">Doctor Profile</li>
 						</ol>
@@ -105,9 +105,9 @@
 
 									{% set isDisabled = status in ['pending', 'active', 'completed'] %}
 
-								<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %}disabled{% endif %}>
-									{{ slot }}
-								</button>
+									<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %} disabled {% endif %}>
+										{{ slot }}
+									</button>
 								{% endfor %}
 							</div>
 						{% else %}
@@ -179,67 +179,61 @@ console.log('Hello');
 }
 	</script>
 
-<script>
-document.querySelectorAll('.time-slot-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const timeSlot = this.innerText;
-        const date = document.querySelector('select[name="date"]').value;
-        const doctorId = "{{ doctor.id }}";
-
-        Swal.fire({
-            title: 'Xác nhận đặt lịch',
-            html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Tiếp tục',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Gửi yêu cầu AJAX để kiểm tra xem đã đặt lịch chưa
-                fetch(`/check-appointment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            throw new Error(data.message);
-                        }
-                        // Nếu thành công, redirect đến URL từ server trả về
-                        window.location.href = data.redirect;
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            //title: 'Lỗi!',
-                            title: error.message,
-                            icon: 'error'
-                        });
-                    });
-            }
-        });
-    });
-});
-
-</script>
-	{# <script>
+	<script>
 		document.querySelectorAll('.time-slot-btn').forEach(button => {
-		button.addEventListener('click', function () {
-		const timeSlot = this.innerText;
-		const date = document.querySelector('select[name="date"]').value;
-		const doctorId = "{{ doctor.id }}";
+button.addEventListener('click', function () {
+const timeSlot = this.innerText;
+const date = document.querySelector('select[name="date"]').value;
+const doctorId = "{{ doctor.id }}";
 
-		Swal.fire({
-		title: 'Xác nhận đặt lịch',
-		html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonText: 'Tiếp tục',
-		cancelButtonText: 'Hủy'
-		}).then((result) => {
-		if (result.isConfirmed) { // Chuyển hướng đến trang xác nhận thanh toán
-		window.location.href = `/confirm-payment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`;
-		}
-		});
-		});
-		});
-	</script> #}
+Swal.fire({
+title: 'Xác nhận đặt lịch',
+html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
+icon: 'warning',
+showCancelButton: true,
+confirmButtonText: 'Tiếp tục',
+cancelButtonText: 'Hủy'
+}).then((result) => {
+if (result.isConfirmed) { // Gửi yêu cầu AJAX để kiểm tra xem đã đặt lịch chưa
+fetch(`/check-appointment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`).then(response => response.json()).then(data => {
+if (data.error) {
+throw new Error(data.message);
+}
+// Nếu thành công, redirect đến URL từ server trả về
+window.location.href = data.redirect;
+}).catch(error => {
+Swal.fire({ // title: 'Lỗi!',
+title: error.message,
+icon: 'error'
+});
+});
+}
+});
+});
+});
+	</script>
+	{# <script>
+			document.querySelectorAll('.time-slot-btn').forEach(button => {
+			button.addEventListener('click', function () {
+			const timeSlot = this.innerText;
+			const date = document.querySelector('select[name="date"]').value;
+			const doctorId = "{{ doctor.id }}";
+	
+			Swal.fire({
+			title: 'Xác nhận đặt lịch',
+			html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Tiếp tục',
+			cancelButtonText: 'Hủy'
+			}).then((result) => {
+			if (result.isConfirmed) { // Chuyển hướng đến trang xác nhận thanh toán
+			window.location.href = `/confirm-payment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`;
+			}
+			});
+			});
+			});
+		</script> #}
 
 
 {% endblock %}

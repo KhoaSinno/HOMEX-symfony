@@ -24,6 +24,20 @@
 	</div>
 	<!-- /Breadcrumb -->
 
+	{# Print bug #}
+	{% for message in app.flashes('error') %}
+		<div class="alert alert-danger text-center" role="alert">
+			{{ message }}
+		</div>
+	{% endfor %}
+
+	{# Print success #}
+	{% for success in app.flashes('success') %}
+		<div class="alert alert-success text-center" role="alert">
+			{{ success }}
+		</div>
+	{% endfor %}
+
 	<!-- Page Content -->
 	<div class="content">
 		<div class="container-fluid">
@@ -103,6 +117,11 @@
 																	</td>
 																	<td class="text-right">
 																		<div class="table-action">
+
+																			<a class="btn btn-sm bg-warning-light m-md-1" href="{{ path('app_patient_appointment_edit', {'id': ap.id}) }}">
+																				<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+																				Sửa
+																			</a>
 																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
 																				<i class="fas fa-print"></i>
 																				In

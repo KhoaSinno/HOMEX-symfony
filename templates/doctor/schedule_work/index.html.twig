@@ -18,7 +18,7 @@
 						<nav aria-label="breadcrumb" class="page-breadcrumb">
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item">
-									<a href="index-2.html">Home</a>
+									<a href="{{path('app_home')}}">Trang chủ</a>
 								</li>
 								<li class="breadcrumb-item active" aria-current="page">Lịch làm việc</li>
 							</ol>
@@ -91,7 +91,7 @@
 													{% for slot in schedule.timeslots %}
 														<div class="doc-slot-list" id="schedule_{{ loop.index }}">
 															{{ slot }}
-															<a  class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
+															<a class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
 																<i class="fa fa-times"></i>
 															</a>
 														</div>
@@ -122,7 +122,8 @@
 
 {% block JSCustom %}
 
-	<!-- Moment.js (Cần thiết cho datetimepicker) --><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"> </script>
+	<!-- Moment.js (Cần thiết cho datetimepicker) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
 	<!-- Bootstrap Datetimepicker -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">

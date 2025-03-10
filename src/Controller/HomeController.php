@@ -57,9 +57,6 @@ class HomeController extends AbstractController
         if ($address) {
             $criteria['address'] = $address;
         }
-        // if ($specialty) {
-        //     $criteria['specialty'] = $specialty;
-        // }
         if (!empty($specialty)) {
             $criteria['specialty'] = $specialty; // Lọc danh sách chuyên khoa
         }

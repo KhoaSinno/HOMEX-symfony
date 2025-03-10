@@ -4186,3 +4186,8 @@ table.table-inbox tbody tr.checked {
     font-weight: 600;
     cursor: pointer;
 }
+
+/* Flash */
+.alert {
+    transition: opacity 0.5s ease;
+}

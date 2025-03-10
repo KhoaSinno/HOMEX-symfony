@@ -15,7 +15,7 @@
 						<nav aria-label="breadcrumb" class="page-breadcrumb">
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item">
-									<a href="index-2.html">Home</a>
+									<a href="{{path('app_home')}}">Trang chủ</a>
 								</li>
 								<li class="breadcrumb-item active" aria-current="page">Lịch làm việc</li>
 							</ol>
@@ -66,15 +66,16 @@
 		{% endblock %}
 
 		{% block JSCustom %}
-	<!-- Moment.js (Cần thiết cho datetimepicker) --><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"> </script>
+			<!-- Moment.js (Cần thiết cho datetimepicker) -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
-	<!-- Bootstrap Datetimepicker -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+			<!-- Bootstrap Datetimepicker -->
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 
-	<script>
-		$(document).ready(function () {
+			<script>
+				$(document).ready(function () {
 console.log("DOM Loaded, initializing datetimepicker...");
 
 // Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
@@ -96,5 +97,5 @@ showClose: true, // Hiển thị nút "Đóng"
 defaultDate: new Date()
 });
 });
-	</script>
+			</script>
 		{% endblock %}

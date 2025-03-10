@@ -80,11 +80,12 @@ class AppointmentController extends AbstractController
 
             return new JsonResponse(['error' => false, 'redirect' => $loginUrl], 302);
         }
+        // Đã tồn tại appointment in day => 403
         $existingAppointments = $this->apRepo->findByDoctorAndDate($doctor, $date, $patient);
-
         if (!empty($existingAppointments)) {
             return new JsonResponse(['error' => true, 'message' => 'Không được phép đặt nhiều buổi trong ngày!'], 403);
         }
+
 
         // Trả về URL để JavaScript redirect
         $confirmUrl = $this->generateUrl('confirm_payment', [
