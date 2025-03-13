@@ -40,7 +40,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('u.specialty', 's') // Join với Specialty
             ->addSelect('s') // Lấy cả Specialty
             ->where('u.roles LIKE :role')
+            ->andWhere('u.isDel = :isDel')
             ->setParameter('role', '%"' . $role . '"%') // Tìm role trong mảng JSON
+            ->setParameter('isDel', 0)
             ->getQuery()
             ->getResult();
     }
@@ -48,8 +50,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findDoctorsByCriteria(array $criteria)
     {
         $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.isDel = :isDel')
             ->andWhere('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm kiếm chỉ những bác sĩ
+            ->setParameter('role', '%ROLE_DOCTOR%') // Tìm kiếm chỉ những bác sĩ
+            ->setParameter('isDel', 0);
+
 
         if (!empty($criteria['name'])) {
             $qb->andWhere('u.fullname LIKE :name')

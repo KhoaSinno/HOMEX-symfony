@@ -27,7 +27,7 @@
 		{# My style #}
 		{% block styleCustom %}{% endblock %}
 
-		
+
 		{# ck editor #}
 		<script src="{{asset('ckeditor/ckeditor.js')}}"></script>
 
@@ -41,10 +41,10 @@
 	<body>
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{# {% for message in app.flashes('notice') %}
-																							<div class="notice">
-																								{{ message }}
-																							</div>
-																						{% endfor %} #}
+																									<div class="notice">
+																										{{ message }}
+																									</div>
+																								{% endfor %} #}
 
 
 		<!-- Main Wrapper -->
@@ -75,25 +75,25 @@
 						</div>
 						<ul class="main-nav">
 							<li class="{% if app.request.get('_route') == 'app_home' %}active{% endif %}">
-								<a href="{{ path('app_home') }}">Home</a>
+								<a href="{{ path('app_home') }}">Trang chủ</a>
 							</li>
 
 							<li class="{% if app.request.get('_route') in ['app_admin_dashboard', 'app_doctor_dashboard', 'app_patient_dashboard'] %}active{% endif %}">
 								<a href="
-																																																											{% if app.user %}
-																																																												{% if _admin_role in app.user.roles %}
-																																																													{{ path('app_admin_dashboard') }}
-																																																												{% elseif _doctor_role in app.user.roles %}
-																																																													{{ path('app_doctor_dashboard') }}
-																																																												{% elseif _patient_role in app.user.roles %}
-																																																													{{ path('app_patient_dashboard') }}
-																																																												{% else %}
-																																																													{{ path('app_home') }}
-																																																												{% endif %}
-																																																											{% else %}
-																																																												{{ path('app_home') }}
-																																																											{% endif %}
-																																																										">
+																																																																					{% if app.user %}
+																																																																						{% if _admin_role in app.user.roles %}
+																																																																							{{ path('app_admin_dashboard') }}
+																																																																						{% elseif _doctor_role in app.user.roles %}
+																																																																							{{ path('app_doctor_dashboard') }}
+																																																																						{% elseif _patient_role in app.user.roles %}
+																																																																							{{ path('app_patient_dashboard') }}
+																																																																						{% else %}
+																																																																							{{ path('app_home') }}
+																																																																						{% endif %}
+																																																																					{% else %}
+																																																																						{{ path('app_login') }}
+																																																																					{% endif %}
+																																																																				">
 									{% if app.user %}
 										{% if _admin_role in app.user.roles %}
 											Trang quản trị

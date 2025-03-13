@@ -66,6 +66,7 @@ final class AdminDoctorController extends AbstractController
             // dump($form->getErrors(true));
 
             $user->setRoles(['ROLE_DOCTOR']);
+            $user->setDel(false);
             $temPass = "dr" . $user->getPhoneNumber();
             $user->setPassword($this->passHasher->hashPassword($user, $temPass));
 
