@@ -27,7 +27,7 @@
 			<!-- /Page Header -->
 
 			<div class="mb-2">
-				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_admin_appointment')}}">
+				<a class="btn btn-sm btn-warning rounded mr-2"  href="javascript:history.back();" title="Trở về">
 					<i class="fa fa-arrow-left" aria-hidden="true"></i>
 					Trở về</a>
 			</div>
@@ -80,6 +80,10 @@
 															Xem
 														</a>
 
+														<a class="btn btn-sm bg-warning-light m-md-1" href="{{ path('app_admin_appointment_edit', {'id': ap.id}) }}">
+															<i class="fe fe-pencil"></i>
+															Sửa
+														</a>
 													</div>
 												</td>
 											</tr>

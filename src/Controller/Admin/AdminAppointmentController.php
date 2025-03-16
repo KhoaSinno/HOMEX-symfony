@@ -92,16 +92,6 @@ final class AdminAppointmentController extends AbstractController
         ]);
     }
 
-    // #[Route('/{id}', name: 'app_admin_appointment_delete', methods: ['POST'])]
-    // public function delete(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
-    // {
-    //     if ($this->isCsrfTokenValid('delete'.$appointment->getId(), $request->getPayload()->getString('_token'))) {
-    //         $entityManager->remove($appointment);
-    //         $entityManager->flush();
-    //     }
-
-    //     return $this->redirectToRoute('app_admin_appointment', [], Response::HTTP_SEE_OTHER);
-    // }
     #[Route('/{id}/approve', name: 'app_admin_appointment_approve', methods: ['POST', 'APPROVE'])]
     public function approve(Request $request, Appointment $appointment, EntityManagerInterface $entityManager): Response
     {
