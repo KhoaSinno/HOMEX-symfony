@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Appointment;
 use App\Entity\ScheduleWork;
-use App\Entity\User;
 use App\Form\ScheduleWorkType;
 use App\Enum\ScheduleStatus;
 use App\Repository\ScheduleWorkRepository;

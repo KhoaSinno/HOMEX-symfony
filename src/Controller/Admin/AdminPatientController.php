@@ -17,13 +17,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('admin/patient')]
 class AdminPatientController extends AbstractController
 {
-    private EntityManagerInterface $em;
     private UserRepository $userRepo;
     private UserPasswordHasherInterface $passHasher;
     private ImageUploader $imageUploader;
-    public function __construct(EntityManagerInterface $em, UserRepository $userRepo, UserPasswordHasherInterface $passHasher, ImageUploader $imageUploader)
+    public function __construct(UserRepository $userRepo, UserPasswordHasherInterface $passHasher, ImageUploader $imageUploader)
     {
-        $this->em = $em;
         $this->userRepo = $userRepo;
         $this->passHasher = $passHasher;
         $this->imageUploader = $imageUploader;

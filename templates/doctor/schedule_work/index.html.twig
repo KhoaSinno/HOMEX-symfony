@@ -4,8 +4,6 @@
 	Lịch làm việc
 {% endblock %}
 
-{% block styleCustom %}{% endblock %}
-
 {% block body %}
 	<!-- Main Wrapper -->
 	<div
@@ -48,11 +46,12 @@
 
 						<div class="row">
 							<div class="col-sm-12">
-								<div class="card p-2 text-right">
+								<div class="card p-3 text-left">
 									<div>
-										<a class="btn btn-outline-info font-weight-bold" href="{{path('doctor_add_schedule_slot')}}">
+									<h3>Lịch làm việc bác sĩ</h3>
+										{# <a class="btn btn-outline-info font-weight-bold" href="{{path('doctor_add_schedule_slot')}}">
 											<i class="fa fa-plus-circle"></i>
-											Thêm lịch hẹn</a>
+											Thêm lịch hẹn</a> #}
 									</div>
 								</div>
 
@@ -60,7 +59,7 @@
 									class="card p-4">
 									<!-- Form chọn ngày -->
 									{{ form_start(form, {'method': 'GET'}) }}
-									<div class="form-group col-md-4 ">
+									<div class="form-group col-md-5 ">
 										{{ form_label(form.date, "Chọn ngày", {'label_attr': {'class': 'font-weight-bold'}}) }}
 										<div class="d-flex justify-content-center align-items-center">
 											{{ form_widget(form.date, {'attr': {'class': 'form-control schedule-datepicker'}}) }}
@@ -91,9 +90,9 @@
 													{% for slot in schedule.timeslots %}
 														<div class="doc-slot-list" id="schedule_{{ loop.index }}">
 															{{ slot }}
-															<a class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
+															{# <a class="delete_schedule" data-id="{{ schedule.id }}" data-slot="{{ slot }}">
 																<i class="fa fa-times"></i>
-															</a>
+															</a> #}
 														</div>
 													{% endfor %}
 												</div>
@@ -132,30 +131,30 @@
 
 	<script>
 		$(document).ready(function () {
-console.log("DOM Loaded, initializing datetimepicker...");
+		console.log("DOM Loaded, initializing datetimepicker...");
 
-// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
-moment.updateLocale('vi', {
-week: {
-dow: 1
-} // dow: 1 => Tuần bắt đầu từ Thứ Hai
-});
+		// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
+		moment.updateLocale('vi', {
+		week: {
+		dow: 1
+		} // dow: 1 => Tuần bắt đầu từ Thứ Hai
+		});
 
-$('.schedule-datepicker').datetimepicker({
-format: 'DD-MM-YYYY', // Định dạng ngày
-locale: 'vi', // Tiếng Việt (cần moment.js)
-showTodayButton: true, // Hiển thị nút "Hôm nay"
-useCurrent: false, // Không tự động chọn ngày hiện tại
-sideBySide: true, // Hiển thị giờ/phút cạnh nhau
-toolbarPlacement: 'top', // Vị trí toolbar
-showClear: true, // Hiển thị nút "Xóa"
-showClose: true, // Hiển thị nút "Đóng"
-defaultDate: new Date()
-});
-});
+		$('.schedule-datepicker').datetimepicker({
+		format: 'DD-MM-YYYY', // Định dạng ngày
+		locale: 'vi', // Tiếng Việt (cần moment.js)
+		showTodayButton: true, // Hiển thị nút "Hôm nay"
+		useCurrent: false, // Không tự động chọn ngày hiện tại
+		sideBySide: true, // Hiển thị giờ/phút cạnh nhau
+		toolbarPlacement: 'top', // Vị trí toolbar
+		showClear: true, // Hiển thị nút "Xóa"
+		showClose: true, // Hiển thị nút "Đóng"
+		defaultDate: new Date()
+		});
+		});
 	</script>
 
-	<script>
+	{# <script>
 		document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll(".delete_schedule").forEach(button => {
 button.addEventListener("click", function () {
@@ -195,5 +194,5 @@ Swal.fire("Lỗi!", data.message, "error");
 });
 });
 });
-	</script>
+	</script> #}
 {% endblock %}

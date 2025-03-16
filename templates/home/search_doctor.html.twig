@@ -190,8 +190,14 @@
 	<!-- Fancybox JS -->
 	<script src="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.js')}}"></script>
 
-	<!-- Script phân trang -->
 <script>
+$(document).ready(function() {
+    setupPagination('.doctor-item', '#pagination', 5, 5);
+});
+
+</script>
+	<!-- Script phân trang -->
+{# <script>
 $(document).ready(function() {
     var itemsPerPage = 5; // Số bác sĩ hiển thị mỗi trang
     var $doctorItems = $('.doctor-item'); // Lấy tất cả các doctor-item
@@ -275,5 +281,5 @@ $(document).ready(function() {
         showPage(1); // Hiển thị trang đầu tiên
     }
 });
-</script>
+</script> #}
 {% endblock %}

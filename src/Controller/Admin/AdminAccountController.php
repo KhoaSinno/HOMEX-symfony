@@ -10,20 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\User; 
 use Symfony\Component\Form\FormError;
 
 class AdminAccountController extends AbstractController
 {
-    private $em;
-    private $passHasher;
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passHasher)
-    {
-        $this->em = $em;
-        $this->passHasher = $passHasher;
-    }
-
     #[Route('/admin/account/changePass', name: 'app_admin_account_changePass')]
     public function changePass(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
     {

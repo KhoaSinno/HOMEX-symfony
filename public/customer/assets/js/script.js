@@ -371,3 +371,76 @@ document.addEventListener('turbo:render', function () {
 		}, 5000);
 	});
 });
+
+function setupPagination(containerSelector, paginationSelector, itemsPerPage = 5, maxPagesToShow = 5) {
+    var $items = $(containerSelector); // Lấy danh sách phần tử
+    var totalItems = $items.length; // Tổng số phần tử
+    var totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
+    var currentPage = 1; // Trang hiện tại
+
+    if (totalItems === 0) return; // Nếu không có phần tử, thoát luôn
+
+    function showPage(page) {
+        $items.hide(); // Ẩn tất cả
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+        $items.slice(start, end).show(); // Hiển thị phần tử theo trang
+        currentPage = page;
+        updatePagination(); // Cập nhật phân trang
+    }
+
+    function updatePagination() {
+        var paginationHtml = '';
+
+        // Nút "Trước"
+        paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn ' + (currentPage === 1 ? 'disabled' : '') + '" data-page="' + (currentPage - 1) + '">&laquo; Trước</button>';
+
+        var startPage, endPage;
+        if (totalPages <= maxPagesToShow) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            var halfPagesToShow = Math.floor(maxPagesToShow / 2);
+            startPage = Math.max(1, currentPage - halfPagesToShow);
+            endPage = Math.min(totalPages, currentPage + halfPagesToShow);
+
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                if (startPage === 1) {
+                    endPage = maxPagesToShow;
+                } else {
+                    startPage = totalPages - maxPagesToShow + 1;
+                }
+            }
+        }
+
+        if (startPage > 1) {
+            paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn" data-page="1">1</button>';
+            if (startPage > 2) {
+                paginationHtml += '<span class="mx-1">...</span>';
+            }
+        }
+
+        for (var i = startPage; i <= endPage; i++) {
+            paginationHtml += '<button class="btn btn-sm mx-1 page-btn ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary') + '" data-page="' + i + '">' + i + '</button>';
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHtml += '<span class="mx-1">...</span>';
+            }
+            paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn" data-page="' + totalPages + '">' + totalPages + '</button>';
+        }
+
+        // Nút "Tiếp"
+        paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn ' + (currentPage === totalPages ? 'disabled' : '') + '" data-page="' + (currentPage + 1) + '">Tiếp &raquo;</button>';
+
+        $(paginationSelector).html(paginationHtml);
+    }
+
+    $(paginationSelector).on('click', '.page-btn:not(.disabled)', function() {
+        var page = $(this).data('page');
+        showPage(page);
+    });
+
+    showPage(1); // Hiển thị trang đầu tiên
+}

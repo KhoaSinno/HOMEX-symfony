@@ -6,7 +6,6 @@ use App\Repository\AppointmentRepository;
 use App\Repository\ScheduleWorkRepository;
 use App\Repository\SpecialtyRepository;
 use App\Repository\UserRepository;
-use App\Service\ScheduleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

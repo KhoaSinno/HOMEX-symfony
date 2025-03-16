@@ -40,7 +40,7 @@
 						{% for app in appointments %}
 
 							<!-- Appointment List -->
-							<div class="appointment-list">
+							<div class="appointment-list patient-item">
 								<div class="profile-info-widget">
 									<a href="{{path('app_doctor_patient_show',{'id':app.id})}}" class="booking-doc-img">
 										<img src="{{app.patient.image ? asset('uploads/users/' ~ app.patient.image) : asset('uploads/users/default.png')}}" alt="User Image">
@@ -85,6 +85,8 @@
 
 
 						{% endfor %}
+						<!-- Phân trang -->
+						<div class="pagination text-center m-4 d-flex justify-content-center align-items-center" id="pagination"></div>
 
 					</div>
 				</div>
@@ -163,6 +165,12 @@ form.submit();
 });
 });
 });
+});
+	</script>
+
+	<script>
+	$(document).ready(function() {
+    setupPagination('.patient-item', '#pagination', 5, 5);
 });
 	</script>
 {% endblock %}

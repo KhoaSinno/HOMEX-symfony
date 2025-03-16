@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Appointment;
-use App\Entity\User;
 use App\Repository\AppointmentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,12 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class AdminDashboardController extends AbstractController
 {
-    private $em;
     private $appRepo;
     private $userRepo;
-    public function __construct(EntityManagerInterface $_em, AppointmentRepository $_appRepo, UserRepository $_userRepo)
+    public function __construct( AppointmentRepository $_appRepo, UserRepository $_userRepo)
     {
-        $this->em = $_em;
         $this->appRepo = $_appRepo;
         $this->userRepo = $_userRepo;
     }
