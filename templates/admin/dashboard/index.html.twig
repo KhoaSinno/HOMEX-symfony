@@ -176,7 +176,7 @@
 										<tr class="text-center">
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{{path('app_doctor_show', {'id': doctor.id})}}" class="avatar avatar-sm mr-2">
 
 														{% if doctor.googleId %}
 															<img class="avatar-img rounded-circle" src="{{ doctor.image ? asset(doctor.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image">
@@ -185,7 +185,7 @@
 														{% endif %}
 
 													</a>
-													<a href="profile.html">{{doctor.fullname ?? 'Trống'}}</a>
+													<a href="{{path('app_doctor_show', {'id': doctor.id})}}">{{doctor.fullname ?? 'Trống'}}</a>
 												</h2>
 											</td>
 											<td>{{doctor.specialty.name ? doctor.specialty.name | specialty_label : 'Trống'}}</td>
@@ -234,7 +234,7 @@
 										<tr class="text-center">
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{{path('app_admin_patient_show', {'id': patient.id})}}" class="avatar avatar-sm mr-2">
 
 														{% if patient.googleId %}
 															<img class="avatar-img rounded-circle" src="{{ patient.image ? asset(patient.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image">
@@ -243,7 +243,7 @@
 														{% endif %}
 
 													</a>
-													<a href="profile.html">{{ patient.fullname ?? 'Trống' }}
+													<a href="{{path('app_admin_patient_show', {'id': patient.id})}}">{{ patient.fullname ?? 'Trống' }}
 													</a>
 												</h2>
 											</td>
@@ -292,7 +292,7 @@
 										<tr class="text-center">
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{{path('app_doctor_show', {'id': app.doctor.id})}}" class="avatar avatar-sm mr-2">
 														{% if app.doctor.googleId %}
 															<img class="avatar-img rounded-circle" src="{{ app.doctor.image ? asset(app.doctor.image) : asset('uploads/users/defaultUser.png') }}" alt="User Image">
 														{% else %}
@@ -300,7 +300,7 @@
 														{% endif %}
 
 													</a>
-													<a href="profile.html">{{app.doctor.fullname}}</a>
+													<a href="{{path('app_doctor_show', {'id': app.doctor.id})}}">{{app.doctor.fullname}}</a>
 												</h2>
 											</td>
 											<td>{{app.doctor.specialty.name | specialty_label}}</td>

@@ -1,0 +1,77 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Lý do hủy cuộc hẹn
+{% endblock %}
+
+{% block body %}
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-bar">
+		<div class="container-fluid">
+			<div class="row align-items-center">
+				<div class="col-md-12 col-12">
+					<nav aria-label="breadcrumb" class="page-breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path('app_home')}}">Trang chủ</a>
+							</li>
+							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+						</ol>
+					</nav>
+					<h2 class="breadcrumb-title">Dashboard</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Breadcrumb -->
+
+	<div class="content">
+		<div class="container-fluid">
+			<div
+				class="row">
+
+				<!-- Profile Sidebar -->
+				<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+					{{ include('_sidebar.html.twig') }}
+				</div>
+				<!-- / Profile Sidebar -->
+
+				<div class="col-md-6 col-lg-8 col-xl-9">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Lý do cuộc hẹn</h3>
+						</div>
+						<div class="card-body">
+							<table class="table table-bordered">
+								<tr>
+									<th>Mã cuộc hẹn</th>
+									<td>{{ appointment.id }}</td>
+								</tr>
+								<tr>
+									<th>Tên bác sĩ</th>
+									<td>{{ appointment.doctor.fullname }}</td>
+								</tr>
+								<tr>
+									<th>Ngày hẹn</th>
+									<td>{{ appointment.appointmentDate ? appointment.appointmentDate|date('d-m-Y') : '' }}</td>
+								</tr>
+								<tr>
+									<th>Giờ hẹn</th>
+									<td class="font-weight-bold text-warning">{{ appointment.appointmentTime }}</td>
+								</tr>
+								<tr>
+									<th>Lý do</th>
+									<td>
+										<form method="post" action="{{ path('app_patient_appointment_cancel', {'id': appointment.id}) }}">
+											<textarea name="reasonCancel" class="form-control" placeholder="Nhập lý do hủy...">{{ appointment.reasonCancel }}</textarea>
+											<button type="submit" class="btn btn-danger mt-2">Hủy cuộc hẹn</button>
+										</form>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

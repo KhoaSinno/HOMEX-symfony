@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Specialty;
 use App\Repository\AppointmentRepository;
 use App\Repository\ScheduleWorkRepository;
 use App\Repository\SpecialtyRepository;
@@ -18,13 +17,11 @@ class HomeController extends AbstractController
 {
     private EntityManagerInterface $em;
     private SpecialtyRepository $specialtyRepository;
-    private ScheduleService $scheduleService;
 
-    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository, ScheduleService $scheduleService)
+    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository)
     {
         $this->em = $em;
         $this->specialtyRepository = $specialtyRepository;
-        $this->scheduleService = $scheduleService;
     }
 
 

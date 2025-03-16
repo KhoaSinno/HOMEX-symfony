@@ -6,6 +6,7 @@ use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
 use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/appointment')]
 final class AdminAppointmentController extends AbstractController
 {
+
+    private MailService $mailService;
+    public function __construct(MailService $mailService)
+    {
+        $this->mailService = $mailService;
+    }
     #[Route(name: 'app_admin_appointment', methods: ['GET'])]
     public function index(AppointmentRepository $appointmentRepository): Response
     {
@@ -116,6 +123,15 @@ final class AdminAppointmentController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $appointment->getId(), $request->request->get('_token'))) {
             $appointment->setStatus(AppointmentConstants::CANCELLED_STATUS);
+
+            // Gửi email Xin Lỗi hủy
+            $this->mailService->sendAppointmentCancellation(
+                $appointment->getPatientEmail(),
+                $appointment->getPatient()->getFullname(),
+                $appointment->getAppointmentDate()->format('d-m-Y'),
+                $appointment->getDoctor()->getFullName()
+            );
+
             $entityManager->persist($appointment);
             $entityManager->flush();
             $this->addFlash('success', 'Đã hủy lịch hẹn thành công!');

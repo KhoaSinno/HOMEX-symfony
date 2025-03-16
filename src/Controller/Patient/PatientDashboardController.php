@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use App\Repository\AppointmentRepository;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -74,7 +73,7 @@ class PatientDashboardController extends AbstractController
             throw $this->createNotFoundException('Cuộc hẹn đã hoàn thành không thể chỉnh sửa.');
         }
 
-        if($request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
             $appointment->setReason($request->request->get('reason'));
             $this->em->persist($appointment);
             $this->em->flush();
@@ -91,12 +90,62 @@ class PatientDashboardController extends AbstractController
             'appointment' => $appointment,
         ]);
     }
-    // #[Route('/appointment/cancel/{id}', name: 'app_appointment_cancel')]
-    // public function cancelAppointment(): Response
-    // {
 
-    //     // Xử lý hủy cuộc hẹn
-    // }
+    #[Route('/appointment/cancel/{id}', name: 'app_patient_appointment_cancel')]
+    public function cancelAppointment(Request $request, Appointment $appointment): Response
+    {
+        if (!$appointment) {
+            throw $this->createNotFoundException('Không tìm thấy cuộc hẹn.');
+        }
+
+        if ($appointment->getStatus() === AppointmentConstants::COMPLETED_STATUS) {
+            throw $this->createNotFoundException('Cuộc hẹn đã hoàn thành không thể Hủy.');
+        }
+
+        // Lấy thời gian hiện tại với múi giờ Việt Nam
+        $now = new \DateTime('now', new \DateTimeZone("Asia/Ho_Chi_Minh"));
+        // dump($now); // Kiểm tra lại giờ, phải là UTC+07:00
+
+        // Chuyển ngày hẹn thành DateTime có múi giờ
+        $appointmentDateTime = new \DateTime(
+            $appointment->getAppointmentDate()->format('Y-m-d') . ' ' . explode('-', $appointment->getAppointmentTime())[0],
+            new \DateTimeZone("Asia/Ho_Chi_Minh")
+        );
+
+        // dump($appointmentDateTime);
+
+        // Lấy giờ bắt đầu của khung giờ
+        $timeSlot = explode('-', $appointment->getAppointmentTime())[0];
+        $appointmentDateTime->modify($timeSlot); // Gán giờ vào ngày hẹn
+        // dump($appointmentDateTime);
+
+        // Kiểm tra nếu dưới 1 giờ thì không cho hủy
+        $oneHourBefore = clone $appointmentDateTime;
+        $oneHourBefore->modify('-1 hour');
+        // dump($oneHourBefore);
+
+        if ($now > $oneHourBefore) {
+            $this->addFlash('error', 'Không thể hủy cuộc hẹn trong vòng 1 giờ trước khi bắt đầu.');
+            return $this->redirectToRoute('app_patient_dashboard'); // Chuyển hướng về dashboard
+        }
+        // die();
+
+        if ($request->isMethod('POST')) {
+            $appointment->setReasonCancel($request->request->get('reasonCancel'));
+            $appointment->setStatus(AppointmentConstants::CANCELLED_STATUS);
+            $this->em->persist($appointment);
+            $this->em->flush();
+
+            // dump($appointment);
+            // die();
+            $this->addFlash('success', 'Hủy cuộc hẹn thành công.');
+
+            return $this->redirectToRoute('app_patient_dashboard');
+        }
 
 
+        return $this->render('patient/dashboard/cancel_appointment.html.twig', [
+            'appointment' => $appointment,
+        ]);
+    }
 }
