@@ -103,7 +103,7 @@
 										'default': 'btn-info'        
 									}[status] %}
 
-									{% set isDisabled = status in ['pending', 'active', 'completed'] %}
+									{% set isDisabled = status in ['pending', 'active', 'completed', 'cancelled'] %}
 
 									<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %} disabled {% endif %}>
 										{{ slot }}

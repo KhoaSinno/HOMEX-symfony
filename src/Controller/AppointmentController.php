@@ -39,6 +39,7 @@ class AppointmentController extends AbstractController
     {
         $doctorId = $request->query->get('doctorId');
         $date = new \DateTime($request->query->get('date'));
+
         $timeSlot = $request->query->get('timeSlot');
 
         if (!$doctorId || !$date || !$timeSlot) {
@@ -49,6 +50,18 @@ class AppointmentController extends AbstractController
         if (!$doctor) {
             return new JsonResponse(['error' => true, 'message' => 'Bác sĩ không tồn tại!'], 404);
         }
+
+        $dateString = $request->query->get('date');
+        if (!$dateString) {
+            return new JsonResponse(['error' => true, 'message' => 'Thiếu dữ liệu ngày!'], 400);
+        }
+
+        try {
+            $date = new \DateTime($dateString);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => true, 'message' => 'Định dạng ngày không hợp lệ!'], 400);
+        }
+
 
         $patient = $this->getUser();
         if (!$patient) {
@@ -63,17 +76,26 @@ class AppointmentController extends AbstractController
 
             return new JsonResponse(['error' => false, 'redirect' => $loginUrl], 302);
         }
+
         // Đã tồn tại appointment in day => 403
         $existingAppointments = $this->apRepo->findByDoctorAndDate($doctor, $date, $patient);
         if (!empty($existingAppointments)) {
             return new JsonResponse(['error' => true, 'message' => 'Không được phép đặt nhiều buổi trong ngày!'], 403);
         }
+        
+        // Ai cho BS Test khám trời
+        if ($patient->getRoles()[0] == 'ROLE_DOCTOR') {
+            return new JsonResponse(['error' => true, 'message' => 'Tài khoản Bác sĩ không thể đặt lịch khám!'], 403);
+        }
 
+        // dump($request->query->all());
+        // die();
 
+        $formattedDate = $date->format('Y-m-d');
         // Trả về URL để JavaScript redirect
         $confirmUrl = $this->generateUrl('confirm_payment', [
             'doctorId' => $doctorId,
-            'date' => $date,
+            'date' => $formattedDate,
             'timeSlot' => $timeSlot
         ]);
 
@@ -89,7 +111,10 @@ class AppointmentController extends AbstractController
         if (!$doctor) {
             return new JsonResponse(['message' => 'Bác sĩ không tồn tại!'], 404);
         }
-        $date = new \DateTime($request->query->get('date'));
+        $date = $request->query->get('date');
+
+        // dump($request->query->all());
+        // die();
         $timeSlot = $request->query->get('timeSlot');
 
         if (!$doctorId || !$date || !$timeSlot) {

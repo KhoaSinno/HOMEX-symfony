@@ -15,9 +15,6 @@ class Momo
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $customerId = null;
-
-    #[ORM\Column(nullable: true)]
     private ?int $momoStatus = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -26,21 +23,12 @@ class Momo
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'momoTransactions')]
+    private ?User $customer = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCustomerId(): ?int
-    {
-        return $this->customerId;
-    }
-
-    public function setCustomerId(?int $customerId): static
-    {
-        $this->customerId = $customerId;
-
-        return $this;
     }
 
     public function getMomoStatus(): ?int
@@ -75,6 +63,18 @@ class Momo
     public function setCreatedAt(?\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?User
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?User $customer): static
+    {
+        $this->customer = $customer;
 
         return $this;
     }

@@ -85,10 +85,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
+    /**
+     * @var Collection<int, Momo>
+     */
+    #[ORM\OneToMany(targetEntity: Momo::class, mappedBy: 'customer')]
+    private Collection $momoTransactions;
+
     public function __construct()
     {
         $this->scheduleWorks = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->momoTransactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -377,5 +384,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSalt()
     {
         return null;
+    }
+
+    /**
+     * @return Collection<int, Momo>
+     */
+    public function getMomoTransactions(): Collection
+    {
+        return $this->momoTransactions;
+    }
+
+    public function addMomoTransaction(Momo $momoTransaction): static
+    {
+        if (!$this->momoTransactions->contains($momoTransaction)) {
+            $this->momoTransactions->add($momoTransaction);
+            $momoTransaction->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMomoTransaction(Momo $momoTransaction): static
+    {
+        if ($this->momoTransactions->removeElement($momoTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($momoTransaction->getCustomer() === $this) {
+                $momoTransaction->setCustomer(null);
+            }
+        }
+
+        return $this;
     }
 }
