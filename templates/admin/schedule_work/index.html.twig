@@ -8,7 +8,7 @@
 	<!-- Page Wrapper -->
 	<div class="page-wrapper">
 		<div
-			class="content container-fluid">
+			class="content container-fluid pb-5">
 
 			<!-- Page Header -->
 			<div class="page-header">
@@ -111,40 +111,40 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-		document.querySelectorAll(".delete-schedule").forEach(button => {
-		button.addEventListener("click", function (event) {
-		event.preventDefault();
-		let scheduleId = this.getAttribute("data-id");
-		let csrfToken = this.getAttribute("data-token");
+document.querySelectorAll(".delete-schedule").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault();
+let scheduleId = this.getAttribute("data-id");
+let csrfToken = this.getAttribute("data-token");
 
-		Swal.fire({
-		title: "Bạn có chắc chắn muốn xóa?",
-		text: "Hành động này không thể hoàn tác!",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#d33",
-		cancelButtonColor: "#3085d6",
-		confirmButtonText: "Xóa",
-		cancelButtonText: "Hủy"
-		}).then((result) => {
-		if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
-		let form = document.createElement("form");
-		form.method = "POST";
-		form.action = `/admin/schedule_work/${scheduleId}`;
-		document.body.appendChild(form);
+Swal.fire({
+title: "Bạn có chắc chắn muốn xóa?",
+text: "Hành động này không thể hoàn tác!",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xóa",
+cancelButtonText: "Hủy"
+}).then((result) => {
+if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
+let form = document.createElement("form");
+form.method = "POST";
+form.action = `/admin/schedule_work/${scheduleId}`;
+document.body.appendChild(form);
 
-		let csrfInput = document.createElement("input");
-		csrfInput.type = "hidden";
-		csrfInput.name = "_token";
-		csrfInput.value = csrfToken;
-		form.appendChild(csrfInput);
+let csrfInput = document.createElement("input");
+csrfInput.type = "hidden";
+csrfInput.name = "_token";
+csrfInput.value = csrfToken;
+form.appendChild(csrfInput);
 
-		form.submit();
-		}
-		});
-		});
-		});
-		});
+form.submit();
+}
+});
+});
+});
+});
 	</script>
 
 {% endblock %}

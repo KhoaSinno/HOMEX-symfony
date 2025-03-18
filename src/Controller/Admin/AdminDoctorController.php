@@ -39,7 +39,7 @@ final class AdminDoctorController extends AbstractController
     #[Route('/listDoctor/Del',name: 'app_doctor_listDel', methods: ['GET'])]
     public function listDel(UserRepository $userRepository): Response
     {
-        $doctors = array_filter($userRepository->findByRole('ROLE_DOCTOR'), function($doctor) {
+        $doctors = array_filter($userRepository->findByRole(role: 'ROLE_DOCTOR'), function($doctor) {
             return $doctor->getDel() == true;
         });
         

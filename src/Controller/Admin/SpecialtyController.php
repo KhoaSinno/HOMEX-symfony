@@ -68,6 +68,7 @@ final class SpecialtyController extends AbstractController
 
             $entityManager->persist($specialty);
             $entityManager->flush();
+            // $this->addFlash('success', 'Thêm mới chuyên khoa thành công!');
 
             return new JsonResponse([
                 'success' => true,
@@ -195,8 +196,22 @@ final class SpecialtyController extends AbstractController
     public function delete(Request $request, Specialty $specialty, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $specialty->getId(), $request->getPayload()->getString('_token'))) {
+
+            if ($specialty->getUsers()->count() > 0) {
+                $this->addFlash('error', 'Không thể xóa vì có bác sĩ đang sử dụng chuyên khoa này!');
+                return $this->redirectToRoute('app_specialty_index');
+            }
+
+            if ($specialty->getImage()) {
+                $imagePath = $this->getParameter('uploads_specialty') . '/' . $specialty->getImage();
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
             $entityManager->remove($specialty);
             $entityManager->flush();
+            $this->addFlash('success', 'Xóa chuyên khoa thành công!');
         }
 
         return $this->redirectToRoute('app_specialty_index', [], Response::HTTP_SEE_OTHER);

@@ -8,7 +8,7 @@
 	<!-- Page Wrapper -->
 	<div class="page-wrapper">
 		<div
-			class="content container-fluid">
+			class="content container-fluid pb-5">
 
 			<!-- Page Header -->
 			<div class="page-header">
@@ -29,15 +29,15 @@
 				{% for message in messages %}
 					<script>
 						document.addEventListener("DOMContentLoaded", function () {
-                        Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: '{{ label }}',
-                        title: '{{ message }}',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        });
+Swal.fire({
+toast: true,
+position: 'top-end',
+icon: '{{ label }}',
+title: '{{ message }}',
+showConfirmButton: false,
+timer: 3000
+});
+});
 					</script>
 				{% endfor %}
 			{% endfor %}

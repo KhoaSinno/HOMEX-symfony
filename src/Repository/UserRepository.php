@@ -40,9 +40,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('u.specialty', 's') // Join với Specialty
             ->addSelect('s') // Lấy cả Specialty
             ->where('u.roles LIKE :role')
-            ->andWhere('u.isDel = :isDel')
+            // ->andWhere('u.isDel = :isDel')
             ->setParameter('role', '%"' . $role . '"%') // Tìm role trong mảng JSON
-            ->setParameter('isDel', 0)
+            // ->setParameter('isDel', 0)
             ->getQuery()
             ->getResult();
     }

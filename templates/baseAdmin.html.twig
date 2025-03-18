@@ -40,6 +40,26 @@
 	</head>
 	<body>
 
+	{% for flashMessage in app.flashes('success') %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: '{{ flashMessage }}'
+            });
+        </script>
+    {% endfor %}
+
+    {% for flashMessage in app.flashes('error') %}
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: '{{ flashMessage }}'
+            });
+        </script>
+    {% endfor %}
+
 		{# Thông báo nhanh ở đây (Tôi ví dụ là ở đây nhưng thực tế có thể sử dụng ở nơi khác) #}
 		{% for message in app.flashes('notice') %}
 			<div class="notice">
