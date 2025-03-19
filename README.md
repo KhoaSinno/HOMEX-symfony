@@ -217,8 +217,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            entry_point: form_login
-            custom_authenticators: // 📌 Important to config
+            ...
+            custom_authenticators: // 📌 Important to config @@
                 - App\Security\GoogleAuthenticator
 
     access_control:
@@ -237,7 +237,7 @@ knpu_oauth2_client:
             client_id: '%env(GOOGLE_CLIENT_ID)%'
             client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
             redirect_route: connect_google_check
-            user_fields: [email, name, picture]
+            redirect_params: {}
 ```
 
 ## 📌 Step 6: Create GoogleAuthenticator
@@ -249,52 +249,125 @@ Create `src/Security/GoogleAuthenticator.php`:
 
 namespace App\Security;
 
-use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use League\OAuth2\Client\Provider\GoogleUser;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use KnpU\OAuth2ClientBundle\Client\Provider\GoogleClient;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Routing\RouterInterface;
+
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\{UserBadge, CsrfTokenBadge};
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\OAuth2Credentials;
 
-class GoogleAuthenticator extends OAuth2Authenticator
+class GoogleAuthenticator extends AbstractAuthenticator
 {
-    private UrlGeneratorInterface $urlGenerator;
+    private EntityManagerInterface $entityManager;
+    private RouterInterface $router;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(EntityManagerInterface $entityManager, RouterInterface $router)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->entityManager = $entityManager;
+        $this->router = $router;
     }
 
-    public function supports(Request $request): bool
+    public function supports(Request $request): ?bool
     {
-        return 'connect_google_check' === $request->attributes->get('_route');
+        // dump($request->attributes->all()); // Debug xem request có gì
+        // dump($request->query->all()); // Debug query parameters
+        // die();
+
+        return $request->attributes->get('_route') === 'connect_google_check' && $request->query->has('code');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = new GoogleClient();
-        $accessToken = $client->getAccessToken();
-        $googleUser = $client->fetchUserFromToken($accessToken);
+        $query = $request->query->all();
+        // dump($query); // Debug xem có code không
+        // die();
 
-        return new Passport(
-            new UserBadge($googleUser->getEmail()),
-            new OAuth2Credentials($accessToken),
-            [new CsrfTokenBadge('authenticate', $request->get('_csrf_token'))]
-        );
+        if (!isset($query['code'])) {
+            throw new \LogicException('Google OAuth không trả về code.');
+        }
+
+        // Bước 1: Lấy access token từ Google
+        $httpClient = HttpClient::create();
+        $response = $httpClient->request('POST', 'https://oauth2.googleapis.com/token', [
+            'body' => [
+                'client_id' => $_ENV['GOOGLE_CLIENT_ID'],
+                'client_secret' => $_ENV['GOOGLE_CLIENT_SECRET'],
+                'redirect_uri' => $_ENV['GOOGLE_REDIRECT_URI'],
+                'grant_type' => 'authorization_code',
+                'code' => $query['code'],
+            ],
+        ]);
+
+        $data = $response->toArray();
+        // dump($data); // Kiểm tra access_token
+        // die();
+
+        // Bước 2: Lấy thông tin user từ Google
+        $userResponse = $httpClient->request('GET', 'https://www.googleapis.com/oauth2/v1/userinfo', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $data['access_token'],
+            ],
+        ]);
+
+        $userData = $userResponse->toArray();
+        // dump($userData); // Debug thông tin user
+        // die();
+
+        // 1. Kiểm tra xem user đã tồn tại trong database chưa
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $user = $userRepository->findOneBy(['email' => $userData['email']]);
+
+        // 2. Nếu user chưa tồn tại, tạo user mới
+        if (!$user) {
+            $user = new User();
+            $user->setEmail($userData['email']);
+            $user->setFullName($userData['name']); // Hoặc dùng $userData['given_name'] và $userData['family_name']
+            $user->setGoogleId($userData['id']);
+            $user->setImage($userData['picture']);
+            $user->setRoles(['ROLE_PATIENT']); // Mặc định phân quyền USER
+
+            // Lưu user vào database
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return new SelfValidatingPassport(new UserBadge($user->getEmail()));
     }
 
-    public function onAuthenticationSuccess(Request $request, $token, string $firewallName): RedirectResponse
+    private function getOrCreateUser(GoogleUser $googleUser): UserInterface
     {
-        return new RedirectResponse($this->urlGenerator->generate('homepage'));
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $googleUser->getEmail()]);
+
+        if (!$user) {
+            $user = new User();
+            $user->setEmail($googleUser->getEmail());
+            $user->setPassword('');
+            $user->setRoles(['ROLE_USER']);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+
+        return $user;
     }
 
-    public function onAuthenticationFailure(Request $request, $exception): RedirectResponse
+    public function onAuthenticationSuccess(Request $request, $token, string $firewallName): ?RedirectResponse
     {
-        return new RedirectResponse($this->urlGenerator->generate('app_login'));
+        return new RedirectResponse($this->router->generate('app_home'));
+    }
+
+    public function onAuthenticationFailure(Request $request, \Throwable $exception): ?RedirectResponse
+    {
+        return new RedirectResponse($this->router->generate('app_login'));
     }
 }
+
 ```
 
 ## 📌 Step 7: Create Login Routes
@@ -306,35 +379,54 @@ Edit `src/Controller/SecurityController.php`:
 
 namespace App\Controller;
 
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use KnpU\OAuth2ClientBundle\Client\Provider\GoogleClient;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
+    use TargetPathTrait;
+
+    #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
         return $this->render('security/login.html.twig', [
-            'last_username' => $authenticationUtils->getLastUsername(),
-            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $lastUsername,
+            'error' => $error,
         ]);
     }
 
-    #[Route('/connect/google', name: 'connect_google_start')]
-    public function connectGoogle(GoogleClient $client)
+    #[Route(path: '/logout', name: 'app_logout')]
+    public function logout(): void
     {
-        return $client->redirect(['email', 'profile']);
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    #[Route('/connect/google', name: 'connect_google_start')]
+    public function connectGoogle(ClientRegistry $clientRegistry): Response
+    {
+        return $clientRegistry->getClient('google')->redirect(['email', 'profile'], []);
     }
 
     #[Route('/connect/google/check', name: 'connect_google_check')]
-    public function connectGoogleCheck()
+    public function connectGoogleCheck(Request $request): Response
     {
-        // Symfony handles authentication automatically
+        // Google sẽ redirect về đây với ?code=...
+        dump($request->query->all()); // Kiểm tra query parameters
+        die();
     }
 }
+
 ```
 
 ## 📌 Step 8: Useful Login Template
@@ -342,9 +434,9 @@ class SecurityController extends AbstractController
 Edit `templates/security/login.html.twig`:
 
 ```twig
-    <a href="{{ path('connect_google_start') }}">
-        Login with Google
-    </a>
+    <a href="{{ path('connect_google_start') }}" class="btn btn-google btn-block">
+        <i class="fab fa-google mr-1"></i>
+        Đăng nhập</a>
 ```
 
 ## 📌 Step 9: Add new properties
