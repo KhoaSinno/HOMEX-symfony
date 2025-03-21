@@ -34,7 +34,7 @@ class PatientDashboardController extends AbstractController
 
         $pendingAppointments = $this->appointmentRepo->findBy([
             'patient' => $user,
-            // 'status' => AppointmentConstants::PENDING_STATUS,
+            'status' => [AppointmentConstants::PENDING_STATUS, AppointmentConstants::ACTIVE_STATUS],
         ]);
 
         $successAppointments = $this->appointmentRepo->findBy([
@@ -50,11 +50,18 @@ class PatientDashboardController extends AbstractController
     }
 
     #[Route('/appointment/show/{id}', name: 'app_appointment_show')]
-    public function showAppointment(Appointment $appointment): Response
+    public function showAppointment(Appointment $appointment, Request $request): Response
     {
         // Kiểm tra nếu không tìm thấy cuộc hẹn
         if (!$appointment) {
             throw $this->createNotFoundException('Không tìm thấy cuộc hẹn.');
+        }
+
+        // Nếu là yêu cầu AJAX, trả về HTML
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('patient/dashboard/show_appointment.html.twig', [
+                'appointment' => $appointment,
+            ]);
         }
 
         return $this->render('patient/dashboard/show_appointment.html.twig', [
