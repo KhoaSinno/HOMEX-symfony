@@ -122,18 +122,22 @@
 																				<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 																				Sửa
 																			</a>
+																			{% if ap.status == 'pending' %}
 																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
 																				<i class="fas fa-print"></i>
 																				In
 																			</a>
+																			{% endif %}
 																			<a href="{{path('app_appointment_show', {'id': ap.id})}}" class="btn btn-sm bg-info-light">
 																				<i class="far fa-eye"></i>
 																				Chi tiết
 																			</a>
+																			{% if ap.status != 'cancelled' %}
 																			<a class="btn btn-sm bg-danger-light m-md-1" href="{{ path('app_patient_appointment_cancel', {'id': ap.id}) }}">
 																				<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
 																				Hủy
 																			</a>
+																			{% endif %}
 																		</div>
 																	</td>
 																</tr>

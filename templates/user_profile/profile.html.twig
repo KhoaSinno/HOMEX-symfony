@@ -59,13 +59,13 @@
 
 													<!-- Hiển thị ảnh -->
 													<div class="mb-3">
-														<img id="preview-image" src="{{ app.user.image ? asset(app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+														<img id="preview-image" src="{{ app.user.image ? asset(app.user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 													</div>
 												{% else %}
 
 													<!-- Hiển thị ảnh -->
 													<div class="mb-3">
-														<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+														<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 													</div>
 												{% endif %}
 

@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $fullname = null;
+    private string $fullname = '';
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Specialty $specialty = null;
@@ -186,7 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFullname(): ?string
+    public function getFullname(): string
     {
         return $this->fullname;
     }

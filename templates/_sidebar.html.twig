@@ -80,19 +80,19 @@
 					<li class="{% if app.request.get('_route') == 'user_profile_settings' %}active{% endif %}">
 						<a href="{{ path('user_profile_settings') }}">
 							<i class="fas fa-user-cog"></i>
-							<span>Profile Settings</span>
+							<span>Thông tin cá nhân</span>
 						</a>
 					</li>
 					<li class="{% if app.request.get('_route') == 'user_change_password' %}active{% endif %}">
 						<a href="{{ path('user_change_password') }}">
 							<i class="fas fa-lock"></i>
-							<span>Change Password</span>
+							<span>Đổi mật khẩu</span>
 						</a>
 					</li>
 					<li>
 						<a class="text-danger font-weight-bold" href="{{ path('app_logout') }}">
 							<i class="fas fa-sign-out-alt"></i>
-							<span>Logout</span>
+							<span>Đăng xuất</span>
 						</a>
 					</li>
 				</ul>

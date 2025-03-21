@@ -34,7 +34,7 @@ class PatientDashboardController extends AbstractController
 
         $pendingAppointments = $this->appointmentRepo->findBy([
             'patient' => $user,
-            'status' => AppointmentConstants::PENDING_STATUS,
+            // 'status' => AppointmentConstants::PENDING_STATUS,
         ]);
 
         $successAppointments = $this->appointmentRepo->findBy([
