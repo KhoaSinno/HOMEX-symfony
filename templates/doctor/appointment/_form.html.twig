@@ -1,18 +1,23 @@
 {{ form_start(form) }}
 
+<div class="m-3">
+	<a class="btn btn-warning" href="{{ path('app_doctor_appointment_undo', {'id': form.vars.value.id}) }}">Hủy thao tác</a>
+</div>
+
 <div class="row">
 	<h2 class="p-3 bg-info text-white text-center rounded col-12">Trả kết quả khám</h2>
 
-<div class="form-row flex-column col-12">
-				<div
-					class="col-12 mb-3  justify-content-center align-items-center">
-					<!-- Hiển thị ảnh -->
-					<div class="col-12 d-flex flex-column justify-content-center align-items-center">
-						<img id="preview-image" src="{{ patient.image ? asset('uploads/users/' ~ patient.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
-						{# <label for="validationCustom04">Ảnh đại diện</label> #}
-					</div>
-				</div>
+	<div class="form-row flex-column col-12">
+		<div
+			class="col-12 mb-3  justify-content-center align-items-center">
+			<!-- Hiển thị ảnh -->
+			<div class="col-12 d-flex flex-column justify-content-center align-items-center">
+				<img
+				id="preview-image" src="{{ patient.image ? asset('uploads/users/' ~ patient.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+			{# <label for="validationCustom04">Ảnh đại diện</label> #}
 			</div>
+		</div>
+	</div>
 
 	<div class="form-group col-md-6">
 		{{ form_label(form.patientFullname) }}
@@ -81,4 +86,3 @@
 	<button class="btn btn-info form-group col-12">{{ button_label|default('Save') }}</button>
 </div>
 {{ form_end(form) }}
-

@@ -26,18 +26,15 @@ class PatientDoctorController extends AbstractController
 
         $doctors = $this->em->getRepository(User::class)->findDoctorsByPatient($patient);
 
-        // Kiểm tra chi tiết
-        dump($patient->getId()); // ID của bệnh nhân
-        dump($patient->getRoles()); // Vai trò của bệnh nhân
-        dump($doctors); // Danh sách bác sĩ
+        // dump($patient->getRoles());
+        // dump($doctors);
 
-        // Kiểm tra appointments của bệnh nhân
-        $appointments = $this->em->getRepository(Appointment::class)->findBy(['patient' => $patient]);
-        dump($appointments); // Xem tất cả lịch hẹn của bệnh nhân
-        die();
+        // $appointments = $this->em->getRepository(Appointment::class)->findBy(['patient' => $patient]);
+        // dump($appointments);
+        // die();
 
         return $this->render('patient/doctor/index.html.twig', [
-            'doctors' => $doctors, // Sửa typo
+            'doctors' => $doctors,
         ]);
     }
 }

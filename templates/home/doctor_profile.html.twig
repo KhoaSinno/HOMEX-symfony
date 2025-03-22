@@ -44,8 +44,13 @@
 							</div>
 							<div class="doc-info-cont">
 								<h4 class="doc-name">{{doctor.fullname}}</h4>
-								<p class="doc-speciality">BDS, MDS - Oral & Maxillofacial Surgery</p>
-								<p class="doc-department"><img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">{{doctor.specialty.name | specialty_label}}</p>
+								<p class="doc-speciality">{{doctor.qualification}}</p>
+									<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
+								<p class="doc-department">
+								<img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
+								{{doctor.specialty.name | specialty_label}}
+								</p>
+										</a>
 
 								<div class="clinic-details">
 									<p class="doc-location">

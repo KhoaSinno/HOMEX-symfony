@@ -29,7 +29,7 @@
 			</div>
 			<!-- Page Header -->
 
-			<table class="table">
+			<table class="datatable table table-hover table-center mb-0">
 				<thead>
 					<tr class="text-center">
 						<th>Id</th>
@@ -71,14 +71,14 @@
 								{% endif %}
 							</td>
 							{# <td>
-															{% if s.status.value == 'Available' %}
-																<span class="badge badge-success p-2">Còn trống</span>
-															{% elseif s.status.value == 'Full' %}
-																<span class="badge badge-danger">Đầy</span>
-															{% else %}
-																<span class="badge badge-warning">Đã hủy</span>
-															{% endif %}
-														</td> #}
+																						{% if s.status.value == 'Available' %}
+																							<span class="badge badge-success p-2">Còn trống</span>
+																						{% elseif s.status.value == 'Full' %}
+																							<span class="badge badge-danger">Đầy</span>
+																						{% else %}
+																							<span class="badge badge-warning">Đã hủy</span>
+																						{% endif %}
+																					</td> #}
 							<td class="text-center">
 								<div class="actions">
 									<a class="btn btn-sm bg-success-light mb-1" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">

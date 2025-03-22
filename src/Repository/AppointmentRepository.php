@@ -18,11 +18,15 @@ class AppointmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Appointment::class);
     }
 
-    public function findByPatient(User $patient): array
+    public function findAppointByPatient(User $patient): array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.patient = :patient')
+            ->andWhere('a.status IN (:statuses)')
+            ->andWhere('a.paymentStatus = :paymentStatus')
             ->setParameter('patient', $patient)
+            ->setParameter('statuses', ['pending', 'active'])
+            ->setParameter('paymentStatus', 'paid')
             ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
@@ -69,7 +73,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->andWhere('a.status = :confirmed')
             ->andWhere('a.paymentStatus = :paid')
             ->setParameter('patient', $patient)
-            ->setParameter('confirmed', 'confirmed')
+            ->setParameter('confirmed', 'completed')
             ->setParameter('paid', 'paid')
             ->orderBy('a.appointmentDate', 'DESC') // Sắp xếp theo ngày mới nhất
             ->getQuery()

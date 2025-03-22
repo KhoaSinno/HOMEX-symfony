@@ -73,6 +73,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'patient')]
     private Collection $appointments;
 
+    /**
+     * @var Collection<int, Appointment>
+     */
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'doctor')]
+    private Collection $doctorAppointments; // Các cuộc hẹn mà User là bác sĩ
+
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
 
@@ -95,6 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->scheduleWorks = new ArrayCollection();
         $this->appointments = new ArrayCollection();
+        $this->doctorAppointments = new ArrayCollection();
         $this->momoTransactions = new ArrayCollection();
     }
 
@@ -328,6 +336,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getDoctorAppointments(): Collection
+    {
+        return $this->doctorAppointments;
     }
 
     public function getDateOfBirth(): ?\DateTimeInterface

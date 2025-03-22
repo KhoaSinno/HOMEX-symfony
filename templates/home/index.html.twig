@@ -62,12 +62,18 @@
 							<!-- Slider Item -->
 							<div class="speicality-item text-center">
 								<div class="speicality-img">
-									<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{specialty.name | specialty_label}}">
+									<a href="{{path("app_search_doctor", {"specialty": specialty.name})}}">
+										<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{specialty.name | specialty_label}}">
+									</a>
 									<span>
 										<i class="fa fa-circle" aria-hidden="true"></i>
 									</span>
 								</div>
-								<p>{{specialty.name | specialty_label}}</p>
+								<p>
+									<a href="{{path("app_search_doctor", {"specialty": specialty.name})}}">
+										{{specialty.name | specialty_label}}
+									</a>
+								</p>
 							</div>
 							<!-- /Slider Item -->
 
@@ -114,7 +120,11 @@
 										<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}">{{doctor.fullname}}</a>
 										<i class="fas fa-check-circle verified"></i>
 									</h3>
-									<p class="speciality">{{doctor.specialty ?? 'MBBS, MD - Ophthalmology, DNB - Ophthalmology'}}</p>
+									<p class="speciality">
+										<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
+											{{doctor.specialty.name | specialty_label}}
+										</a>
+									</p>
 
 									<ul class="available-info">
 										<li>
@@ -122,20 +132,21 @@
 											{{doctor.address ?? 'Newyork, USA'}}
 										</li>
 										{# <li>
-																					<i class="far fa-clock"></i>
-																					Available on Fri, 22 Mar
-																				</li> #}
+																																									<i class="far fa-clock"></i>
+																																									Available on Fri, 22 Mar
+																																								</li> #}
 										<li>
 											<i class="far fa-money-bill-alt"></i>
 											{{doctor.consultationFee | currency_vnd}}
 											VNĐ
-											<i class="fas fa-info-circle" data-toggle="tooltip" title="Lorem Ipsum"></i>
+											<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i>
 										</li>
 									</ul>
-									<div class="row row-sm">
+									<div
+										class="row row-sm">
 										{# <div class="col-6">
-											<a href="{{path('app_doctor_profile')}}" class="btn view-btn">Xem thông tin</a>
-										</div> #}
+																															<a href="{{path('app_doctor_profile')}}" class="btn view-btn">Xem thông tin</a>
+																														</div> #}
 										<div class="col-12">
 											<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}" class="btn book-btn">Đặt ngay</a>
 										</div>

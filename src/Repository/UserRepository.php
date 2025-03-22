@@ -51,11 +51,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findDoctorsByPatient(User $patient): array
     {
         return $this->createQueryBuilder('u')
-            ->leftJoin('u.appointments', 'a')
+            ->leftJoin('u.doctorAppointments', 'a') // Join với các cuộc hẹn mà u là bác sĩ
             ->andWhere('a.patient = :patient')
             ->andWhere('u.roles LIKE :role')
             ->setParameter('role', '%ROLE_DOCTOR%')
             ->setParameter('patient', $patient)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPatientsByDoctor(User $doctor): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.appointments', 'a') // Join với các cuộc hẹn mà u là bác sĩ
+            ->andWhere('a.doctor = :doctor')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_PATIENT%')
+            ->setParameter('doctor', $doctor)
             ->getQuery()
             ->getResult();
     }
