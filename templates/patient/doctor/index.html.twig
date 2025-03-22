@@ -1,0 +1,97 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Danh sách bác sĩ đã khám
+{% endblock %}
+
+{% block body %}
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
+
+			<div class="row">
+				<div
+					class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+
+					<!-- Profile Sidebar -->
+					{{ include('/_sidebar.html.twig') }}
+					<!-- /Profile Sidebar -->
+
+				</div>
+				<div class="col-md-7 col-lg-8 col-xl-9">
+
+						<div class="card p-3 radius-10">
+							<h3>Danh sách bác sĩ</h3>
+						</div>
+					<div class="row row-grid">
+
+						{% for doctor in doctors %}
+
+							<div class="col-md-6 col-lg-4 col-xl-3 doctor-item">
+								<div class="card widget-profile pat-widget-profile">
+									<div class="card-body">
+										<div class="pro-widget-content">
+											<div class="profile-info-widget">
+												<a href="{{path('app_doctor_doctor_show',{'id': doctor.id})}}" class="booking-doc-img">
+													{% if doctor.googleId %}
+														<img src="{{doctor.image ? asset(doctor.image) : asset('uploads/users/default.png')}}" alt="User Image">
+													{% else %}
+														<img src="{{doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('uploads/users/default.png')}}" alt="User Image">
+													{% endif %}
+
+												</a>
+												<div class="profile-det-info">
+													<h3>
+														<a href="{{path('app_doctor_doctor_show',{'id': doctor.id})}}">{{doctor.fullname ?? 'Trống'}}</a>
+													</h3>
+
+													<div class="doctor-details">
+														<h5>
+															<b>Mã BN :</b>
+															#P{{doctor.id}}</h5>
+														<h5 class="mb-0">
+															<i class="fas fa-map-marker-alt"></i>
+															{{doctor.address ?? 'Trống'}}</h5>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="doctor-info">
+											<ul>
+												<li>Số điện thoại
+													<span>{{doctor.phoneNumber ?? 'Trống'}}</span>
+												</li>
+												<li>Tuổi - Giới tính
+													<span>{{doctor.dateOfBirth ? doctor.dateOfBirth|date('d/m/Y') : 'Trống'}},
+														{{doctor.gender ?? 'Trống'}}</span>
+												</li>
+												{# <li>Nhóm máu
+																																					<span>AB+</span>
+																																				</li> #}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+
+
+					</div>
+
+					<!-- Phân trang --><div class="pagination text-center m-4 d-flex justify-content-center align-items-center" id="pagination"> </div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Page Content -->
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+	$(document).ready(function() {
+		setupPagination('.doctor-item', '#pagination', 5, 5);
+	});
+	</script>
+{% endblock %}

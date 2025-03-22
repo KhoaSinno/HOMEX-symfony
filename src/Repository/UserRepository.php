@@ -47,6 +47,33 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    // Tìm bác sĩ theo bệnh nhân thông qua appointment
+    public function findDoctorsByPatient(User $patient): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.appointments', 'a')
+            ->andWhere('a.patient = :patient')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_DOCTOR%')
+            ->setParameter('patient', $patient)
+            ->getQuery()
+            ->getResult();
+    }
+    // public function findDoctorsByPatient(User $patient): array
+    // {
+    //     return $this->createQueryBuilder('u')
+    //         ->leftJoin('u.appointments', 'a') // Join với Appointment
+    //         ->andWhere('a.patient = :patient') // Lọc theo bệnh nhân
+    //         ->andWhere('u.roles LIKE :role') // Lọc theo role bác sĩ
+    //         ->andWhere('a.status = :status') // Lọc theo trạng thái của lịch hẹn
+    //         ->setParameter('status', 'completed') // Lọc theo trạng thái đã được chấp nhận
+    //         ->setParameter('role', '%ROLE_DOCTOR%')
+    //         ->setParameter('patient', $patient)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+
     public function findDoctorsByCriteria(array $criteria)
     {
         $qb = $this->createQueryBuilder('u')

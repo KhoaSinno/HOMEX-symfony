@@ -17,7 +17,7 @@
 						<h3 class="page-title">Tạo lịch làm việc</h3>
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="">Dashboard</a>
+								<a href="{{path("app_admin_dashboard")}}">Dashboard</a>
 							</li>
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
@@ -33,8 +33,8 @@
 				<thead>
 					<tr class="text-center">
 						<th>Id</th>
-						<th>Tên BS</th>
-						<th>Ngày ĐK</th>
+						<th style="width: 120px;">Tên BS</th>
+						<th style="width: 100px;">Ngày khám</th>
 						<th>Lịch khám trong ngày</th>
 						{# <th>Trạng thái</th> #}
 						<th></th>
@@ -71,17 +71,17 @@
 								{% endif %}
 							</td>
 							{# <td>
-								{% if s.status.value == 'Available' %}
-									<span class="badge badge-success p-2">Còn trống</span>
-								{% elseif s.status.value == 'Full' %}
-									<span class="badge badge-danger">Đầy</span>
-								{% else %}
-									<span class="badge badge-warning">Đã hủy</span>
-								{% endif %}
-							</td> #}
+															{% if s.status.value == 'Available' %}
+																<span class="badge badge-success p-2">Còn trống</span>
+															{% elseif s.status.value == 'Full' %}
+																<span class="badge badge-danger">Đầy</span>
+															{% else %}
+																<span class="badge badge-warning">Đã hủy</span>
+															{% endif %}
+														</td> #}
 							<td class="text-center">
 								<div class="actions">
-									<a class="btn btn-sm bg-success-light" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
+									<a class="btn btn-sm bg-success-light mb-1" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
 										<i class="fe fe-pencil"></i>
 										Sửa
 									</a>

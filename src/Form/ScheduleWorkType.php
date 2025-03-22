@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,12 +27,20 @@ class ScheduleWorkType extends AbstractType
                         ->where("u.roles LIKE :role") // Tìm kiếm các user có chứa ROLE_DOCTOR trong roles
                         ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm chuỗi chứa ROLE_DOCTOR
                 },
-                'choice_label' => 'fullname',  
+                'choice_label' => 'fullname',
                 'label' => 'Chọn bác sĩ',
             ])
-            ->add('date', null, [
+            // ->add('date', null, [
+            //     'widget' => 'single_text',
+            //     'label' => 'Chọn ngày làm việc',
+            // ])
+            ->add('date', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Chọn ngày làm việc',
+                'attr' => ['class' => 'form-control schedule-datepicker'],
+                'required' => true,
+                'input' => 'datetime', // Chuyển đổi giá trị thành DateTime
+                'format' => 'dd/MM/yyyy', // tau định nghĩa format ngày tháng năm, thì tất cả nơi khi ref thì phải đúng format này
+                'html5' => false, // Dùng thư viện Datepicker nên đéo thể nào bật date engine của web đc
             ])
             // ->add('maxPatient', null, [
             //     'label' => 'Số BN tối đa/ giờ khám',

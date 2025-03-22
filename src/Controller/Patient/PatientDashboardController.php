@@ -132,7 +132,7 @@ class PatientDashboardController extends AbstractController
         // dump($oneHourBefore);
 
         if ($now > $oneHourBefore) {
-            $this->addFlash('error', 'Không thể hủy cuộc hẹn trong vòng 1 giờ trước khi bắt đầu.');
+            $this->addFlash('error', 'Cuộc hẹn sắp diễn ra! Vui lòng liên hệ quản trị hệ thống nếu muốn hủy.');
             return $this->redirectToRoute('app_patient_dashboard'); // Chuyển hướng về dashboard
         }
         // die();

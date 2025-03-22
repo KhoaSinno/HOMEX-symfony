@@ -17,7 +17,7 @@
 						<h3 class="page-title">Tạo lịch làm việc</h3>
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="">Dashboard</a>
+                                <a href="{{path("app_admin_dashboard")}}">Dashboard</a>
 							</li>
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
@@ -78,7 +78,7 @@ $(document).ready(function () {
                 slotsContainer.empty();
 
                 response.timeSlots.forEach(function (slot, index) {
-                    let isChecked = selectedSlots.includes(slot) ? "checked" : ""; // 🔹 Giữ lại trạng thái chọn
+                    let isChecked = selectedSlots.includes(slot) ? "checked" : ""; // Giữ lại trạng thái chọn
 
                     let slotHtml = `
                         <div class="time-slot-item">
@@ -113,123 +113,38 @@ $(document).ready(function () {
     });
 });
 
-
-    {# $(document).ready(function () {
-        let slotsContainer = $(".time-slot-container");
-
-        $('#schedule_work_slotDuration').on('change', function () {
-            let duration = $(this).val();
-
-            $.ajax({
-        url: "{{ path('generate_time_slots_create') }}",
-        method: "POST",
-        data: { duration: duration },
-        success: function (response) {
-            console.log("✅ API Response:", response); // Kiểm tra dữ liệu nhận được
-
-            let slotsContainer = $(".time-slot-container");
-            slotsContainer.empty();
-
-            response.timeSlots.forEach(function (slot, index) {
-                let slotHtml = `
-                    <div class="time-slot-item">
-                        <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
-                        <label for="schedule_work_timeSlots_${index}">${slot}</label>
-                    </div>
-                `;
-                slotsContainer.append(slotHtml);
-            });
-
-            console.log("📝 Time Slots in Form:", $(".time-slot-container").html()); // Kiểm tra danh sách trong DOM
-        },
-        error: function () {
-            alert("❌ Lỗi khi lấy Time Slots!");
-        }
-    });
-
-        });
-
-        // 🛠 Cập nhật danh sách trước khi submit
-        $('form').on('submit', function () {
-            let selectedSlots = [];
-            $('.time-slot-container input:checked').each(function () {
-                selectedSlots.push($(this).val());
-            });
-
-            $("#hidden_timeSlots").val(JSON.stringify(selectedSlots));
-        });
-    }); #}
-
-
-
-   {# $(document).ready(function () {
-    $('#schedule_work_slotDuration').on('change', function () {
-        let duration = $(this).val();
-
-        console.log("Thay đổi số phút khám:", duration);
-
-        $.ajax({
-            url: "{{ path('generate_time_slots_create') }}", // Route Symfony gọi API
-            method: "POST",
-            data: { duration: duration },
-            success: function (response) {
-                console.log("API phản hồi:", response); // Debug API response
-
-                let slotsContainer = $(".time-slot-container");
-                slotsContainer.empty(); // Xóa khung giờ cũ
-
-                response.timeSlots.forEach(function (slot, index) {
-                    let slotHtml = `
-                        <div class="time-slot-item">
-                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
-                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
-                        </div>
-                    `;
-                    slotsContainer.append(slotHtml);
-                });
-            },
-            error: function () {
-                alert("Có lỗi xảy ra khi lấy Time Slots!");
-            }
-        });
-    });
-}); #}
-
-
-
-{# older #}
-{# $(document).ready(function () {
-    $('#schedule_work_slotDuration, #schedule_work_doctor, #schedule_work_date').on('change', function () {
-        let duration = $(this).val();
-        let selectedDate = $('#schedule_work_date').val();
-        let doctorId = $('#schedule_work_doctor').val();
-
-        if (!doctorId || !selectedDate) return;
-
-        $.ajax({
-            url: "{{ path('generate_time_slots') }}",
-            method: "POST",
-            data: { duration: duration, date: selectedDate, doctorId: doctorId },
-            success: function (response) {
-                let slotsContainer = $(".time-slot-container");
-                slotsContainer.empty(); // Xóa khung giờ cũ
-
-                response.timeSlots.forEach(function (slot, index) {
-                    let slotHtml = `
-                        <div class="time-slot-item">
-                            <input type="checkbox" id="schedule_work_timeSlots_${index}" name="schedule_work[timeSlots][]" value="${slot}">
-                            <label for="schedule_work_timeSlots_${index}">${slot}</label>
-                        </div>
-                    `;
-                    slotsContainer.append(slotHtml);
-                });
-            },
-            error: function () {
-                alert("Lỗi khi lấy Time Slots!");
-            }
-        });
-    });
-}); #}
-
 </script>
+
+<!-- Moment.js (Cần thiết cho datetimepicker) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+	<!-- Bootstrap Datetimepicker -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+		$(document).ready(function () {
+		console.log("DOM Loaded, initializing datetimepicker...");
+
+		// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
+		moment.updateLocale('vi', {
+		week: {
+		dow: 1
+		} // dow: 1 => Tuần bắt đầu từ Thứ Hai
+		});
+
+		$('.schedule-datepicker').datetimepicker({
+		format: 'DD/MM/YYYY', // Định dạng ngày
+		locale: 'vi', // Tiếng Việt (cần moment.js)
+		showTodayButton: true, // Hiển thị nút "Hôm nay"
+		useCurrent: false, // Không tự động chọn ngày hiện tại
+		sideBySide: true, // Hiển thị giờ/phút cạnh nhau
+		toolbarPlacement: 'top', // Vị trí toolbar
+		showClear: true, // Hiển thị nút "Xóa"
+		showClose: true, // Hiển thị nút "Đóng"
+		defaultDate: new Date()
+		});
+		});
+	</script>
+
 {% endblock %}
