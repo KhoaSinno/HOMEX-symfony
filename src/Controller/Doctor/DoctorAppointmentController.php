@@ -17,11 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/doctor/appointment')]
 final class DoctorAppointmentController extends AbstractController
 {
-
     private MailService $mailService;
-    public function __construct(private MailService $_mailService)
+    private EntityManagerInterface $em;
+    public function __construct(private MailService $_mailService, EntityManagerInterface $_em)
     {
         $this->mailService = $_mailService;
+        $this->em = $_em;
     }
     #[Route(name: 'app_doctor_appointment', methods: ['GET'])]
     public function index(AppointmentRepository $appointmentRepository): Response
@@ -29,6 +30,17 @@ final class DoctorAppointmentController extends AbstractController
         return $this->render('doctor/appointment/index.html.twig', [
             'appointments' => $appointmentRepository->findBy(['status' => AppointmentConstants::PENDING_STATUS, 'paymentStatus' => AppointmentConstants::PAID_STATUS]),
         ]);
+    }
+
+    #[Route('/{id}/undoAction', name: 'app_doctor_appointment_undo', methods: ['GET', 'POST'])]
+    public function undoAction(Appointment $appointment): Response
+    {
+        $appointment->setStatus(AppointmentConstants::PENDING_STATUS);
+
+        $this->em->persist($appointment);
+        $this->em->flush();
+
+        return $this->redirectToRoute('app_doctor_appointment');
     }
 
     #[Route('/new', name: 'app_doctor_appointment_new', methods: ['GET', 'POST'])]
@@ -73,7 +85,7 @@ final class DoctorAppointmentController extends AbstractController
             throw new \LogicException('Cuộc hẹn này không có bác sĩ nào.');
         }
 
-        if($appointment->getStatus() == AppointmentConstants::PENDING_STATUS) {
+        if ($appointment->getStatus() == AppointmentConstants::PENDING_STATUS) {
             $appointment->setStatus(AppointmentConstants::ACTIVE_STATUS);
             $entityManager->flush();
         }
@@ -84,9 +96,9 @@ final class DoctorAppointmentController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['resultFile']->getData();
-            
+
             if ($file && $file->isValid()) {
-              
+
                 // Tạo file ZIP và gửi email
                 $zipFileName = 'HOMEX_Ket_qua_' . $patient->getFullname() . '.zip';
                 $zipFilePath = sys_get_temp_dir() . '/' . $zipFileName;
@@ -113,11 +125,10 @@ final class DoctorAppointmentController extends AbstractController
                     if (file_exists($zipFilePath)) {
                         unlink($zipFilePath);
                     }
-                    
+
                     // Thành công tất thì mới gửi file
                     $appointment->setStatus(AppointmentConstants::COMPLETED_STATUS);
                     $entityManager->flush();
-    
                 }
 
                 return $this->redirectToRoute('app_doctor_dashboard');
@@ -198,6 +209,4 @@ final class DoctorAppointmentController extends AbstractController
 
         return $this->redirectToRoute('app_doctor_appointment');
     }
-
-
 }

@@ -20,13 +20,13 @@
 								{# <p>Appointment booked with <strong>Dr. Darren Elder</strong><br> on <strong>12 Nov 2019 5:00PM to 6:00PM</strong></p> #}
 								<p>Cảm ơn!
 									<strong>
-										{{appointment.patientFullname}}
+										{{appointment.patientFullname ?? 'Mary'}}
 									</strong>
 									đã đặt lịch.</p>
 								<p class="text-muted lead">
 									Lịch hẹn của bạn đã được xác nhận. Vui lòng kiểm tra mail để xác nhận thông tin.</p>
 
-								<a href="mailto:{{appointment.patientEmail}}" class="btn btn-primary view-inv-btn">Xem mail</a>
+								<a href="mailto:{{appointment.patientEmail ?? 'khoasinno@gmail.com'}}" class="btn btn-primary view-inv-btn">Xem mail</a>
 							</div>
 						</div>
 					</div>

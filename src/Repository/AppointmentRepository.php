@@ -18,29 +18,54 @@ class AppointmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Appointment::class);
     }
 
-    public function findByPatient(User $patient): array
+    public function findAppointByPatient(User $patient): array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.patient = :patient')
+            ->andWhere('a.status IN (:statuses)')
+            ->andWhere('a.paymentStatus = :paymentStatus')
             ->setParameter('patient', $patient)
+            ->setParameter('statuses', ['pending', 'active'])
+            ->setParameter('paymentStatus', 'paid')
             ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
     }
+
+    // Tìm bệnh nhân theo ngày, bác sĩ và trạng thái đặt lịch
+    public function findByDoctorAndDate(User $doctor, \DateTime $date, User $patient): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.doctor = :doctor')
+            ->andWhere('a.patient = :patient')
+            ->andWhere('a.appointmentDate = :date')
+            ->andWhere('a.status = :pending')
+            ->andWhere('a.paymentStatus = :paid')
+            ->setParameter('doctor', $doctor)
+            ->setParameter('patient', $patient)
+            ->setParameter('date', $date->format('Y-m-d')) // Định dạng ngày đúng
+            ->setParameter('pending', 'pending') // Nếu status là string, cần đặt giá trị cụ thể
+            ->setParameter('paid', 'paid') // Nếu paymentStatus là string
+            ->orderBy('a.appointmentTime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
     public function findByDoctor(User $doctor): array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.doctor = :doctor')
-            ->andWhere('a.status = :pending') 
-            ->andWhere('a.paymentStatus = :paid') 
+            ->andWhere('a.status = :pending')
+            ->andWhere('a.paymentStatus = :paid')
             ->setParameter('doctor', $doctor)
-            ->setParameter('pending', AppointmentConstants::PENDING_STATUS) 
-            ->setParameter('paid', AppointmentConstants::PAID_STATUS) 
+            ->setParameter('pending', AppointmentConstants::PENDING_STATUS)
+            ->setParameter('paid', AppointmentConstants::PAID_STATUS)
             ->orderBy('a.appointmentDate', 'DESC')
             ->getQuery()
             ->getResult();
     }
-    
+
     public function findInvoices($patient)
     {
         return $this->createQueryBuilder('a')
@@ -48,7 +73,7 @@ class AppointmentRepository extends ServiceEntityRepository
             ->andWhere('a.status = :confirmed')
             ->andWhere('a.paymentStatus = :paid')
             ->setParameter('patient', $patient)
-            ->setParameter('confirmed', 'confirmed')
+            ->setParameter('confirmed', 'completed')
             ->setParameter('paid', 'paid')
             ->orderBy('a.appointmentDate', 'DESC') // Sắp xếp theo ngày mới nhất
             ->getQuery()

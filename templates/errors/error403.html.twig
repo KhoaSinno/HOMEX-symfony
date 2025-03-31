@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>403 - Truy cập bị từ chối</title>
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600 &display=swap');
+
+			body {
+				font-family: 'Poppins', sans-serif;
+				background: linear-gradient(to right, #ffcc00, #ff9900);
+				color: white;
+				text-align: center;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			h1 {
+				font-size: 120px;
+				font-weight: 600;
+				margin: 0;
+				text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+				animation: fadeIn 1s ease-in-out;
+			}
+
+			p {
+				font-size: 22px;
+				margin-bottom: 20px;
+				animation: fadeIn 1.5s ease-in-out;
+			}
+
+			.button {
+				display: inline-block;
+				padding: 12px 30px;
+				font-size: 18px;
+				font-weight: 600;
+				color: #ff9900;
+				background: white;
+				border: none;
+				border-radius: 30px;
+				text-decoration: none;
+				transition: 0.3s ease-in-out;
+				box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+				animation: fadeIn 2s ease-in-out;
+			}
+
+			.button:hover {
+				background: #ff6600;
+				color: white;
+				transform: scale(1.1);
+				box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1>403</h1>
+		<p>Xin lỗi! Bạn không có quyền truy cập vào trang này.</p>
+		<a href="{{ path('app_home') }}" class="button">🏠 Về trang chủ</a>
+	</body>
+</html>

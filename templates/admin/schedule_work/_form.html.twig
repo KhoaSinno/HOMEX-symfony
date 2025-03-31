@@ -22,11 +22,12 @@
 				<!-- Ngày làm việc -->
 				<div class="form-group  col-md-4">
 					{{ form_label(form.date, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-					{{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+					{{ form_widget(form.date, {'attr': {'class': 'form-control  schedule-datepicker'}}) }}
 					<div class="invalid-feedback d-block">
 						{{ form_errors(form.date) }}
 					</div>
 				</div>
+
 
 				<!-- Khám trong -->
 				<div class="form-group col-md-4">

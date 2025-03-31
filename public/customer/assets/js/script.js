@@ -4,70 +4,70 @@ Template Name: Doccure - Bootstrap Template
 Version      : 1.0
 */
 
-(function($) {
-    "use strict";
-	
+(function ($) {
+	"use strict";
+
 	// Stick Sidebar
-	
+
 	if ($(window).width() > 767) {
-		if($('.theiaStickySidebar').length > 0) {
+		if ($('.theiaStickySidebar').length > 0) {
 			$('.theiaStickySidebar').theiaStickySidebar({
-			  // Settings
-			  additionalMarginTop: 30
+				// Settings
+				additionalMarginTop: 30
 			});
 		}
 	}
-	
-// Sidebar
-	if($(window).width() <= 991){
-	var Sidemenu = function() {
-		this.$menuItem = $('.main-nav a');
-	};
-	
-	function init() {
-		var $this = Sidemenu;
-		$('.main-nav a').on('click', function(e) {
-			if($(this).parent().hasClass('has-submenu')) {
-				e.preventDefault();
-			}
-			if(!$(this).hasClass('submenu')) {
-				$('ul', $(this).parents('ul:first')).slideUp(350);
-				$('a', $(this).parents('ul:first')).removeClass('submenu');
-				$(this).next('ul').slideDown(350);
-				$(this).addClass('submenu');
-			} else if($(this).hasClass('submenu')) {
-				$(this).removeClass('submenu');
-				$(this).next('ul').slideUp(350);
-			}
-		});
-		//$('.main-nav li.has-submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
+
+	// Sidebar
+	if ($(window).width() <= 991) {
+		var Sidemenu = function () {
+			this.$menuItem = $('.main-nav a');
+		};
+
+		function init() {
+			var $this = Sidemenu;
+			$('.main-nav a').on('click', function (e) {
+				if ($(this).parent().hasClass('has-submenu')) {
+					e.preventDefault();
+				}
+				if (!$(this).hasClass('submenu')) {
+					$('ul', $(this).parents('ul:first')).slideUp(350);
+					$('a', $(this).parents('ul:first')).removeClass('submenu');
+					$(this).next('ul').slideDown(350);
+					$(this).addClass('submenu');
+				} else if ($(this).hasClass('submenu')) {
+					$(this).removeClass('submenu');
+					$(this).next('ul').slideUp(350);
+				}
+			});
+			//$('.main-nav li.has-submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
+		}
+
+		// Sidebar Initiate
+		init();
 	}
 
-	// Sidebar Initiate
-	init();
-	}
-	
 	// Textarea Text Count
-	
+
 	var maxLength = 100;
 	$('#review_desc').on('keyup change', function () {
 		var length = $(this).val().length;
-		 length = maxLength-length;
+		length = maxLength - length;
 		$('#chars').text(length);
 	});
-	
+
 	// Select 2
-	
-	if($('.select').length > 0) {
+
+	if ($('.select').length > 0) {
 		$('.select').select2({
 			minimumResultsForSearch: -1,
 			width: '100%'
 		});
 	}
-	
+
 	// Date Time Picker
-	
-	if($('.datetimepicker').length > 0) {
+
+	if ($('.datetimepicker').length > 0) {
 		$('.datetimepicker').datetimepicker({
 			format: 'DD/MM/YYYY',
 			icons: {
@@ -78,56 +78,56 @@ Version      : 1.0
 			}
 		});
 	}
-	
+
 	// Fancybox Gallery
-	
-	if($('.clinic-gallery a').length > 0) {
+
+	if ($('.clinic-gallery a').length > 0) {
 		$('.clinic-gallery a').fancybox({
 			buttons: [
 				"thumbs",
 				"close"
 			],
-		});	
+		});
 	}
-	
+
 	// Floating Label
 
-	if($('.floating').length > 0 ){
+	if ($('.floating').length > 0) {
 		$('.floating').on('focus blur', function (e) {
-		$(this).parents('.form-focus').toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
+			$(this).parents('.form-focus').toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
 		}).trigger('blur');
 	}
-	
+
 	// Mobile menu sidebar overlay
-	
+
 	$('body').append('<div class="sidebar-overlay"></div>');
-	$(document).on('click', '#mobile_btn', function() {
+	$(document).on('click', '#mobile_btn', function () {
 		$('main-wrapper').toggleClass('slide-nav');
 		$('.sidebar-overlay').toggleClass('opened');
 		$('html').addClass('menu-opened');
 		return false;
 	});
-	
-	$(document).on('click', '.sidebar-overlay', function() {
+
+	$(document).on('click', '.sidebar-overlay', function () {
 		$('html').removeClass('menu-opened');
 		$(this).removeClass('opened');
 		$('main-wrapper').removeClass('slide-nav');
 	});
-	
-	$(document).on('click', '#menu_close', function() {
+
+	$(document).on('click', '#menu_close', function () {
 		$('html').removeClass('menu-opened');
 		$('.sidebar-overlay').removeClass('opened');
 		$('main-wrapper').removeClass('slide-nav');
 	});
-	
+
 	// Mobile Menu
-	
+
 	/*if($(window).width() <= 991){
 		mobileSidebar();
 	} else {
 		$('html').removeClass('menu-opened');
 	}*/
-	
+
 	/*function mobileSidebar() {
 		$('.main-nav a').on('click', function(e) {
 			$('.dropdown-menu').each(function() {
@@ -141,75 +141,75 @@ Version      : 1.0
 			
 		});
 	}*/
-	
+
 	// Tooltip
-	
-	if($('[data-toggle="tooltip"]').length > 0 ){
+
+	if ($('[data-toggle="tooltip"]').length > 0) {
 		$('[data-toggle="tooltip"]').tooltip();
 	}
-	
+
 	// Add More Hours
-	
-    $(".hours-info").on('click','.trash', function () {
+
+	$(".hours-info").on('click', '.trash', function () {
 		$(this).closest('.hours-cont').remove();
 		return false;
-    });
+	});
 
-    $(".add-hours").on('click', function () {
-		
+	$(".add-hours").on('click', function () {
+
 		var hourscontent = '<div class="row form-row hours-cont">' +
 			'<div class="col-12 col-md-10">' +
-				'<div class="row form-row">' +
-					'<div class="col-12 col-md-6">' +
-						'<div class="form-group">' +
-							'<label>Start Time</label>' +
-							'<select class="form-control">' +
-								'<option>-</option>' +
-								'<option>12.00 am</option>' +
-								'<option>12.30 am</option>' + 
-								'<option>1.00 am</option>' +
-								'<option>1.30 am</option>' +
-							'</select>' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-12 col-md-6">' +
-						'<div class="form-group">' +
-							'<label>End Time</label>' +
-							'<select class="form-control">' +
-								'<option>-</option>' +
-								'<option>12.00 am</option>' +
-								'<option>12.30 am</option>' +
-								'<option>1.00 am</option>' +
-								'<option>1.30 am</option>' +
-							'</select>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
+			'<div class="row form-row">' +
+			'<div class="col-12 col-md-6">' +
+			'<div class="form-group">' +
+			'<label>Start Time</label>' +
+			'<select class="form-control">' +
+			'<option>-</option>' +
+			'<option>12.00 am</option>' +
+			'<option>12.30 am</option>' +
+			'<option>1.00 am</option>' +
+			'<option>1.30 am</option>' +
+			'</select>' +
+			'</div>' +
+			'</div>' +
+			'<div class="col-12 col-md-6">' +
+			'<div class="form-group">' +
+			'<label>End Time</label>' +
+			'<select class="form-control">' +
+			'<option>-</option>' +
+			'<option>12.00 am</option>' +
+			'<option>12.30 am</option>' +
+			'<option>1.00 am</option>' +
+			'<option>1.30 am</option>' +
+			'</select>' +
+			'</div>' +
+			'</div>' +
+			'</div>' +
 			'</div>' +
 			'<div class="col-12 col-md-2"><label class="d-md-block d-sm-none d-none">&nbsp;</label><a href="#" class="btn btn-danger trash"><i class="far fa-trash-alt"></i></a></div>' +
-		'</div>';
-		
-        $(".hours-info").append(hourscontent);
-        return false;
-    });
-	
+			'</div>';
+
+		$(".hours-info").append(hourscontent);
+		return false;
+	});
+
 	// Content div min height set
-	
+
 	function resizeInnerDiv() {
-		var height = $(window).height();	
+		var height = $(window).height();
 		var header_height = $(".header").height();
 		var footer_height = $(".footer").height();
 		var setheight = height - header_height;
 		var trueheight = setheight - footer_height;
 		$(".content").css("min-height", trueheight);
 	}
-	
-	if($('.content').length > 0 ){
+
+	if ($('.content').length > 0) {
 		resizeInnerDiv();
 	}
 
-	$(window).resize(function(){
-		if($('.content').length > 0 ){
+	$(window).resize(function () {
+		if ($('.content').length > 0) {
 			resizeInnerDiv();
 		}
 		/*if($(window).width() <= 991){
@@ -218,29 +218,29 @@ Version      : 1.0
 			$('html').removeClass('menu-opened');
 		}*/
 	});
-	
+
 	// Slick Slider
-	
-	if($('.specialities-slider').length > 0) {
+
+	if ($('.specialities-slider').length > 0) {
 		$('.specialities-slider').slick({
 			dots: true,
-			autoplay:false,
+			autoplay: false,
 			infinite: true,
 			variableWidth: true,
 			prevArrow: false,
 			nextArrow: false
 		});
 	}
-	
-	if($('.doctor-slider').length > 0) {
+
+	if ($('.doctor-slider').length > 0) {
 		$('.doctor-slider').slick({
 			dots: false,
-			autoplay:false,
+			autoplay: false,
 			infinite: true,
 			variableWidth: true,
 		});
 	}
-	if($('.features-slider').length > 0) {
+	if ($('.features-slider').length > 0) {
 		$('.features-slider').slick({
 			dots: true,
 			infinite: true,
@@ -249,55 +249,55 @@ Version      : 1.0
 			speed: 500,
 			variableWidth: true,
 			arrows: false,
-			autoplay:false,
+			autoplay: false,
 			responsive: [{
-				  breakpoint: 992,
-				  settings: {
+				breakpoint: 992,
+				settings: {
 					slidesToShow: 1
-				  }
+				}
 
 			}]
 		});
 	}
-	
+
 	// Date Time Picker
-	
-	if($('.datepicker').length > 0) {
+
+	if ($('.datepicker').length > 0) {
 		$('.datepicker').datetimepicker({
 			viewMode: 'years',
 			showTodayButton: true,
 			format: 'DD-MM-YYYY',
 			// minDate:new Date(),
-			widgetPositioning:{
-				horizontal: 'auto',	
+			widgetPositioning: {
+				horizontal: 'auto',
 				vertical: 'bottom'
 			}
 		});
 	}
-	
+
 	// Chat
 
 	var chatAppTarget = $('.chat-window');
-	(function() {
+	(function () {
 		if ($(window).width() > 991)
 			chatAppTarget.removeClass('chat-slide');
-		
-		$(document).on("click",".chat-window .chat-users-list a.media",function () {
+
+		$(document).on("click", ".chat-window .chat-users-list a.media", function () {
 			if ($(window).width() <= 991) {
 				chatAppTarget.addClass('chat-slide');
 			}
 			return false;
 		});
-		$(document).on("click","#back_user_list",function () {
+		$(document).on("click", "#back_user_list", function () {
 			if ($(window).width() <= 991) {
 				chatAppTarget.removeClass('chat-slide');
-			}	
+			}
 			return false;
 		});
 	})();
-	
+
 	// Circle Progress Bar
-	
+
 	function animateElements() {
 		$('.circle-bar1').each(function () {
 			var elementPos = $(this).offset().top;
@@ -308,7 +308,7 @@ Version      : 1.0
 				$(this).data('animate', true);
 				$(this).find('.circle-graph1').circleProgress({
 					value: percent / 100,
-					size : 400,
+					size: 400,
 					thickness: 30,
 					fill: {
 						color: '#da3f81'
@@ -325,7 +325,7 @@ Version      : 1.0
 				$(this).data('animate', true);
 				$(this).find('.circle-graph2').circleProgress({
 					value: percent / 100,
-					size : 400,
+					size: 400,
 					thickness: 30,
 					fill: {
 						color: '#68dda9'
@@ -342,7 +342,7 @@ Version      : 1.0
 				$(this).data('animate', true);
 				$(this).find('.circle-graph3').circleProgress({
 					value: percent / 100,
-					size : 400,
+					size: 400,
 					thickness: 30,
 					fill: {
 						color: '#1b5a90'
@@ -350,11 +350,97 @@ Version      : 1.0
 				});
 			}
 		});
-	}	
-	
-	if($('.circle-bar').length > 0) {
+	}
+
+	if ($('.circle-bar').length > 0) {
 		animateElements();
 	}
 	$(window).scroll(animateElements);
+
+
 	
+
 })(jQuery);
+
+//  My config 
+document.addEventListener('turbo:render', function () {
+	const alerts = document.querySelectorAll('.alert');
+	alerts.forEach(alert => {
+		setTimeout(() => {
+			alert.style.display = 'none';
+		}, 5000);
+	});
+});
+
+function setupPagination(containerSelector, paginationSelector, itemsPerPage = 5, maxPagesToShow = 5) {
+    var $items = $(containerSelector); // Lấy danh sách phần tử
+    var totalItems = $items.length; // Tổng số phần tử
+    var totalPages = Math.ceil(totalItems / itemsPerPage); // Tổng số trang
+    var currentPage = 1; // Trang hiện tại
+
+    if (totalItems === 0) return; // Nếu không có phần tử, thoát luôn
+
+    function showPage(page) {
+        $items.hide(); // Ẩn tất cả
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+        $items.slice(start, end).show(); // Hiển thị phần tử theo trang
+        currentPage = page;
+        updatePagination(); // Cập nhật phân trang
+    }
+
+    function updatePagination() {
+        var paginationHtml = '';
+
+        // Nút "Trước"
+        paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn ' + (currentPage === 1 ? 'disabled' : '') + '" data-page="' + (currentPage - 1) + '">&laquo; Trước</button>';
+
+        var startPage, endPage;
+        if (totalPages <= maxPagesToShow) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            var halfPagesToShow = Math.floor(maxPagesToShow / 2);
+            startPage = Math.max(1, currentPage - halfPagesToShow);
+            endPage = Math.min(totalPages, currentPage + halfPagesToShow);
+
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                if (startPage === 1) {
+                    endPage = maxPagesToShow;
+                } else {
+                    startPage = totalPages - maxPagesToShow + 1;
+                }
+            }
+        }
+
+        if (startPage > 1) {
+            paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn" data-page="1">1</button>';
+            if (startPage > 2) {
+                paginationHtml += '<span class="mx-1">...</span>';
+            }
+        }
+
+        for (var i = startPage; i <= endPage; i++) {
+            paginationHtml += '<button class="btn btn-sm mx-1 page-btn ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary') + '" data-page="' + i + '">' + i + '</button>';
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHtml += '<span class="mx-1">...</span>';
+            }
+            paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn" data-page="' + totalPages + '">' + totalPages + '</button>';
+        }
+
+        // Nút "Tiếp"
+        paginationHtml += '<button class="btn btn-sm btn-outline-primary mx-1 page-btn ' + (currentPage === totalPages ? 'disabled' : '') + '" data-page="' + (currentPage + 1) + '">Tiếp &raquo;</button>';
+
+        $(paginationSelector).html(paginationHtml);
+    }
+
+    $(paginationSelector).on('click', '.page-btn:not(.disabled)', function() {
+        var page = $(this).data('page');
+        showPage(page);
+    });
+
+    showPage(1); // Hiển thị trang đầu tiên
+}

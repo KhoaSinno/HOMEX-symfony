@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Specialty;
 use App\Repository\AppointmentRepository;
 use App\Repository\ScheduleWorkRepository;
 use App\Repository\SpecialtyRepository;
 use App\Repository\UserRepository;
-use App\Service\ScheduleService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +16,11 @@ class HomeController extends AbstractController
 {
     private EntityManagerInterface $em;
     private SpecialtyRepository $specialtyRepository;
-    private ScheduleService $scheduleService;
 
-    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository, ScheduleService $scheduleService)
+    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository)
     {
         $this->em = $em;
         $this->specialtyRepository = $specialtyRepository;
-        $this->scheduleService = $scheduleService;
     }
 
 
@@ -57,9 +53,6 @@ class HomeController extends AbstractController
         if ($address) {
             $criteria['address'] = $address;
         }
-        // if ($specialty) {
-        //     $criteria['specialty'] = $specialty;
-        // }
         if (!empty($specialty)) {
             $criteria['specialty'] = $specialty; // Lọc danh sách chuyên khoa
         }

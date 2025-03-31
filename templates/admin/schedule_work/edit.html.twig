@@ -30,7 +30,7 @@
 			<!-- Page Header -->
 
 			<div class="mb-2">
-				<a class="btn btn-sm btn-warning rounded mr-2" href="{{path('app_schedule_work_index')}}">
+				<a class="btn btn-sm btn-warning rounded mr-2" href="javascript:history.back();" title="Trở về">
 					<i class="fa fa-arrow-left" aria-hidden="true"></i>
 					Trở về</a>
 			</div>
@@ -99,4 +99,36 @@
     });
 </script>
 
+<!-- Moment.js (Cần thiết cho datetimepicker) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+	<!-- Bootstrap Datetimepicker -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+		$(document).ready(function () {
+		console.log("DOM Loaded, initializing datetimepicker...");
+
+		// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
+		moment.updateLocale('vi', {
+		week: {
+		dow: 1
+		} // dow: 1 => Tuần bắt đầu từ Thứ Hai
+		});
+
+		$('.schedule-datepicker').datetimepicker({
+		format: 'DD/MM/YYYY', // Định dạng ngày
+		locale: 'vi', // Tiếng Việt (cần moment.js)
+		showTodayButton: true, // Hiển thị nút "Hôm nay"
+		useCurrent: false, // Không tự động chọn ngày hiện tại
+		sideBySide: true, // Hiển thị giờ/phút cạnh nhau
+		toolbarPlacement: 'top', // Vị trí toolbar
+		showClear: true, // Hiển thị nút "Xóa"
+		showClose: true, // Hiển thị nút "Đóng"
+		defaultDate: new Date()
+		});
+		});
+	</script>
+	
 {% endblock %}

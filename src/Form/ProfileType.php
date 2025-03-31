@@ -34,7 +34,7 @@ class ProfileType extends AbstractType
                 'multiple' => false, // Chỉ chọn 1 giá trị
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('address', TextType::class, ['label' => 'Địa chỉ'])
+            ->add('address', TextareaType::class, ['label' => 'Địa chỉ'])
             ->add('image', FileType::class, [
                 'label' => 'Ảnh đại diện',
                 'mapped' => false,

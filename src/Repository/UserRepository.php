@@ -40,16 +40,60 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('u.specialty', 's') // Join với Specialty
             ->addSelect('s') // Lấy cả Specialty
             ->where('u.roles LIKE :role')
+            // ->andWhere('u.isDel = :isDel')
             ->setParameter('role', '%"' . $role . '"%') // Tìm role trong mảng JSON
+            // ->setParameter('isDel', 0)
             ->getQuery()
             ->getResult();
     }
 
+    // Tìm bác sĩ theo bệnh nhân thông qua appointment
+    public function findDoctorsByPatient(User $patient): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.doctorAppointments', 'a') // Join với các cuộc hẹn mà u là bác sĩ
+            ->andWhere('a.patient = :patient')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_DOCTOR%')
+            ->setParameter('patient', $patient)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findPatientsByDoctor(User $doctor): array
+    {
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.appointments', 'a') // Join với các cuộc hẹn mà u là bác sĩ
+            ->andWhere('a.doctor = :doctor')
+            ->andWhere('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_PATIENT%')
+            ->setParameter('doctor', $doctor)
+            ->getQuery()
+            ->getResult();
+    }
+    // public function findDoctorsByPatient(User $patient): array
+    // {
+    //     return $this->createQueryBuilder('u')
+    //         ->leftJoin('u.appointments', 'a') // Join với Appointment
+    //         ->andWhere('a.patient = :patient') // Lọc theo bệnh nhân
+    //         ->andWhere('u.roles LIKE :role') // Lọc theo role bác sĩ
+    //         ->andWhere('a.status = :status') // Lọc theo trạng thái của lịch hẹn
+    //         ->setParameter('status', 'completed') // Lọc theo trạng thái đã được chấp nhận
+    //         ->setParameter('role', '%ROLE_DOCTOR%')
+    //         ->setParameter('patient', $patient)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+
     public function findDoctorsByCriteria(array $criteria)
     {
         $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.isDel = :isDel')
             ->andWhere('u.roles LIKE :role')
-            ->setParameter('role', '%ROLE_DOCTOR%'); // Tìm kiếm chỉ những bác sĩ
+            ->setParameter('role', '%ROLE_DOCTOR%') // Tìm kiếm chỉ những bác sĩ
+            ->setParameter('isDel', 0);
+
 
         if (!empty($criteria['name'])) {
             $qb->andWhere('u.fullname LIKE :name')
@@ -63,9 +107,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if (!empty($criteria['specialty'])) {
             if (is_array($criteria['specialty'])) {
-                // Nếu specialty là mảng, dùng IN
-                $qb->andWhere('u.specialty IN (:specialty)')
-                    ->setParameter('specialty', $criteria['specialty']);
+                // Nếu specialty là mảng, dùng IN => tìm kiếm với nhiều chuyên khoa ấy mà, mà Business không có nên để thừa cũng chả sao
+                $qb->join('u.specialty', 's')  // Join bảng specialty với alias 's'
+                    ->andWhere('s.name IN (:specialty)')
+                    ->setParameter('specialty', (array) $criteria['specialty']);  // Đảm bảo là mảng
+
             } else {
                 // Nếu specialty không phải mảng, dùng LIKE
                 $qb->innerJoin('u.specialty', 's') // Thực hiện join với bảng specialty

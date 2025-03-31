@@ -17,7 +17,7 @@
 					<nav aria-label="breadcrumb" class="page-breadcrumb">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="index-2.html">Home</a>
+								<a href="{{path('app_home')}}">Trang chủ</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">Doctor Profile</li>
 						</ol>
@@ -44,8 +44,13 @@
 							</div>
 							<div class="doc-info-cont">
 								<h4 class="doc-name">{{doctor.fullname}}</h4>
-								<p class="doc-speciality">BDS, MDS - Oral & Maxillofacial Surgery</p>
-								<p class="doc-department"><img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">{{doctor.specialty.name | specialty_label}}</p>
+								<p class="doc-speciality">{{doctor.qualification}}</p>
+									<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
+								<p class="doc-department">
+								<img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
+								{{doctor.specialty.name | specialty_label}}
+								</p>
+										</a>
 
 								<div class="clinic-details">
 									<p class="doc-location">
@@ -103,22 +108,9 @@
 										'default': 'btn-info'        
 									}[status] %}
 
-									{% set isDisabled = status in ['pending', 'active', 'completed'] %}
+									{% set isDisabled = status in ['pending', 'active', 'completed', 'cancelled'] %}
 
-								<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %}disabled{% endif %}>
-									{{ slot }}
-								</button>
-								{% endfor %}
-							</div>
-						{% else %}
-							<p>Không có lịch khám trong ngày này.</p>
-						{% endif %}
-
-						{# <h3>Chọn giờ khám</h3>
-						{% if timeSlots is not empty %}
-							<div class="time-slot-buttons">
-								{% for slot in timeSlots %}
-									<button class="time-slot-btn btn btn-info btn-sm my-2" {% if disabledSlots[slot] %} disabled {% endif %}>
+									<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %} disabled {% endif %}>
 										{{ slot }}
 									</button>
 								{% endfor %}
@@ -127,7 +119,6 @@
 							<p>Không có lịch khám trong ngày này.</p>
 						{% endif %}
 
-						 #}
 					</div>
 
 				</div>
@@ -208,77 +199,46 @@ showCancelButton: true,
 confirmButtonText: 'Tiếp tục',
 cancelButtonText: 'Hủy'
 }).then((result) => {
-if (result.isConfirmed) { // Chuyển hướng đến trang xác nhận thanh toán
-window.location.href = `/confirm-payment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`;
+if (result.isConfirmed) { // Gửi yêu cầu AJAX để kiểm tra xem đã đặt lịch chưa
+fetch(`/check-appointment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`).then(response => response.json()).then(data => {
+if (data.error) {
+throw new Error(data.message);
+}
+// Nếu thành công, redirect đến URL từ server trả về
+window.location.href = data.redirect;
+}).catch(error => {
+Swal.fire({ // title: 'Lỗi!',
+title: error.message,
+icon: 'error'
+});
+});
 }
 });
 });
 });
 	</script>
-
-	{# Flow Book trực tiếp ko confirm #}
 	{# <script>
-					document.querySelectorAll('.time-slot-btn').forEach(button => {
-				    button.addEventListener('click', function() {
-				        const timeSlot = this.innerText;
-				        const date = document.querySelector('select[name="date"]').value;
-				        const doctorId = "{{ doctor.id }}";
-				
-				        // Hiển thị hộp thoại xác nhận trước khi đặt lịch
-				        Swal.fire({
-				            title: 'Xác nhận đặt lịch',
-				            html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
-				            icon: 'warning',
-				            showCancelButton: true,
-				            confirmButtonText: 'Xác nhận',
-				            cancelButtonText: 'Hủy'
-				        }).then((result) => {
-				            if (result.isConfirmed) {
-				                // Gửi request đặt lịch
-				                fetch('/book-appointment', {
-				                    method: 'POST',
-				                    headers: {
-				                        'Content-Type': 'application/json',
-				                        'Accept': 'application/json'
-				                    },
-				                    body: JSON.stringify({
-				                        doctorId: doctorId,
-				                        date: date,
-				                        timeSlot: timeSlot
-				                    })
-				                })
-				                .then(response => response.json())
-				                .then(data => {
-				                    if (data.success) {
-				                        Swal.fire({
-				                            title: 'Thành công!',
-				                            text: 'Bạn đã đặt lịch thành công!',
-				                            icon: 'success',
-				                            confirmButtonText: 'OK'
-				                        });
-				                    } else {
-				                        Swal.fire({
-				                            title: 'Lỗi!',
-				                            text: data.message,
-				                            icon: 'error',
-				                            confirmButtonText: 'OK'
-				                        });
-				                    }
-				                })
-				                .catch(error => {
-				                    console.error('Lỗi:', error);
-				                    Swal.fire({
-				                        title: 'Lỗi!',
-				                        text: 'Có lỗi xảy ra, vui lòng thử lại!',
-				                        icon: 'error',
-				                        confirmButtonText: 'OK'
-				                    });
-				                });
-				            }
-				        });
-				    });
-				});
-				</script> #}
+			document.querySelectorAll('.time-slot-btn').forEach(button => {
+			button.addEventListener('click', function () {
+			const timeSlot = this.innerText;
+			const date = document.querySelector('select[name="date"]').value;
+			const doctorId = "{{ doctor.id }}";
+	
+			Swal.fire({
+			title: 'Xác nhận đặt lịch',
+			html: `Bạn có chắc muốn đặt lịch vào <b>${timeSlot}</b> ngày <b>${date}</b>?`,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Tiếp tục',
+			cancelButtonText: 'Hủy'
+			}).then((result) => {
+			if (result.isConfirmed) { // Chuyển hướng đến trang xác nhận thanh toán
+			window.location.href = `/confirm-payment?doctorId=${doctorId}&date=${date}&timeSlot=${timeSlot}`;
+			}
+			});
+			});
+			});
+		</script> #}
 
 
 {% endblock %}

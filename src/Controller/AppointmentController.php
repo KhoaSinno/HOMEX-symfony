@@ -2,43 +2,29 @@
 
 namespace App\Controller;
 
-use App\Constants\AppointmentConstants;
-use App\Entity\Appointment;
 use App\Entity\User;
-use App\Repository\ScheduleWorkRepository;
-use App\Repository\SpecialtyRepository;
-use App\Service\MailService;
-use App\Service\ScheduleService;
+use App\Repository\AppointmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Mime\Email;
 
 
 class AppointmentController extends AbstractController
 {
     private EntityManagerInterface $em;
-    private SpecialtyRepository $specialtyRepository;
-    private ScheduleService $scheduleService;
-    private ScheduleWorkRepository $scheduleRepo;
-    private MailService $mailService;
     private SessionInterface $session;
+    private AppointmentRepository $apRepo;
 
-    public function __construct(EntityManagerInterface $em, SpecialtyRepository $specialtyRepository, ScheduleService $scheduleService, ScheduleWorkRepository $scheduleRepo, MailService $mailService, RequestStack $session)
+    public function __construct(EntityManagerInterface $em, RequestStack $session, AppointmentRepository $apRepo)
     {
         $this->em = $em;
-        $this->specialtyRepository = $specialtyRepository;
-        $this->scheduleService = $scheduleService;
-        $this->scheduleRepo = $scheduleRepo;
-        $this->mailService = $mailService;
         $this->session = $session->getSession();
+        $this->apRepo = $apRepo;
     }
     #[Route('/appointment', name: 'app_appointment')]
     public function index(): Response
@@ -48,26 +34,101 @@ class AppointmentController extends AbstractController
         ]);
     }
 
-    #[Route('/confirm-payment', name: 'confirm_payment', methods: ['GET'])]
-    public function confirmPayment(Request $request): Response
+    #[Route('/check-appointment', name: 'check_appointment', methods: ['GET'])]
+    public function checkAppointment(Request $request): Response
     {
         $doctorId = $request->query->get('doctorId');
         $date = new \DateTime($request->query->get('date'));
+
         $timeSlot = $request->query->get('timeSlot');
 
-        $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
+        if (!$doctorId || !$date || !$timeSlot) {
+            return new JsonResponse(['error' => true, 'message' => 'Thiếu dữ liệu!'], 400);
         }
 
         $doctor = $this->em->getRepository(User::class)->find($doctorId);
         if (!$doctor) {
-            return new Response('Bác sĩ không tồn tại!', 404);
+            return new JsonResponse(['error' => true, 'message' => 'Bác sĩ không tồn tại!'], 404);
+        }
+
+        $dateString = $request->query->get('date');
+        if (!$dateString) {
+            return new JsonResponse(['error' => true, 'message' => 'Thiếu dữ liệu ngày!'], 400);
+        }
+
+        try {
+            $date = new \DateTime($dateString);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => true, 'message' => 'Định dạng ngày không hợp lệ!'], 400);
+        }
+
+
+        $patient = $this->getUser();
+        if (!$patient) {
+            // Tạo URL để quay lại sau khi đăng nhập
+            $loginUrl = $this->generateUrl('app_login', [
+                '_target_path' => $this->generateUrl('check_appointment', [
+                    'doctorId' => $doctorId,
+                    'date' => $date,
+                    'timeSlot' => $timeSlot
+                ])
+            ]);
+
+            return new JsonResponse(['error' => false, 'redirect' => $loginUrl], 302);
+        }
+
+        // Đã tồn tại appointment in day => 403
+        $existingAppointments = $this->apRepo->findByDoctorAndDate($doctor, $date, $patient);
+        if (!empty($existingAppointments)) {
+            return new JsonResponse(['error' => true, 'message' => 'Không được phép đặt nhiều buổi trong ngày!'], 403);
+        }
+        
+        // Ai cho BS Test khám trời
+        if ($patient->getRoles()[0] == 'ROLE_DOCTOR') {
+            return new JsonResponse(['error' => true, 'message' => 'Tài khoản Bác sĩ không thể đặt lịch khám!'], 403);
+        }
+
+        // dump($request->query->all());
+        // die();
+
+        $formattedDate = $date->format('Y-m-d');
+        // Trả về URL để JavaScript redirect
+        $confirmUrl = $this->generateUrl('confirm_payment', [
+            'doctorId' => $doctorId,
+            'date' => $formattedDate,
+            'timeSlot' => $timeSlot
+        ]);
+
+        return new JsonResponse(['error' => false, 'redirect' => $confirmUrl], 200);
+    }
+
+
+    #[Route('/confirm-payment', name: 'confirm_payment', methods: ['GET'])]
+    public function confirmPayment(Request $request): Response
+    {
+        $doctorId = $request->query->get('doctorId');
+        $doctor = $this->em->getRepository(User::class)->find($doctorId);
+        if (!$doctor) {
+            return new JsonResponse(['message' => 'Bác sĩ không tồn tại!'], 404);
+        }
+        $date = $request->query->get('date');
+
+        // dump($request->query->all());
+        // die();
+        $timeSlot = $request->query->get('timeSlot');
+
+        if (!$doctorId || !$date || !$timeSlot) {
+            return new JsonResponse(['message' => 'Thiếu dữ liệu!'], 400);
+        }
+
+        $patient = $this->getUser();
+        if (!$patient) {
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('appointment/confirm_payment.html.twig', [
             'doctor' => $doctor,
-            'patient' => $user,
+            'patient' => $patient,
             'date' => $date,
             'timeSlot' => $timeSlot
         ]);
@@ -185,18 +246,18 @@ class AppointmentController extends AbstractController
     // ------------------------------------------------------------------ Test Mail ------------------------------------------------------------------
 
 
-    #[Route('/send-test-email', name: 'send_test_email')]
-    public function sendTestEmail(MailerInterface $mailer)
-    {
-        $email = (new Email())
-            ->from('ntakhoa.work@gmail.com')
-            ->to('khoasinno@gmail.com')
-            ->subject('Test Email')
-            ->text('This is a test email from Symfony Mailer.');
+    // #[Route('/send-test-email', name: 'send_test_email')]
+    // public function sendTestEmail(MailerInterface $mailer)
+    // {
+    //     $email = (new Email())
+    //         ->from('ntakhoa.work@gmail.com')
+    //         ->to('khoasinno@gmail.com')
+    //         ->subject('Test Email')
+    //         ->text('This is a test email from Symfony Mailer.');
 
-        $mailer->send($email);
-        return new JsonResponse(['message' => 'Email sent successfully!']);
-    }
+    //     $mailer->send($email);
+    //     return new JsonResponse(['message' => 'Email sent successfully!']);
+    // }
 
     // ------------------------------------------------------------------ Case substitutions business logic ------------------------------------------------------------------
     // flow Book trực tiếp ko confirm 

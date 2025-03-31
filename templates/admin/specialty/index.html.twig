@@ -96,7 +96,7 @@
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Add Specialities</h5>
+				<h5 class="modal-title">Thêm chuyên khoa</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -133,7 +133,6 @@
 					</div>
 					<div class="col-12 col-sm-6">
 						<div class="form-group">
-							{# <label>Preview hình ảnh</label> #}
 							<img id="imagePreview-create" src="#" alt="Preview" class="img-fluid d-none" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #ddd; padding: 5px;"/>
 						</div>
 					</div>
@@ -143,13 +142,15 @@
 			</div>
 		</div>
 	</div>
-</div></div><!-- /ADD Modal -->
+</div>
+</div>
+<!-- /ADD Modal -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-{# $('#addSpecialtyForm').submit(function(e) { #}
 $(document).on('submit', '.ajax-form', function(e) {
     e.preventDefault(); 
 
@@ -277,11 +278,8 @@ $(document).on('submit', '.ajax-form', function(e) {
 								{% endif %}
 									</div>
 
-								{# {% else %}
-									<p>(Trống)</p> #}
 							</div>
 						</div>
-
 
 					</div>
 					<button type="submit" class="btn btn-primary btn-block">Cập nhật</button>
@@ -367,8 +365,6 @@ $(document).on('submit', '.ajax-form', function(e) {
 			preview.classList.add('d-none'); // Ẩn ảnh preview
 		}
 	}
-
-
 </script>
 
 {% endblock %}

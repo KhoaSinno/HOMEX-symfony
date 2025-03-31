@@ -1,0 +1,108 @@
+{% extends 'baseCustomer.html.twig' %}
+
+{% block title %}Danh sách bác sĩ đã khám
+{% endblock %}
+
+{% block body %}
+	<!-- Page Content -->
+	<div class="content">
+		<div class="container-fluid">
+
+			<div class="row">
+				<div
+					class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+
+					<!-- Profile Sidebar -->
+					{{ include('/_sidebar.html.twig') }}
+					<!-- /Profile Sidebar -->
+
+				</div>
+				<div class="col-md-7 col-lg-8 col-xl-9">
+
+					<div class="card p-3 radius-10">
+						<h3>Danh sách bác sĩ</h3>
+					</div>
+					<div class="row row-grid">
+
+						{% for doctor in doctors %}
+
+							<div class="col-md-6 col-lg-4 doctor-item mb-4">
+								<div class="card widget-profile pat-widget-profile shadow-sm h-100">
+									<div
+										class="card-body d-flex flex-column">
+										<!-- Thông tin chính -->
+										<div class="pro-widget-content mb-3">
+											<div class="profile-info-widget d-flex align-items-center">
+												<a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}" class="booking-doc-img mr-3">
+													{% if doctor.googleId %}
+														<img src="{{ doctor.image ? asset(doctor.image) : asset('uploads/users/default.png') }}" class="rounded-circle img-fluid" alt="User Image" style="width: 80px; height: 80px; object-fit: cover;">
+													{% else %}
+														<img src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('uploads/users/default.png') }}" class="rounded-circle img-fluid" alt="User Image" style="width: 80px; height: 80px; object-fit: cover;">
+													{% endif %}
+												</a>
+												<div class="profile-det-info flex-grow-1">
+													<h3 class="mb-1">
+														<a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}" class="text-primary font-weight-bold">
+															{{ doctor.fullname ?? 'Trống' }}
+														</a>
+													</h3>
+													<div class="doctor-details">
+														<h5 class="text-muted mb-1">
+															<b>Mã BS:</b>
+															#{{ doctor.id }}
+														</h5>
+														<h5 class="mb-0 text-success">
+															<i class="fa fa-archive" aria-hidden="true"></i>
+															<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
+																{{ doctor.specialty.name | specialty_label }}
+															</a>
+														</h5>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<!-- Thông tin bổ sung -->
+										<div class="doctor-info mt-1">
+											<ul class="list-unstyled mb-0">
+												<li class="d-flex justify-content-between border-bottom py-2">
+													<span class="font-weight-bold text-dark">Số điện thoại:</span>
+													<span class="text-muted">{{ doctor.phoneNumber ?? 'Trống' }}</span>
+												</li>
+												<li class="d-flex justify-content-between py-2">
+													<span class="font-weight-bold text-dark">Tuổi - Giới tính:</span>
+													<span class="text-muted">
+														{{ doctor.dateOfBirth ? doctor.dateOfBirth|date('d/m/Y') : 'Trống' }}
+														-
+														{{ doctor.gender ?? 'Trống' }}
+													</span>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+
+
+					</div>
+
+					<!-- Phân trang -->
+					<div class="pagination text-center m-4 d-flex justify-content-center align-items-center" id="pagination"></div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Page Content -->
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+		$(document).ready(function () {
+setupPagination('.doctor-item', '#pagination', 5, 5);
+});
+	</script>
+{% endblock %}

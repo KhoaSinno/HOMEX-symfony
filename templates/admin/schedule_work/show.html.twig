@@ -1,14 +1,14 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %} 
-    Chi tiết lịch làm việc
+{% block title %}
+	Chi tiết lịch làm việc
 {% endblock %}
 
 {% block body %}
 	<!-- Page Wrapper -->
 	<div class="page-wrapper">
 		<div
-			class="content container-fluid">
+			class="content container-fluid pb-5">
 
 			<!-- Page Header -->
 			<div class="page-header">
@@ -17,7 +17,7 @@
 						<h3 class="page-title">Tạo lịch làm việc</h3>
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="">Dashboard</a>
+								<a href="{{path("app_admin_dashboard")}}">Dashboard</a>
 							</li>
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
@@ -48,9 +48,9 @@
 						<td>{{ schedule_work.timeEnd ? schedule_work.timeEnd|date('H:i:s') : '' }}</td>
 					</tr>
 					{# <tr>
-						<th>MaxPatient</th>
-						<td>{{ schedule_work.maxPatient }}</td>
-					</tr> #}
+																										<th>MaxPatient</th>
+																										<td>{{ schedule_work.maxPatient }}</td>
+																									</tr> #}
 					<tr>
 						<th>Status</th>
 						{# <td>{{ schedule_work.status }}</td> #}

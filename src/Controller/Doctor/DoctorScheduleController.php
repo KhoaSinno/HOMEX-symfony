@@ -79,152 +79,6 @@ final class DoctorScheduleController extends AbstractController
 
 
 
-
-
-    #[Route('/add-slot', name: 'doctor_add_schedule_slot', methods: ['POST', 'GET'])]
-    public function addSlot(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        //  Tạo đối tượng ScheduleWork mới
-        $scheduleWork = new ScheduleWork();
-
-        //  Lấy bác sĩ hiện tại (người dùng)
-        $doctor = $this->getUser();
-        if (!$doctor) {
-            throw new \LogicException('Không tìm thấy bác sĩ.');
-        }
-        $scheduleWork->setDoctor($doctor);
-
-        //  Tạo danh sách khung giờ làm việc
-        $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
-
-        //  Tạo form
-        $form = $this->createForm(DoctorScheduleWorkType::class, $scheduleWork, [
-            'time_slots' => $timeSlots,
-        ]);
-        $form->handleRequest($request);
-
-        // if ($form->isSubmitted()) {
-        //     dump($request->request->all());
-        //     dump($form->getData());
-        //     die();
-        // }
-
-        //  Xử lý form khi submit
-        if ($form->isSubmitted()) {
-            $doctor = $this->getUser();
-            $scheduleWork->setDoctor($doctor);
-
-            $dateString = $form->get('date')->getData(); // Lấy dữ liệu từ form
-
-            if (is_string($dateString)) {
-                $date = \DateTime::createFromFormat('d-m-Y', $dateString); // Format khớp với Symfony
-            } else {
-                $date = $dateString;
-            }
-
-            if (!$date instanceof \DateTimeInterface) {
-                dump('Lỗi: Không thể chuyển đổi ngày làm việc!');
-            } else {
-                $scheduleWork->setDate($date);
-            }
-
-
-
-
-
-            // Fix lỗi status Enum
-            $status = $form->get('status')->getData();
-            $scheduleWork->setStatus($status);
-
-
-            $newSlots = $form->get('timeSlots')->getData();
-            if (!empty($newSlots)) {
-                $updatedSlots = $scheduleWork->getTimeSlots();
-                foreach ($newSlots as $slot) {
-                    if (!in_array($slot, $updatedSlots, true)) {
-                        $updatedSlots[] = trim($slot);
-                    }
-                }
-                usort($updatedSlots, fn($a, $b) => strtotime(explode('-', $a)[0]) - strtotime(explode('-', $b)[0]));
-                $scheduleWork->setTimeSlots(array_values($updatedSlots));
-
-                // dump($scheduleWork);
-                // die();
-
-                $entityManager->persist($scheduleWork);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_doctor_schedule_index');
-            }
-        }
-
-
-        return $this->render('doctor/schedule_work/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-
-
-    // #[Route('/add-slot', name: 'doctor_add_schedule_slot', methods: ['POST', 'GET'])]
-    // public function addSlot(Request $request, EntityManagerInterface $entityManager): Response
-    // {
-    //     // Tạo đối tượng ScheduleWork mới
-    //     $scheduleWork = new ScheduleWork();
-
-
-    //     // Tạo danh sách các khung giờ làm việc từ ScheduleService
-    //     $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30); // Ví dụ: Tạo từ 7h đến 17h, mỗi khung 30 phút
-
-    //     // Tạo form từ ScheduleWork và truyền vào danh sách timeSlots
-    //     $form = $this->createForm(DoctorScheduleWorkType::class, $scheduleWork, [
-    //         'time_slots' => $timeSlots,
-    //     ]);
-    //     $form->handleRequest($request);
-
-    //     // Kiểm tra nếu form được submit và hợp lệ
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $doctor = $this->getUser();
-    //         $scheduleWork->setDoctor($doctor);
-
-    //         $date = $form->get('date')->getData(); // Ngày làm việc
-    //         $newSlots = $form->get('timeSlots')->getData(); // Các khung giờ mới
-
-    //         if (!empty($newSlots)) {
-    //             // Lấy danh sách khung giờ cũ (nếu có)
-    //             $updatedSlots = $scheduleWork->getTimeSlots();
-
-    //             // Đảm bảo không thêm trùng lặp
-    //             foreach ($newSlots as $slot) {
-    //                 if (!in_array($slot, $updatedSlots, true)) { // Chỉ thêm nếu chưa có
-    //                     $updatedSlots[] = trim($slot);
-    //                 }
-    //             }
-
-    //             // Sắp xếp lại danh sách timeslots theo giờ bắt đầu
-    //             usort($updatedSlots, function ($a, $b) {
-    //                 [$startA,] = explode('-', $a);
-    //                 [$startB,] = explode('-', $b);
-    //                 return strtotime($startA) - strtotime($startB);
-    //             });
-
-    //             // Cập nhật danh sách timeslots sau khi loại bỏ trùng lặp
-    //             $scheduleWork->setTimeSlots(array_values($updatedSlots));
-
-    //             $entityManager->persist($scheduleWork);
-    //             $entityManager->flush();
-
-    //             return $this->redirectToRoute('app_doctor_schedule_index');
-    //         }
-    //     }
-
-
-    //     return $this->render('doctor/schedule_work/new.html.twig', [
-    //         'form' => $form->createView(),
-    //     ]);
-    // }
-
-
     #[Route('/{id}', name: 'app_doctor_schedule_show', methods: ['GET'])]
     public function show(ScheduleWork $scheduleWork): Response
     {
@@ -282,4 +136,85 @@ final class DoctorScheduleController extends AbstractController
 
         return new JsonResponse(['success' => true]);
     }
+
+    // #[Route('/add-slot', name: 'doctor_add_schedule_slot', methods: ['POST', 'GET'])]
+    // public function addSlot(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     //  Tạo đối tượng ScheduleWork mới
+    //     $scheduleWork = new ScheduleWork();
+
+    //     //  Lấy bác sĩ hiện tại (người dùng)
+    //     $doctor = $this->getUser();
+    //     if (!$doctor) {
+    //         throw new \LogicException('Không tìm thấy bác sĩ.');
+    //     }
+    //     $scheduleWork->setDoctor($doctor);
+
+    //     //  Tạo danh sách khung giờ làm việc
+    //     $timeSlots = $this->scheduleService->generateTimeSlots('07:00', '17:00', 30);
+
+    //     //  Tạo form
+    //     $form = $this->createForm(DoctorScheduleWorkType::class, $scheduleWork, [
+    //         'time_slots' => $timeSlots,
+    //     ]);
+    //     $form->handleRequest($request);
+
+    //     // if ($form->isSubmitted()) {
+    //     //     dump($request->request->all());
+    //     //     dump($form->getData());
+    //     //     die();
+    //     // }
+
+    //     //  Xử lý form khi submit
+    //     if ($form->isSubmitted()) {
+    //         $doctor = $this->getUser();
+    //         $scheduleWork->setDoctor($doctor);
+
+    //         $dateString = $form->get('date')->getData(); // Lấy dữ liệu từ form
+
+    //         if (is_string($dateString)) {
+    //             $date = \DateTime::createFromFormat('d-m-Y', $dateString); // Format khớp với Symfony
+    //         } else {
+    //             $date = $dateString;
+    //         }
+
+    //         if (!$date instanceof \DateTimeInterface) {
+    //             dump('Lỗi: Không thể chuyển đổi ngày làm việc!');
+    //         } else {
+    //             $scheduleWork->setDate($date);
+    //         }
+
+    //         // Fix lỗi status Enum
+    //         $status = $form->get('status')->getData();
+    //         $scheduleWork->setStatus($status);
+
+
+    //         $newSlots = $form->get('timeSlots')->getData();
+    //         if (!empty($newSlots)) {
+    //             $updatedSlots = $scheduleWork->getTimeSlots();
+    //             foreach ($newSlots as $slot) {
+    //                 if (!in_array($slot, $updatedSlots, true)) {
+    //                     $updatedSlots[] = trim($slot);
+    //                 }
+    //             }
+    //             usort($updatedSlots, fn($a, $b) => strtotime(explode('-', $a)[0]) - strtotime(explode('-', $b)[0]));
+    //             $scheduleWork->setTimeSlots(array_values($updatedSlots));
+
+    //             // dump($scheduleWork);
+    //             // die();
+
+    //             $entityManager->persist($scheduleWork);
+    //             $entityManager->flush();
+
+    //             return $this->redirectToRoute('app_doctor_schedule_index');
+    //         }
+    //     }
+
+
+    //     return $this->render('doctor/schedule_work/new.html.twig', [
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
+
+
 }

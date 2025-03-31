@@ -50,8 +50,11 @@ class AppointmentType extends AbstractType
                 'choices' => [
                     'Chờ xác nhận' => 'pending',
                     'Đã xác nhận' => 'confirmed',
-                    'Hủy bỏ' => 'cancelled'
+                    'Đang khám' => 'active',
+                    'Hủy bỏ' => 'cancelled',
+                    'Khám xong' => 'completed'
                 ],
+
                 'attr' => ['class' => 'form-control']
             ])
             ->add('price', TextType::class, [

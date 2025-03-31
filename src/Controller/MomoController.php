@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
 use App\Entity\User;
+use App\Repository\MomoRepository;
 use App\Service\MomoService;
 use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,13 +23,15 @@ class MomoController extends AbstractController
     private SessionInterface $session;
     private EntityManagerInterface $em;
     private MailService $mailService;
+    private MomoRepository $momoRepository;
 
-    public function __construct(MomoService $momoService, RequestStack $session, EntityManagerInterface $em, MailService $mailService)
+    public function __construct(MomoService $momoService, RequestStack $session, EntityManagerInterface $em, MailService $mailService, MomoRepository $momoRepository)
     {
         $this->momoService = $momoService;
         $this->session = $session->getSession();
         $this->em = $em;
         $this->mailService = $mailService;
+        $this->momoRepository = $momoRepository;
     }
 
     #[Route('/payment/momo-ipn', name: 'momo_ipn', methods: ['POST'])]
@@ -137,6 +140,8 @@ class MomoController extends AbstractController
                 $appointment->getAppointmentDate()->format('d-m-Y'),
                 $doctor->getFullName()
             );
+
+            $this->momoRepository->storeMomoInfo($user, $momoData['resultCode'], $momoData['payUrl']);
 
             // Xóa session sau khi hoàn thành
             $this->session->remove('appointment_data');

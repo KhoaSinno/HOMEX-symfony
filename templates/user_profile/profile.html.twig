@@ -13,7 +13,7 @@
 					<nav aria-label="breadcrumb" class="page-breadcrumb">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="{{path('app_home')}}">Home</a>
+								<a href="{{path('app_home')}}">Trang chủ</a>
 							</li>
 							<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 						</ol>
@@ -53,19 +53,19 @@
 
 										<div class="col-md-12 text-center">
 											<div class="form-group">
-												{{ form_label(form.image, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
+												{# {{ form_label(form.image, null, {'label_attr': {'class': 'font-weight-bold'}}) }} #}
 
 												{% if app.user.googleId %}
 
 													<!-- Hiển thị ảnh -->
 													<div class="mb-3">
-														<img id="preview-image" src="{{ app.user.image ? asset(app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+														<img id="preview-image" src="{{ app.user.image ? asset(app.user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 													</div>
 												{% else %}
 
 													<!-- Hiển thị ảnh -->
 													<div class="mb-3">
-														<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('customer/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+														<img id="preview-image" src="{{ app.user.image ? asset('uploads/users/' ~ app.user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 													</div>
 												{% endif %}
 
@@ -101,7 +101,7 @@
 											</div>
 										</div>
 
-										<div class="col-md-6">
+										<div class="col-md-4">
 											<div class="form-group">
 												{{ form_label(form.gender, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 												{{ form_widget(form.gender, {'attr': {'class': 'form-control'}}) }}
@@ -109,21 +109,21 @@
 											</div>
 										</div>
 
-										<div class="col-md-6">
+										<div class="col-md-4">
 											<div class="form-group">
 												{{ form_label(form.phoneNumber, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 												{{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
 												{{ form_errors(form.phoneNumber) }}
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-4">
 											<div class="form-group">
 												{{ form_label(form.dateOfBirth, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
-												{{ form_widget(form.dateOfBirth, {'attr': {'class': 'form-control'}}) }}
+												{{ form_widget(form.dateOfBirth, {'attr': {'class': 'form-control schedule-datepicker'}}) }}
 												{{ form_errors(form.dateOfBirth) }}
 											</div>
 										</div>
-										<div class="col-md-6">
+										<div class="col-md-12">
 											<div class="form-group">
 												{{ form_label(form.address, null, {'label_attr': {'class': 'font-weight-bold'}}) }}
 												{{ form_widget(form.address, {'attr': {'class': 'form-control'}}) }}
@@ -154,7 +154,7 @@
 
 									</div>
 									{{ form_row(form._token) }}
-								 {{ form_end(form, {'render_rest': false}) }}
+									{{ form_end(form, {'render_rest': false}) }}
 
 
 								</div>
@@ -173,19 +173,55 @@
 
 {% block JSCustom %}
 
-		<script>
-			CKEDITOR.replace('profile_bio');
-		</script>
+	<script>
+		CKEDITOR.replace('profile_bio');
+	</script>
 
 
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>
 		document.getElementById("{{ form.image.vars.id }}").addEventListener("change", function (event) {
-let reader = new FileReader();
-reader.onload = function (e) {
-document.getElementById("preview-image").src = e.target.result;
-};
-reader.readAsDataURL(event.target.files[0]);
-});
+		let reader = new FileReader();
+		reader.onload = function (e) {
+		document.getElementById("preview-image").src = e.target.result;
+		};
+		reader.readAsDataURL(event.target.files[0]);
+		});
 	</script>
+
+	</script>
+
+<!-- Moment.js (Cần thiết cho datetimepicker) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+	<!-- Bootstrap Datetimepicker -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+<script>
+$(document).ready(function () {
+		console.log("DOM Loaded, initializing datetimepicker...");
+
+		// Cấu hình Moment.js để tuần bắt đầu từ Thứ Hai
+		moment.updateLocale('vi', {
+		week: {
+		dow: 1
+		} // dow: 1 => Tuần bắt đầu từ Thứ Hai
+		});
+
+		$('.schedule-datepicker').datetimepicker({
+		format: 'DD/MM/YYYY', // Định dạng ngày
+		locale: 'vi', // Tiếng Việt (cần moment.js)
+		showTodayButton: true, // Hiển thị nút "Hôm nay"
+		useCurrent: false, // Không tự động chọn ngày hiện tại
+		sideBySide: true, // Hiển thị giờ/phút cạnh nhau
+		toolbarPlacement: 'top', // Vị trí toolbar
+		showClear: true, // Hiển thị nút "Xóa"
+		showClose: true, // Hiển thị nút "Đóng"
+		defaultDate: new Date()
+		});
+	});
+</script>
+
+
 {% endblock %}

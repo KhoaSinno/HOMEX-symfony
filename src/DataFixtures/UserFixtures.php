@@ -23,6 +23,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     {
         // Admin
         $admin = new User();
+        $admin->setDel(false);
         $admin->setEmail('sinoo@gmail.com');
         $admin->setFullname('Sinoo');
         $admin->setRoles(['ROLE_ADMIN']);
@@ -33,6 +34,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Doctor
         $doctor = new User();
+        $doctor->setDel(false);
         $doctor->setEmail('doe@gmail.com');
         $doctor->setFullname('Dr. John Doe');
         $doctor->setRoles(['ROLE_DOCTOR']);
@@ -44,19 +46,40 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $doctor->setPassword($hashedPassword);
         $doctor->setPhoneNumber('0123456789');
         $doctor->setAddress('An Phú, Ninh Kiều, Cần Thơ');
-        $doctor->setBio('Bác sĩ Doe là chuyên gia hàng đầu trong lĩnh vực Nam khoa và Tim mạch, với nhiều năm kinh nghiệm trong chẩn đoán và điều trị các bệnh lý liên quan đến sức khỏe tim mạch và sinh lý nam.
+        $doctor->setBio('<p>⭐ <strong>B&aacute;c sĩ Doe</strong> - Chuy&ecirc;n gia h&agrave;ng đầu trong lĩnh vực <strong>Nam khoa</strong> v&agrave; <strong>Tim mạch</strong> ⭐<br />
+        Với <strong>nhiều năm kinh nghiệm</strong>, b&aacute;c sĩ Doe l&agrave; người bạn đồng h&agrave;nh đ&aacute;ng tin cậy trong việc chẩn đo&aacute;n v&agrave; điều trị c&aacute;c bệnh l&yacute; về <strong>sức khỏe tim mạch</strong> v&agrave; <strong>sinh l&yacute; nam giới</strong>.</p>
 
-            Với chuyên môn sâu rộng, bác sĩ đã giúp nhiều bệnh nhân cải thiện sức khỏe tim mạch, đồng thời tư vấn và điều trị các vấn đề như rối loạn cương dương, suy giảm sinh lý và các bệnh lý liên quan đến nội tiết tố nam.
+        <p>💡 <strong>Chuy&ecirc;n m&ocirc;n s&acirc;u rộng</strong>:<br />
+        B&aacute;c sĩ đ&atilde; hỗ trợ h&agrave;ng trăm bệnh nh&acirc;n cải thiện chất lượng cuộc sống nhờ &aacute;p dụng <strong>c&aacute;c phương ph&aacute;p điều trị ti&ecirc;n tiến</strong>, kết hợp giữa <strong>y học hiện đại</strong> v&agrave; <strong>tư vấn lối sống l&agrave;nh mạnh</strong>. Từ c&aacute;c vấn đề tim mạch đến rối loạn sinh l&yacute;, b&aacute;c sĩ lu&ocirc;n đặt <strong>sức khỏe</strong> v&agrave; <strong>sự h&agrave;i l&ograve;ng</strong> của bạn l&ecirc;n h&agrave;ng đầu.</p>
 
-            Bác sĩ Doe luôn đặt sức khỏe và sự hài lòng của bệnh nhân lên hàng đầu, áp dụng các phương pháp điều trị tiên tiến, kết hợp giữa y học hiện đại và tư vấn lối sống lành mạnh.
+        <hr />
+        <h3>🌟 C&aacute;c lĩnh vực chuy&ecirc;n m&ocirc;n</h3>
 
-            🔹 Chuyên môn:
-            ✔️ Điều trị bệnh lý tim mạch: cao huyết áp, bệnh mạch vành, suy tim
-            ✔️ Rối loạn cương dương, xuất tinh sớm, suy giảm testosterone
-            ✔️ Tư vấn và điều trị vô sinh nam, hiếm muộn
-            ✔️ Kiểm tra sức khỏe tổng quát và phòng ngừa bệnh lý tim mạch
+        <p>🔸 <strong>Bệnh l&yacute; tim mạch</strong>:<br />
+        ✅ Cao huyết &aacute;p 💓<br />
+        ✅ Bệnh mạch v&agrave;nh ❤️<br />
+        ✅ Suy tim 🫁</p>
 
-            Nếu bạn đang gặp vấn đề về sức khỏe nam giới hoặc tim mạch, đừng ngần ngại đặt lịch hẹn với bác sĩ [Tên Bác Sĩ] để được tư vấn và điều trị kịp thời!');
+        <p>🔸 <strong>Sức khỏe nam giới</strong>:<br />
+        ✅ Rối loạn cương dương 🚹<br />
+        ✅ Xuất tinh sớm ⏰<br />
+        ✅ Suy giảm testosterone 💉<br />
+        ✅ V&ocirc; sinh nam &amp; hiếm muộn 👶</p>
+
+        <p>🔸 <strong>Dịch vụ kh&aacute;c</strong>:<br />
+        ✅ Kiểm tra sức khỏe tổng qu&aacute;t 🩺<br />
+        ✅ Ph&ograve;ng ngừa bệnh l&yacute; tim mạch 🛡️</p>
+
+        <hr />
+        <h3>💪 Phương ch&acirc;m l&agrave;m việc</h3>
+
+        <p>👉 <strong>&quot;Sức khỏe l&agrave; v&agrave;ng&quot;</strong> - B&aacute;c sĩ kh&ocirc;ng chỉ điều trị m&agrave; c&ograve;n gi&uacute;p bạn duy tr&igrave; <strong>lối sống l&agrave;nh mạnh</strong>.<br />
+        👉 Sử dụng <strong>c&ocirc;ng nghệ y khoa ti&ecirc;n tiến</strong> 🔬 v&agrave; <strong>kinh nghiệm thực tiễn</strong> để mang lại kết quả tốt nhất.</p>
+
+        <hr />
+        <h3>📅 Đặt lịch ngay h&ocirc;m nay!</h3>
+
+        <p>Nếu bạn đang gặp vấn đề về <strong>tim mạch</strong> hay <strong>sức khỏe nam giới</strong>, h&atilde;y li&ecirc;n hệ với <strong>B&aacute;c sĩ Doe</strong>!</p>');
         $doctor->setConsultationFee(100000);
         // Lấy specialty từ reference
         $specialty = $this->getReference('specialty-cardiology', Specialty::class);
@@ -68,6 +91,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bác sĩ 1 - Nữ
         $doctor1 = new User();
+        $doctor1->setDel(false);
         $doctor1->setEmail('anna.lee@gmail.com');
         $doctor1->setFullname('Dr. Anna Lee');
         $doctor1->setRoles(['ROLE_DOCTOR']);
@@ -86,6 +110,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bác sĩ 2 - Nữ
         $doctor2 = new User();
+        $doctor2->setDel(false);
         $doctor2->setEmail('emma.scott@gmail.com');
         $doctor2->setFullname('Dr. Emma Scott');
         $doctor2->setRoles(['ROLE_DOCTOR']);
@@ -104,6 +129,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bác sĩ 3 - Nữ
         $doctor3 = new User();
+        $doctor3->setDel(false);
         $doctor3->setEmail('lisa.brown@gmail.com');
         $doctor3->setFullname('Dr. Lisa Brown');
         $doctor3->setRoles(['ROLE_DOCTOR']);
@@ -122,6 +148,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bác sĩ 4 - Nam
         $doctor4 = new User();
+        $doctor4->setDel(false);
         $doctor4->setEmail('john.miller@gmail.com');
         $doctor4->setFullname('Dr. John Miller');
         $doctor4->setRoles(['ROLE_DOCTOR']);
@@ -140,6 +167,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bác sĩ 5 - Nam
         $doctor5 = new User();
+        $doctor5->setDel(false);
         $doctor5->setEmail('david.clark@gmail.com');
         $doctor5->setFullname('Dr. David Clark');
         $doctor5->setRoles(['ROLE_DOCTOR']);
@@ -162,6 +190,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Patient
         $patient = new User();
+        $patient->setDel(false);
         $patient->setEmail('khoasinno@gmail.com');
         $patient->setFullname('Mary');
         $patient->setRoles(['ROLE_PATIENT']);
@@ -177,6 +206,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bệnh nhân 1 - Nam
         $patient1 = new User();
+        $patient1->setDel(false);
         $patient1->setEmail('john.smith@gmail.com');
         $patient1->setFullname('John Smith');
         $patient1->setRoles(['ROLE_PATIENT']);
@@ -192,6 +222,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
         // Bệnh nhân 2 - Nam
         $patient2 = new User();
+        $patient2->setDel(false);
         $patient2->setEmail('david.nguyen@gmail.com');
         $patient2->setFullname('David Nguyen');
         $patient2->setRoles(['ROLE_PATIENT']);
@@ -204,10 +235,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $patient2->setPassword($hashedPassword);
         $manager->persist($patient2);
         $this->addReference('patient-david-nguyen', $patient2);
-
-
-
-
 
 
         $manager->flush();

@@ -26,7 +26,7 @@
 
 						{% for patient in patients %}
 
-							<div class="col-md-6 col-lg-4 col-xl-3">
+							<div class="col-md-6 col-lg-4 col-xl-3 patient-item">
 								<div class="card widget-profile pat-widget-profile">
 									<div class="card-body">
 										<div class="pro-widget-content">
@@ -77,6 +77,8 @@
 
 					</div>
 
+					<!-- Phân trang --><div class="pagination text-center m-4 d-flex justify-content-center align-items-center" id="pagination"> </div>
+
 				</div>
 			</div>
 
@@ -84,4 +86,12 @@
 
 	</div>
 	<!-- /Page Content -->
+{% endblock %}
+
+{% block JSCustom %}
+	<script>
+	$(document).ready(function() {
+		setupPagination('.patient-item', '#pagination', 5, 5);
+	});
+	</script>
 {% endblock %}

@@ -5028,7 +5028,8 @@ html.menu-opened body {
 }
 .pro-widget-content {
     border-bottom: 1px solid #f0f0f0;
-    padding: 20px;
+    /* padding: 20px; */
+    padding: 10px;
     text-align: center;
 }
 
@@ -5095,7 +5096,9 @@ html.menu-opened body {
 .dashboard-menu > ul > li > a {
 	color: #757575;
 	display: block;
-	padding: 16px 20px;
+	/* padding: 16px 20px; */
+	/* My config */
+	padding: 10px 20px;
 }
 .dashboard-menu > ul > li:hover > a,
 .dashboard-menu > ul > li.active > a {
@@ -5168,7 +5171,9 @@ html.menu-opened body {
 }
 .widget-profile .profile-info-widget .booking-doc-img {
     display: inline-block;
-    margin: 0 0 15px;
+	/* My config */
+    /* margin: 0 0 15px; */ 
+    margin: 0 0 10px;
     width: auto;
     padding: 8px;
     background-color: #f7f7f7;

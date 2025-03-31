@@ -25,7 +25,7 @@
 						<div class="mb-3">
 							You are logged in as
 							{{ app.user.userIdentifier }},
-							<a href="{{ path('app_logout') }}">Logout</a>
+							<a href="{{ path('app_logout') }}">Đăng xuất</a>
 						</div>
 					{% endif %}
 
@@ -46,19 +46,19 @@
 						<span class="span-or">Hoặc</span>
 					</div>
 					<div class="row form-row social-login">
-						<div class="col-6">
+						{# <div class="col-6">
 							<a href="#" class="btn btn-facebook btn-block">
 								<i class="fab fa-facebook-f mr-1"></i>
 								Đăng nhập</a>
-						</div>
-						<div class="col-6">
+						</div> #}
+						<div class="col-12">
 							<a href="{{ path('connect_google_start') }}" class="btn btn-google btn-block">
 								<i class="fab fa-google mr-1"></i>
 								Đăng nhập</a>
 						</div>
 					</div>
 					<div class="text-center dont-have">Ban chưa có tài khoản?
-						<a href="{{path('app_logout')}}">Đăng ký</a>
+						<a href="{{path('app_register')}}">Đăng ký</a>
 					</div>
                     {# csrf #}
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -77,7 +77,7 @@
 			<div class="mb-3">
 				You are logged in as
 				{{ app.user.userIdentifier }},
-				<a href="{{ path('app_logout') }}">Logout</a>
+				<a href="{{ path('app_logout') }}">Đăng xuất</a>
 			</div>
 		{% endif %}
 

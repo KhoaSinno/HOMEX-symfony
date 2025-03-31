@@ -8,7 +8,7 @@
 	<!-- Page Wrapper -->
 	<div class="page-wrapper">
 		<div
-			class="content container-fluid">
+			class="content container-fluid pb-5">
 
 			<!-- Page Header -->
 			<div class="page-header">
@@ -17,7 +17,7 @@
 						<h3 class="page-title">Tạo lịch làm việc</h3>
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item">
-								<a href="">Dashboard</a>
+								<a href="{{path("app_admin_dashboard")}}">Dashboard</a>
 							</li>
 							<li class="breadcrumb-item active">Tạo lịch làm việc</li>
 						</ul>
@@ -29,15 +29,14 @@
 			</div>
 			<!-- Page Header -->
 
-			<table class="table">
+			<table class="datatable table table-hover table-center mb-0">
 				<thead>
 					<tr class="text-center">
 						<th>Id</th>
-						<th>Tên BS</th>
-						<th>Ngày ĐK</th>
-						<th>BN tối đa</th>
+						<th style="width: 120px;">Tên BS</th>
+						<th style="width: 100px;">Ngày khám</th>
 						<th>Lịch khám trong ngày</th>
-						<th>Trạng thái</th>
+						{# <th>Trạng thái</th> #}
 						<th></th>
 					</tr>
 				</thead>
@@ -62,7 +61,6 @@
 
 							</td>
 							<td>{{ s.date ? s.date|date('d-m-Y') : '' }}</td>
-							{# <td>{{ s.maxPatient }}</td> #}
 							<td>
 								{% if s.timeSlots %}
 									{% for slot in s.timeSlots %}
@@ -72,18 +70,18 @@
 									<span class="badge badge-secondary">Không có</span>
 								{% endif %}
 							</td>
-							<td>
-								{% if s.status.value == 'Available' %}
-									<span class="badge badge-success p-2">Còn trống</span>
-								{% elseif s.status.value == 'Full' %}
-									<span class="badge badge-danger">Đầy</span>
-								{% else %}
-									<span class="badge badge-warning">Đã hủy</span>
-								{% endif %}
-							</td>
+							{# <td>
+																						{% if s.status.value == 'Available' %}
+																							<span class="badge badge-success p-2">Còn trống</span>
+																						{% elseif s.status.value == 'Full' %}
+																							<span class="badge badge-danger">Đầy</span>
+																						{% else %}
+																							<span class="badge badge-warning">Đã hủy</span>
+																						{% endif %}
+																					</td> #}
 							<td class="text-center">
 								<div class="actions">
-									<a class="btn btn-sm bg-success-light m-md-3" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
+									<a class="btn btn-sm bg-success-light mb-1" href="{{ path('app_schedule_work_edit', {'id': s.id}) }}">
 										<i class="fe fe-pencil"></i>
 										Sửa
 									</a>
@@ -111,40 +109,40 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-		document.querySelectorAll(".delete-schedule").forEach(button => {
-		button.addEventListener("click", function (event) {
-		event.preventDefault();
-		let scheduleId = this.getAttribute("data-id");
-		let csrfToken = this.getAttribute("data-token");
+document.querySelectorAll(".delete-schedule").forEach(button => {
+button.addEventListener("click", function (event) {
+event.preventDefault();
+let scheduleId = this.getAttribute("data-id");
+let csrfToken = this.getAttribute("data-token");
 
-		Swal.fire({
-		title: "Bạn có chắc chắn muốn xóa?",
-		text: "Hành động này không thể hoàn tác!",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: "#d33",
-		cancelButtonColor: "#3085d6",
-		confirmButtonText: "Xóa",
-		cancelButtonText: "Hủy"
-		}).then((result) => {
-		if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
-		let form = document.createElement("form");
-		form.method = "POST";
-		form.action = `/admin/schedule_work/${scheduleId}`;
-		document.body.appendChild(form);
+Swal.fire({
+title: "Bạn có chắc chắn muốn xóa?",
+text: "Hành động này không thể hoàn tác!",
+icon: "warning",
+showCancelButton: true,
+confirmButtonColor: "#d33",
+cancelButtonColor: "#3085d6",
+confirmButtonText: "Xóa",
+cancelButtonText: "Hủy"
+}).then((result) => {
+if (result.isConfirmed) { // Tạo form ẩn để gửi request xóa
+let form = document.createElement("form");
+form.method = "POST";
+form.action = `/admin/schedule_work/${scheduleId}`;
+document.body.appendChild(form);
 
-		let csrfInput = document.createElement("input");
-		csrfInput.type = "hidden";
-		csrfInput.name = "_token";
-		csrfInput.value = csrfToken;
-		form.appendChild(csrfInput);
+let csrfInput = document.createElement("input");
+csrfInput.type = "hidden";
+csrfInput.name = "_token";
+csrfInput.value = csrfToken;
+form.appendChild(csrfInput);
 
-		form.submit();
-		}
-		});
-		});
-		});
-		});
+form.submit();
+}
+});
+});
+});
+});
 	</script>
 
 {% endblock %}

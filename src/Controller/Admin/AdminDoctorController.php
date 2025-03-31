@@ -8,7 +8,6 @@ use App\Repository\UserRepository;
 use App\Service\ImageUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DomCrawler\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +39,7 @@ final class AdminDoctorController extends AbstractController
     #[Route('/listDoctor/Del',name: 'app_doctor_listDel', methods: ['GET'])]
     public function listDel(UserRepository $userRepository): Response
     {
-        $doctors = array_filter($userRepository->findByRole('ROLE_DOCTOR'), function($doctor) {
+        $doctors = array_filter($userRepository->findByRole(role: 'ROLE_DOCTOR'), function($doctor) {
             return $doctor->getDel() == true;
         });
         
@@ -66,6 +65,7 @@ final class AdminDoctorController extends AbstractController
             // dump($form->getErrors(true));
 
             $user->setRoles(['ROLE_DOCTOR']);
+            $user->setDel(false);
             $temPass = "dr" . $user->getPhoneNumber();
             $user->setPassword($this->passHasher->hashPassword($user, $temPass));
 

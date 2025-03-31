@@ -33,6 +33,30 @@ class MailService
 
         $this->mailer->send($email);
     }
+
+    public function sendAppointmentCancellation(string $toEmail, string $patientName, string $appointmentDate, string $doctorName)
+    {
+        $email = (new Email())
+            ->from(new Address('ntakhoa.work@gmail.com', 'HOMEX'))
+            ->to($toEmail)
+            ->subject('❌ Hủy lịch hẹn khám bệnh')
+            ->html("
+                <div style='font-family: Arial, sans-serif;'>
+                    <h2 style='color: #e74c3c;'>🚨 Thông báo hủy lịch hẹn</h2>
+                    <p>👋 Chào $patientName,</p>
+                    <p>Chúng tôi rất tiếc phải thông báo rằng lịch hẹn với bác sĩ <strong>$doctorName</strong> vào ngày <strong>$appointmentDate</strong> đã bị hủy do lý do nào đó. Bạn sẽ được hoàn tiền trong vòn 24h!</p>
+                    <p>🙏 Chúng tôi thành thật xin lỗi vì sự bất tiện này.</p>
+                    <p>🩺 Nếu bạn muốn đặt lại lịch, vui lòng truy cập trang web của chúng tôi hoặc liên hệ hotline để được hỗ trợ.</p>
+                    <hr>
+                    <p style='font-size: 14px; color: #7f8c8d;'>📞 Hotline hỗ trợ: <strong>1900 123 456</strong></p>
+                </div>
+            ");
+
+        $this->mailer->send($email);
+    }
+
+
+
     public function sendAppointmentResult(
         string $toEmail,
         string $patientName,
