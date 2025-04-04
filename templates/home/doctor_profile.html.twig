@@ -5,7 +5,78 @@
 
 {% block styles %}
 	<!-- Fancybox CSS -->
-	<link rel="stylesheet" href="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.css')}}">
+	<link
+	rel="stylesheet" href="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.css')}}">
+	<!-- Star Rating Styles -->
+	<style>
+		.star-rating {
+			direction: rtl; /* Đảo ngược thứ tự để ngôi sao lớn nhất ở bên trái */
+			display: inline-flex;
+			font-size: 24px;
+			gap: 5px;
+		}
+
+		.star-rating input[type="radio"] {
+			display: none; /* Ẩn input radio */
+		}
+
+		.star-rating label {
+			color: #bbb; /* Màu xám cho ngôi sao chưa chọn */
+			cursor: pointer;
+			transition: color 0.3s ease;
+		}
+
+		.star-rating label:hover,
+		.star-rating label:hover ~ label {
+			color: #f4c150; /* Màu vàng khi hover */
+		}
+
+		.star-rating input[type="radio"]:checked ~ label {
+			color: #f4c150; /* Màu vàng cho ngôi sao được chọn */
+		}
+
+		/* Review Section Styles */
+		.review-list {
+			margin-top: 20px;
+		}
+
+		.review-card {
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.review-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		}
+
+		.review-header {
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		.review-header .review-date {
+			font-size: 14px;
+			color: #888;
+		}
+
+		.review-rating {
+			font-size: 18px;
+		}
+
+		.review-rating .fa-star,
+		.review-rating .fa-star-o {
+			margin-right: 5px;
+		}
+
+		.review-comment {
+			font-size: 14px;
+			color: #555;
+			line-height: 1.6;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
@@ -45,67 +116,61 @@
 							<div class="doc-info-cont">
 								<h4 class="doc-name">{{doctor.fullname}}</h4>
 								<p class="doc-speciality">{{doctor.qualification}}</p>
-									<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
-								<p class="doc-department">
-								<img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
-								{{doctor.specialty.name | specialty_label}}
-								</p>
-										</a>
-
-								{# <div class="clinic-details">
-									<p class="doc-location">
-										<i class="fas fa-map-marker-alt"></i>
-										{{doctor.address}}
-										<a href="javascript:void(0);">Địa chỉ</a>
+								<a href="{{path("app_search_doctor", {"specialty": doctor.specialty.name})}}">
+									<p class="doc-department">
+										<img src="{{doctor.specialty and doctor.specialty.image ? asset('uploads/specialty/' ~ doctor.specialty.image) : asset('uploads/specialty/specialtyDf.png') }}" class="img-fluid" alt="Speciality">
+										{{doctor.specialty.name | specialty_label}}
 									</p>
-								</div> #}
+								</a>
+
 								<div class="clinic-details">
 									<p class="doc-location">
 										<i class="far fa-money-bill-alt"></i>
 										{{doctor.consultationFee | currency_vnd}}
 									</p>
+
+
+									{# Trung bình đánh giá #}
+									<p class="doc-avg_star">
+										<span class="text-warning">
+											{% for i in 1..5 %}
+												<i class="fas fa-star{% if i > averageRating|round(0, 'floor') %}-o{% endif %}"></i>
+											{% endfor %}
+										</span>
+										<span>({{ doctor.averageRating|number_format(1) }}
+											/ 5)</span>
+									</p>
+
 								</div>
 							</div>
 
 
 						</div>
-						<div class="doc-info-right">
-							<div class="clini-infos">
-								<ul>
-									{# <li>
-										<i class="fas fa-map-marker-alt"></i>
-										{{doctor.address}}</li>
-									<li> #}
-										
-									</li>
-								</ul>
-							</div>
-						</div>
-
 
 					</div>
+				</div>
 
-					<div
-						class="mt-3">
-						<!-- Form chọn ngày -->
-						<form method="GET" action="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
-							<label>Chọn ngày khám:</label>
-							<select name="date" class="form-control w-50" onchange="this.form.submit()">
-								{% for date in availableDates %}
-									<option value="{{ date }}" {{ date == selectedDate|date('Y-m-d') ? 'selected' : '' }}>
-										{{ date|date('d/m/Y') }}
-									</option>
-								{% endfor %}
-							</select>
-							<input type="hidden" name="id" value="{{ doctor.id }}">
-						</form>
+				<div
+					class="mt-3">
+					<!-- Form chọn ngày -->
+					<form method="GET" action="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
+						<label>Chọn ngày khám:</label>
+						<select name="date" class="form-control w-50" onchange="this.form.submit()">
+							{% for date in availableDates %}
+								<option value="{{ date }}" {{ date == selectedDate|date('Y-m-d') ? 'selected' : '' }}>
+									{{ date|date('d/m/Y') }}
+								</option>
+							{% endfor %}
+						</select>
+						<input type="hidden" name="id" value="{{ doctor.id }}">
+					</form>
 
-						<h3>Chọn giờ khám</h3>
-						{% if timeSlots is not empty %}
-							<div class="time-slot-buttons">
-								{% for slot in timeSlots %}
-									{% set status = slotStatuses[slot] ?? 'default' %}
-									{% set color = {
+					<h3>Chọn giờ khám</h3>
+					{% if timeSlots is not empty %}
+						<div class="time-slot-buttons">
+							{% for slot in timeSlots %}
+								{% set status = slotStatuses[slot] ?? 'default' %}
+								{% set color = {
 										'completed': 'btn-secondary',   
 										'active': 'btn-warning',      
 										'pending': 'btn-danger',    
@@ -113,84 +178,147 @@
 										'default': 'btn-info'        
 									}[status] %}
 
-									{% set isDisabled = status in ['pending', 'active', 'completed', 'cancelled'] %}
+								{% set isDisabled = status in ['pending', 'active', 'completed', 'cancelled'] %}
 
-									<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %} disabled {% endif %}>
-										{{ slot }}
-									</button>
+								<button class="time-slot-btn btn {{ color }} btn-sm my-2" {% if isDisabled %} disabled {% endif %}>
+									{{ slot }}
+								</button>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p>Không có lịch khám trong ngày này.</p>
+					{% endif %}
+
+				</div>
+
+			</div>
+		</div>
+		<!-- /Doctor Widget -->
+
+		<!-- Đánh giá bác sĩ -->
+		{% if app.user and app.user.roles|join(',') matches '/ROLE_PATIENT/' %}
+			<div class="card p-4 review-section mt-5">
+				<h3>Đánh giá bác sĩ</h3>
+
+				{# HIện mesage lỗi #}
+				{% if app.session.flashBag.has('error') %}
+					<div class="alert alert-danger">
+						{% for message in app.session.flashBag.get('error') %}
+							{{ message }}
+						{% endfor %}
+					</div>
+				{% endif %}
+
+
+				{% if app.user and app.user.roles|join(',') matches '/ROLE_PATIENT/' %}
+					<form method="POST" action="{{ path('app_submit_review', {'doctorId': doctor.id}) }}">
+						<div class="form-group">
+							<label for="rating">Đánh giá sao</label>
+							<div class="star-rating">
+								{% for i in 5..1 %}
+									<input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+									<label for="star{{ i }}" title="{{ i }} sao">
+										<i class="fas fa-star"></i>
+									</label>
 								{% endfor %}
 							</div>
-						{% else %}
-							<p>Không có lịch khám trong ngày này.</p>
-						{% endif %}
-
-					</div>
-
-				</div>
+						</div>
+						<div class="form-group">
+							<label for="comment">Bình luận</label>
+							<textarea name="comment" id="comment" class="form-control" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+					</form>
+				{% else %}
+					<p>Vui lòng
+						<a href="{{ path('app_login') }}">đăng nhập</a>
+						để đánh giá bác sĩ.</p>
+				{% endif %}
 			</div>
-			<!-- /Doctor Widget -->
+		{% endif %}
 
-			<!-- Doctor Details Tab -->
-			<div class="card">
+		<!-- Doctor Details Tab -->
+		<div class="card">
+			<div
+				class="card-body pt-0">
+
+				<!-- Tab Menu -->
+				<nav class="user-tabs mb-4">
+					<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+						<li class="nav-item">
+							<a class="nav-link active" href="#doc_overview" data-toggle="tab">Giới thiệu tổng quan</a>
+						</li>
+
+					</ul>
+				</nav>
+				<!-- /Tab Menu -->
+
+				<!-- Tab Content -->
 				<div
-					class="card-body pt-0">
+					class="tab-content pt-0">
 
-					<!-- Tab Menu -->
-					<nav class="user-tabs mb-4">
-						<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
-							<li class="nav-item">
-								<a class="nav-link active" href="#doc_overview" data-toggle="tab">Giới thiệu tổng quan</a>
-							</li>
+					<!-- Overview Content -->
+					<div role="tabpanel" id="doc_overview" class="tab-pane fade show active">
+						<div class="row">
+							<div
+								class="col-md-12 col-lg-9">
 
-						</ul>
-					</nav>
-					<!-- /Tab Menu -->
-
-					<!-- Tab Content -->
-					<div
-						class="tab-content pt-0">
-
-						<!-- Overview Content -->
-						<div role="tabpanel" id="doc_overview" class="tab-pane fade show active">
-							<div class="row">
-								<div
-									class="col-md-12 col-lg-9">
-
-									<!-- About Details -->
-									<div class="widget about-widget">
-										<h4 class="widget-title">Về bác sĩ</h4>
-										<p>{{doctor.bio | raw}}</p>
-									</div>
-									<!-- /About Details -->
-
+								<!-- About Details -->
+								<div class="widget about-widget">
+									<h4 class="widget-title">Về bác sĩ</h4>
+									<p>{{doctor.bio | raw}}</p>
 								</div>
+								<!-- /About Details -->
+
+
 							</div>
 						</div>
-						<!-- /Overview Content -->
-
 					</div>
+					<!-- /Overview Content -->
+
 				</div>
 			</div>
-			<!-- /Doctor Details Tab -->
-
 		</div>
+		<!-- /Doctor Details Tab -->
+
+		{# Reviews #}
+		<div class="card p-4 review-list mt-4">
+			<h3 class="mb-4 text-primary">Đánh giá từ bệnh nhân</h3>
+			{% for review in doctor.reviews %}
+				<div class="card review-card mb-3 shadow-sm">
+					<div class="card-body">
+						<div class="review-header d-flex justify-content-between align-items-center">
+							<strong class="review-patient text-dark">{{ review.patient.fullname }}</strong>
+							<span class="review-date text-muted">{{ review.createdAt|date('d/m/Y') }}</span>
+						</div>
+						<div class="review-rating mt-2">
+							{% for i in 1..5 %}
+								<i class="fas fa-star{% if i > review.rating %}-o{% endif %} text-warning"></i>
+							{% endfor %}
+						</div>
+						<p class="review-comment mt-3 text-secondary">{{ review.comment }}</p>
+					</div>
+				</div>
+			{% else %}
+				<p class="text-muted">Chưa có đánh giá nào.</p>
+			{% endfor %}
+		</div>
+
 	</div>
-	<!-- /Page Content -->
-{% endblock %}
+</div>
+<!-- /Page Content -->{% endblock %}{% block JSCustom %}
+<!-- Fancybox JS -->
+<script src="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.js')}}"></script>
 
-{% block JSCustom %}
-	<!-- Fancybox JS -->
-	<script src="{{asset('customer/assets/plugins/fancybox/jquery.fancybox.min.js')}}"></script>
-
-	<script>
-		function bookAppointment(doctorId, date, timeSlot) {
+<script>
+	function bookAppointment(doctorId, date, timeSlot) {
 
 console.log('Hello');
 }
-	</script>
+</script>
 
-	<script>
-		document.querySelectorAll('.time-slot-btn').forEach(button => {
+<script>
+	document.querySelectorAll('.time-slot-btn').forEach(button => {
 button.addEventListener('click', function () {
 const timeSlot = this.innerText;
 const date = document.querySelector('select[name="date"]').value;
@@ -221,8 +349,8 @@ icon: 'error'
 });
 });
 });
-	</script>
-	{# <script>
+</script>
+{# <script>
 			document.querySelectorAll('.time-slot-btn').forEach(button => {
 			button.addEventListener('click', function () {
 			const timeSlot = this.innerText;
@@ -243,7 +371,4 @@ icon: 'error'
 			});
 			});
 			});
-		</script> #}
-
-
-{% endblock %}
+		</script> #}{% endblock %}

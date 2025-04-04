@@ -30,6 +30,17 @@ class HomeController extends AbstractController
         $specialties = $this->specialtyRepository->findAll();
         $doctors = $userRepository->findByRole('ROLE_DOCTOR');
 
+        // Tính trung bình đánh giá cho từng bác sĩ
+        foreach ($doctors as $doctor) {
+            $reviews = $doctor->getReviews();
+            if (count($reviews) > 0) {
+                $totalRating = array_reduce($reviews->toArray(), fn($sum, $review) => $sum + $review->getRating(), 0);
+                $doctor->setAverageRating($totalRating / count($reviews));
+            } else {
+                $doctor->setAverageRating(null);
+            }
+        }
+
         return $this->render('home/index.html.twig', [
             'specialties' => $specialties,
             'doctors' => $doctors,
@@ -81,6 +92,17 @@ class HomeController extends AbstractController
         } else {
             // Nếu không có ngày, tìm bác sĩ theo các tiêu chí đã cho
             $doctors = $userRepository->findDoctorsByCriteria($criteria);
+        }
+
+        // Tính trung bình đánh giá cho từng bác sĩ
+        foreach ($doctors as $doctor) {
+            $reviews = $doctor->getReviews();
+            if (count($reviews) > 0) {
+                $totalRating = array_reduce($reviews->toArray(), fn($sum, $review) => $sum + $review->getRating(), 0);
+                $doctor->setAverageRating($totalRating / count($reviews));
+            } else {
+                $doctor->setAverageRating(null);
+            }
         }
 
         // Render kết quả tìm kiếm
@@ -145,14 +167,26 @@ class HomeController extends AbstractController
          * ]
          */
 
+        // Tính trung bình đánh giá
+        $reviews = $doctor->getReviews();
+        $averageRating = 0;
+
+        if (count($reviews) > 0) {
+            $totalRating = array_reduce($reviews->toArray(), function ($sum, $review) {
+                return $sum + $review->getRating();
+            }, 0);
+
+            $averageRating = $totalRating / count($reviews);
+        }
+
         return $this->render('home/doctor_profile.html.twig', [
             'doctor' => $doctor,
             'availableDates' => $availableDates,
             'selectedDate' => $selectedDate,
             'timeSlots' => $timeSlots,
-            'slotStatuses' => $slotStatuses, // Truyền trạng thái slot vào view
+            'slotStatuses' => $slotStatuses,
+            'averageRating' => $averageRating,
         ]);
-        
     }
 
     // public function doctorProfile(
