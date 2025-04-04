@@ -52,11 +52,17 @@
 								</p>
 										</a>
 
-								<div class="clinic-details">
+								{# <div class="clinic-details">
 									<p class="doc-location">
 										<i class="fas fa-map-marker-alt"></i>
 										{{doctor.address}}
 										<a href="javascript:void(0);">Địa chỉ</a>
+									</p>
+								</div> #}
+								<div class="clinic-details">
+									<p class="doc-location">
+										<i class="far fa-money-bill-alt"></i>
+										{{doctor.consultationFee | currency_vnd}}
 									</p>
 								</div>
 							</div>
@@ -66,12 +72,11 @@
 						<div class="doc-info-right">
 							<div class="clini-infos">
 								<ul>
-									<li>
+									{# <li>
 										<i class="fas fa-map-marker-alt"></i>
 										{{doctor.address}}</li>
-									<li>
-										<i class="far fa-money-bill-alt"></i>
-										{{doctor.consultationFee | currency_vnd}}
+									<li> #}
+										
 									</li>
 								</ul>
 							</div>
