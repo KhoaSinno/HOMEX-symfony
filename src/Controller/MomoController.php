@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Constants\AppointmentConstants;
 use App\Entity\Appointment;
+use App\Entity\Specialty;
 use App\Entity\User;
 use App\Repository\MomoRepository;
 use App\Service\MomoService;
@@ -111,6 +112,10 @@ class MomoController extends AbstractController
             return $this->redirectToRoute('app_patient_dashboard', ['error' => 'Bác sĩ không tồn tại']);
         }
 
+        // Tìm specialty dựa vào doctor
+        $specialty = $this->em->getRepository(Specialty::class)->find($appointmentData['specialtyId']);
+
+
         try {
 
             $appointment = new Appointment();
@@ -138,7 +143,8 @@ class MomoController extends AbstractController
                 $appointmentData['patientEmail'],
                 $user->getFullname(),
                 $appointment->getAppointmentDate()->format('d-m-Y'),
-                $doctor->getFullName()
+                $doctor->getFullName(),
+                $specialty->getClinicNumber()
             );
 
             $this->momoRepository->storeMomoInfo($user, $momoData['resultCode'], $momoData['payUrl']);
