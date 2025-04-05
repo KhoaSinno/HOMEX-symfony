@@ -17,11 +17,12 @@
 
 				<!-- Search -->
 				<div class="search-box">
-					<form action="{{ path('app_search_doctor') }}" method="get">
-						<div class="form-group search-location">
-							<input type="text" name="address" class="form-control" placeholder="Địa chỉ của bạn">
-							<span class="form-text">Vd: Cần Thơ</span>
-						</div>
+					<form
+						action="{{ path('app_search_doctor') }}" method="get" class="d-flex justify-content-center">
+						{# <div class="form-group search-location">
+																			<input type="text" name="address" class="form-control" placeholder="Địa chỉ của bạn">
+																			<span class="form-text">Vd: Cần Thơ</span>
+																		</div> #}
 						<div class="form-group search-info">
 							<input type="text" name="fullname" class="form-control" placeholder="Tên bác sĩ">
 							<span class="form-text">Vd: Dr. Joh</span>
@@ -126,40 +127,44 @@
 										</a>
 									</p>
 
-									<ul class="available-info">
-										<li>
-											<i class="fas fa-map-marker-alt"></i>
-											{{doctor.address ?? 'Newyork, USA'}}
-										</li>
-										{# <li>
-																																									<i class="far fa-clock"></i>
-																																									Available on Fri, 22 Mar
-																																								</li> #}
-										<li>
-											<i class="far fa-money-bill-alt"></i>
-											{{doctor.consultationFee | currency_vnd}}
-											VNĐ
-											<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i>
-										</li>
-									</ul>
-									<div
-										class="row row-sm">
-										{# <div class="col-6">
-																															<a href="{{path('app_doctor_profile')}}" class="btn view-btn">Xem thông tin</a>
-																														</div> #}
-										<div class="col-12">
-											<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}" class="btn book-btn">Đặt ngay</a>
-										</div>
+									{# Hiển thị trung bình đánh giá #}
+									<p class="doc-avg_star">
+										<span class="text-warning">
+											{% for i in 1..5 %}
+												<i class="fas fa-star{% if i > doctor.getAverageRating|round(0, 'floor') %}-o{% endif %}"></i>
+											{% endfor %}
+										</span>
+										<span>({{ doctor.getAverageRating|number_format(1) }}
+											/ 5)</span>
+									</p>
+								</p>
+
+								<ul class="available-info">
+									<li>
+										<i class="fas fa-map-marker-alt"></i>
+										{{doctor.address ?? 'Newyork, USA'}}
+									</li>
+									<li>
+										<i class="far fa-money-bill-alt"></i>
+										{{doctor.consultationFee | currency_vnd}}
+										VNĐ
+										<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i>
+									</li>
+								</ul>
+								<div
+									class="row row-sm">
+									<div class="col-12">
+										<a href="{{path('app_doctor_profile', {'id': doctor.id} )}}" class="btn book-btn">Đặt ngay</a>
 									</div>
 								</div>
 							</div>
-							<!-- /Doctor Widget -->
-						{% endfor %}
+						</div>
+						<!-- /Doctor Widget -->
+					{% endfor %}
 
-					</div>
 				</div>
 			</div>
 		</div>
-	</section>
-	<!-- /Popular Section -->
-{% endblock %}
+	</div>
+</section>
+<!-- /Popular Section -->{% endblock %}

@@ -98,12 +98,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Momo::class, mappedBy: 'customer')]
     private Collection $momoTransactions;
 
+    #[ORM\OneToMany(mappedBy: 'doctor', targetEntity: Review::class, orphanRemoval: true)]
+    private $reviews;
+
+    private ?float $averageRating = null;
+
     public function __construct()
     {
         $this->scheduleWorks = new ArrayCollection();
         $this->appointments = new ArrayCollection();
         $this->doctorAppointments = new ArrayCollection();
         $this->momoTransactions = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -425,6 +431,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $momoTransaction->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews[] = $review;
+            $review->setDoctor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getDoctor() === $this) {
+                $review->setDoctor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        return $this->averageRating;
+    }
+
+    public function setAverageRating(?float $averageRating): self
+    {
+        $this->averageRating = $averageRating;
 
         return $this;
     }

@@ -1,0 +1,81 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Danh sách bác sĩ được đánh giá
+{% endblock %}
+
+{% block body %}
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div
+			class="content container-fluid pb-5">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">Danh sách bác sĩ được đánh giá</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="{{path("app_admin_dashboard")}}">Dashboard</a>
+							</li>
+							<li class="breadcrumb-item active">Danh sách bác sĩ được đánh giá</li>
+						</ul>
+					</div>
+					
+				</div>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								{% for message in app.flashes('success') %}
+									<div class="alert alert-success">{{ message }}</div>
+								{% endfor %}
+
+								{% for message in app.flashes('danger') %}
+									<div class="alert alert-danger">{{ message }}</div>
+								{% endfor %}
+
+								<table class="datatable table table-hover table-center mb-0">
+
+									<thead>
+										<tr class="text-center">
+											<th>Bệnh nhân</th>
+											<th>Bác sĩ</th>
+											<th>Đánh giá</th>
+											<th>Bình luận</th>
+											<th>Ngày</th>
+											<th>Hành động</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for review in reviews %}
+											<tr class="text-center">
+												<td>{{ review.patient.fullname }}</td>
+												<td>{{ review.doctor.fullname }}</td>
+												<td>{{ review.rating }}</td>
+												<td>{{ review.comment }}</td>
+												<td>{{ review.createdAt|date('d/m/Y') }}</td>
+
+												<td class="text-center">
+													<a href="{{ path('admin_reviews_delete', {id: review.id}) }}" class="btn btn-danger btn-sm">
+														<i class="fe fe-trash"></i>
+													</td>
+												</td>
+											</tr>
+										</a>
+									</tbody>
+								</tr>
+							</a>
+						</tbody>
+					</td>
+
+
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</div></div></div></div></div></div></div>{% endblock %}
