@@ -129,7 +129,6 @@
 										{{doctor.consultationFee | currency_vnd}}
 									</p>
 
-
 									{# Trung bình đánh giá #}
 									<p class="doc-avg_star">
 										<span class="text-warning">
@@ -137,13 +136,12 @@
 												<i class="fas fa-star{% if i > averageRating|round(0, 'floor') %}-o{% endif %}"></i>
 											{% endfor %}
 										</span>
-										<span>({{ doctor.averageRating|number_format(1) }}
+										<span>({{ averageRating|number_format(1) }}
 											/ 5)</span>
 									</p>
 
 								</div>
 							</div>
-
 
 						</div>
 
