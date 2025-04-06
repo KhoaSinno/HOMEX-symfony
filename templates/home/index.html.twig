@@ -1,395 +1,459 @@
 {% extends 'baseCustomer.html.twig' %}
 
-{% block title %}Trang chủ{% endblock %}
+{% block title %}Trang chủ
+{% endblock %}
 
 {% block styles %}
-    <style>
-        .chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
+	<style>
+		.chatbot-container {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 350px;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			z-index: 1000;
+			display: flex;
+			flex-direction: column;
+			transition: all 0.3s ease;
+		}
 
-        /* Ẩn chatbot */
-        .chatbot-container.hidden {
-            display: none;
-        }
+		/* Ẩn chatbot */
+		.chatbot-container.hidden {
+			display: none;
+		}
 
-        /* Nút toggle bên ngoài */
-        .chatbot-toggle-external {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
+		/* Nút toggle bên ngoài */
+		.chatbot-toggle-external {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			background: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+			font-size: 24px;
+			cursor: pointer;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 999;
+		}
 
-        .chatbot-header {
-            background: linear-gradient(90deg, #007bff, #00c4ff); /* Gradient cho header */
-            color: #fff;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+		.chatbot-header {
+			background: linear-gradient(90deg, #007bff, #00c4ff); /* Gradient cho header */
+			color: #fff;
+			padding: 12px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
 
-        .chatbot-header h4 {
-            margin: 0;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-        }
+		.chatbot-header h4 {
+			margin: 0;
+			font-size: 18px;
+			display: flex;
+			align-items: center;
+		}
 
-        .chatbot-header h4::before {
-            content: '🤖'; /* Icon cho header */
-            margin-right: 8px;
-        }
+		.chatbot-header h4::before {
+			content: '🤖'; /* Icon cho header */
+			margin-right: 8px;
+		}
 
-        .chatbot-toggle {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+		.chatbot-toggle {
+			background: none;
+			border: none;
+			color: #fff;
+			font-size: 16px;
+			cursor: pointer;
+			transition: transform 0.2s;
+		}
 
-        .chatbot-toggle:hover {
-            transform: scale(1.2); /* Hiệu ứng phóng to khi hover */
-        }
+		.chatbot-toggle:hover {
+			transform: scale(1.2); /* Hiệu ứng phóng to khi hover */
+		}
 
-        .chatbot-body {
-            display: flex;
-            flex-direction: column;
-            height: 400px;
-        }
+		.chatbot-body {
+			display: flex;
+			flex-direction: column;
+			height: 400px;
+		}
 
-        .chatbot-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-        }
+		.chatbot-messages {
+			flex: 1;
+			overflow-y: auto;
+			padding: 10px;
+			border-bottom: 1px solid #ddd;
+			display: flex;
+			flex-direction: column;
+		}
 
-        .chatbot-input {
-            display: flex;
-            padding: 10px;
-        }
+		.chatbot-input {
+			display: flex;
+			padding: 10px;
+		}
 
-        .chatbot-input input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
+		.chatbot-input input {
+			flex: 1;
+			padding: 8px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+		}
 
-        .chatbot-input button {
-            margin-left: 10px;
-            padding: 8px 12px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+		.chatbot-input button {
+			margin-left: 10px;
+			padding: 8px 12px;
+			background: #007bff;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
 
-        .user-message,
-        .bot-message {
-            display: flex;
-            align-items: flex-start;
-            margin: 10px 0;
-        }
+		.user-message,
+		.bot-message {
+			display: flex;
+			align-items: flex-start;
+			margin: 10px 0;
+		}
 
-        .user-message {
-            justify-content: flex-end; /* Tin nhắn người dùng căn phải */
-        }
+		.user-message {
+			justify-content: flex-end; /* Tin nhắn người dùng căn phải */
+		}
 
-        .bot-message {
-            justify-content: flex-start; /* Tin nhắn bot căn trái */
-        }
+		.bot-message {
+			justify-content: flex-start; /* Tin nhắn bot căn trái */
+		}
 
-        .user-message .avatar,
-        .bot-message .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin: 0 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-        }
+		.user-message .avatar,
+		.bot-message .avatar {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			margin: 0 10px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-weight: bold;
+		}
 
-        .user-message .avatar {
-            background: #007bff;
-            color: #fff;
-            order: 1; /* Avatar nằm bên phải tin nhắn */
-        }
+		.user-message .avatar {
+			background: #007bff;
+			color: #fff;
+			order: 1; /* Avatar nằm bên phải tin nhắn */
+		}
 
-        .bot-message .avatar {
-            background: #f1f8e9;
-            color: #555;
-        }
+		.bot-message .avatar {
+			background: #f1f8e9;
+			color: #555;
+		}
 
-        .user-message .message,
-        .bot-message .message {
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 70%;
-        }
+		.user-message .message,
+		.bot-message .message {
+			padding: 10px;
+			border-radius: 10px;
+			max-width: 70%;
+		}
 
-        .user-message .message {
-            background: #e0f7fa;
-            order: 0; /* Tin nhắn nằm bên trái avatar */
-        }
+		.user-message .message {
+			background: #e0f7fa;
+			order: 0; /* Tin nhắn nằm bên trái avatar */
+		}
 
-        .bot-message .message {
-            background: #f1f8e9;
-        }
-    </style>
+		.bot-message .message {
+			background: #f1f8e9;
+		}
+
+		/* CSS cho tin nhắn */
+		.message {
+			max-width: 80%;
+			padding: 10px 15px;
+			border-radius: 15px;
+			margin: 5px 0;
+			word-wrap: break-word;
+		}
+
+		.user-message .message {
+			background-color: #0084ff;
+			color: white;
+			margin-left: auto;
+			border-radius: 18px 18px 0 18px;
+		}
+
+		.bot-message .message {
+			background-color: #f0f0f0;
+			color: #333;
+			margin-right: auto;
+			border-radius: 18px 18px 18px 0;
+		}
+
+		/* CSS cho định dạng HTML trong tin nhắn bot */
+		.bot-message .message ul {
+			margin: 5px 0;
+			padding-left: 20px;
+		}
+
+		.bot-message .message li {
+			margin-bottom: 8px;
+		}
+
+		.bot-message .message p {
+			margin: 8px 0;
+		}
+
+		.bot-message .message strong {
+			font-weight: bold;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-    <!-- Home Banner -->
-    <section class="section section-search">
-        <div class="container-fluid">
-            <div class="banner-wrapper">
-                <div class="banner-header text-center">
-                    <h1>Tìm kiếm bác sĩ, Đặt lịch hẹn</h1>
-                    <p>Khám phá các bác sĩ, bệnh viện tốt nhất gần bạn trong thành phố.</p>
-                </div>
+	<!-- Home Banner -->
+	<section class="section section-search">
+		<div class="container-fluid">
+			<div class="banner-wrapper">
+				<div class="banner-header text-center">
+					<h1>Tìm kiếm bác sĩ, Đặt lịch hẹn</h1>
+					<p>Khám phá các bác sĩ, bệnh viện tốt nhất gần bạn trong thành phố.</p>
+				</div>
 
-                <!-- Search -->
-                <div class="search-box">
-                    <form action="{{ path('app_search_doctor') }}" method="get" class="d-flex justify-content-center">
-                        <div class="form-group search-info">
-                            <input type="text" name="fullname" class="form-control" placeholder="Tên bác sĩ">
-                            <span class="form-text">Vd: Dr. Joh</span>
-                        </div>
-                        <div class="form-group search-info">
-                            <input type="text" name="specialty" class="form-control" placeholder="Chọn khoa muốn tìm">
-                            <span class="form-text">Vd: Tim mạch</span>
-                        </div>
-                        <button type="submit" class="btn btn-primary search-btn">
-                            <i class="fas fa-search"></i>
-                            <span>Search</span>
-                        </button>
-                    </form>
-                </div>
-                <!-- /Search -->
-            </div>
-        </div>
-    </section>
-    <!-- /Home Banner -->
+				<!-- Search -->
+				<div class="search-box">
+					<form action="{{ path('app_search_doctor') }}" method="get" class="d-flex justify-content-center">
+						<div class="form-group search-info">
+							<input type="text" name="fullname" class="form-control" placeholder="Tên bác sĩ">
+							<span class="form-text">Vd: Dr. Joh</span>
+						</div>
+						<div class="form-group search-info">
+							<input type="text" name="specialty" class="form-control" placeholder="Chọn khoa muốn tìm">
+							<span class="form-text">Vd: Tim mạch</span>
+						</div>
+						<button type="submit" class="btn btn-primary search-btn">
+							<i class="fas fa-search"></i>
+							<span>Search</span>
+						</button>
+					</form>
+				</div>
+				<!-- /Search -->
+			</div>
+		</div>
+	</section>
+	<!-- /Home Banner -->
 
-    <!-- Clinic and Specialities -->
-    <section class="section section-specialities">
-        <div class="container-fluid">
-            <div class="section-header text-center">
-                <h2>Phòng khám và Chuyên khoa</h2>
-                <p class="sub-title">Chào mừng bạn đến với hệ thống đặt lịch khám bệnh, nơi cung cấp các dịch vụ y tế đa dạng với các chuyên khoa hàng đầu.</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-9">
-                    <!-- Slider -->
-                    <div class="specialities-slider slider">
-                        {% for specialty in specialties %}
-                            <!-- Slider Item -->
-                            <div class="speicality-item text-center">
-                                <div class="speicality-img">
-                                    <a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">
-                                        <img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{ specialty.name | specialty_label }}">
-                                    </a>
-                                    <span><i class="fa fa-circle" aria-hidden="true"></i></span>
-                                </div>
-                                <p><a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">{{ specialty.name | specialty_label }}</a></p>
-                            </div>
-                            <!-- /Slider Item -->
-                        {% endfor %}
-                    </div>
-                    <!-- /Slider -->
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /Clinic and Specialities -->
+	<!-- Clinic and Specialities -->
+	<section class="section section-specialities">
+		<div class="container-fluid">
+			<div class="section-header text-center">
+				<h2>Phòng khám và Chuyên khoa</h2>
+				<p class="sub-title">Chào mừng bạn đến với hệ thống đặt lịch khám bệnh, nơi cung cấp các dịch vụ y tế đa dạng với các chuyên khoa hàng đầu.</p>
+			</div>
+			<div class="row justify-content-center">
+				<div
+					class="col-md-9">
+					<!-- Slider -->
+					<div class="specialities-slider slider">
+						{% for specialty in specialties %}
+							<!-- Slider Item -->
+							<div class="speicality-item text-center">
+								<div class="speicality-img">
+									<a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">
+										<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{ specialty.name | specialty_label }}">
+									</a>
+									<span>
+										<i class="fa fa-circle" aria-hidden="true"></i>
+									</span>
+								</div>
+								<p>
+									<a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">{{ specialty.name | specialty_label }}</a>
+								</p>
+							</div>
+							<!-- /Slider Item -->
+						{% endfor %}
+					</div>
+					<!-- /Slider -->
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- /Clinic and Specialities -->
 
-    <!-- Popular Section -->
-    <section class="section section-doctor">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="section-header">
-                        <h2>Bác Sĩ Của Chúng Tôi</h2>
-                        <p>Chúng tôi mang đến dịch vụ tốt nhất cho sức khỏe của bạn</p>
-                    </div>
-                    <div class="about-content">
-                        <p>Chúng tôi cung cấp dịch vụ đặt lịch khám bệnh trực tuyến, giúp bạn dễ dàng kết nối với các bác sĩ chuyên khoa hàng đầu. Với hệ thống đặt lịch đơn giản, bạn có thể chọn thời gian và bác sĩ phù hợp với nhu cầu của mình một cách nhanh chóng và thuận tiện.</p>
-                        <p>Đội ngũ bác sĩ của chúng tôi là những chuyên gia giàu kinh nghiệm trong các lĩnh vực y tế khác nhau. Họ luôn sẵn sàng hỗ trợ và tư vấn cho bạn, giúp bạn có được sự chăm sóc sức khỏe tốt nhất.</p>
-                        <a href="{{ path('app_search_doctor') }}">Xem Thêm</a>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="doctor-slider slider">
-                        {% for doctor in doctors %}
-                            <!-- Doctor Widget -->
-                            <div class="profile-widget">
-                                <div class="doc-img">
-                                    <a href="doctor-profile.html">
-                                        <img class="img-fluid" alt="User Image" src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('customer/assets/img/doctors/doctor-01.jpg') }}">
-                                    </a>
-                                </div>
-                                <div class="pro-content">
-                                    <h3 class="title">
-                                        <a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}">{{ doctor.fullname }}</a>
-                                        <i class="fas fa-check-circle verified"></i>
-                                    </h3>
-                                    <p class="speciality">
-                                        <a href="{{ path('app_search_doctor', {'specialty': doctor.specialty.name}) }}">{{ doctor.specialty.name | specialty_label }}</a>
-                                    </p>
-                                    <p class="doc-avg_star">
-                                        <span class="text-warning">
-                                            {% for i in 1..5 %}
-                                                <i class="fas fa-star{% if i > doctor.getAverageRating|round(0, 'floor') %}-o{% endif %}"></i>
-                                            {% endfor %}
-                                        </span>
-                                        <span>({{ doctor.getAverageRating|number_format(1) }} / 5)</span>
-                                    </p>
-                                    <ul class="available-info">
-                                        <li><i class="fas fa-map-marker-alt"></i> {{ doctor.address ?? 'Newyork, USA' }}</li>
-                                        <li><i class="far fa-money-bill-alt"></i> {{ doctor.consultationFee | currency_vnd }} VNĐ <i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i></li>
-                                    </ul>
-                                    <div class="row row-sm">
-                                        <div class="col-12">
-                                            <a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}" class="btn book-btn">Đặt ngay</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /Doctor Widget -->
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /Popular Section -->
+	<!-- Popular Section -->
+	<section class="section section-doctor">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="section-header">
+						<h2>Bác Sĩ Của Chúng Tôi</h2>
+						<p>Chúng tôi mang đến dịch vụ tốt nhất cho sức khỏe của bạn</p>
+					</div>
+					<div class="about-content">
+						<p>Chúng tôi cung cấp dịch vụ đặt lịch khám bệnh trực tuyến, giúp bạn dễ dàng kết nối với các bác sĩ chuyên khoa hàng đầu. Với hệ thống đặt lịch đơn giản, bạn có thể chọn thời gian và bác sĩ phù hợp với nhu cầu của mình một cách nhanh chóng và thuận tiện.</p>
+						<p>Đội ngũ bác sĩ của chúng tôi là những chuyên gia giàu kinh nghiệm trong các lĩnh vực y tế khác nhau. Họ luôn sẵn sàng hỗ trợ và tư vấn cho bạn, giúp bạn có được sự chăm sóc sức khỏe tốt nhất.</p>
+						<a href="{{ path('app_search_doctor') }}">Xem Thêm</a>
+					</div>
+				</div>
+				<div class="col-lg-8">
+					<div class="doctor-slider slider">
+						{% for doctor in doctors %}
+							<!-- Doctor Widget -->
+							<div class="profile-widget">
+								<div class="doc-img">
+									<a href="doctor-profile.html">
+										<img class="img-fluid" alt="User Image" src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('customer/assets/img/doctors/doctor-01.jpg') }}">
+									</a>
+								</div>
+								<div class="pro-content">
+									<h3 class="title">
+										<a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}">{{ doctor.fullname }}</a>
+										<i class="fas fa-check-circle verified"></i>
+									</h3>
+									<p class="speciality">
+										<a href="{{ path('app_search_doctor', {'specialty': doctor.specialty.name}) }}">{{ doctor.specialty.name | specialty_label }}</a>
+									</p>
+									<p class="doc-avg_star">
+										<span class="text-warning">
+											{% for i in 1..5 %}
+												<i class="fas fa-star{% if i > doctor.getAverageRating|round(0, 'floor') %}-o{% endif %}"></i>
+											{% endfor %}
+										</span>
+										<span>({{ doctor.getAverageRating|number_format(1) }}
+											/ 5)</span>
+									</p>
+									<ul class="available-info">
+										<li>
+											<i class="fas fa-map-marker-alt"></i>
+											{{ doctor.address ?? 'Newyork, USA' }}</li>
+										<li>
+											<i class="far fa-money-bill-alt"></i>
+											{{ doctor.consultationFee | currency_vnd }}
+											VNĐ
+											<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i>
+										</li>
+									</ul>
+									<div class="row row-sm">
+										<div class="col-12">
+											<a href="{{ path('app_doctor_profile', {'id': doctor.id}) }}" class="btn book-btn">Đặt ngay</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /Doctor Widget -->
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- /Popular Section -->
 
-    <!-- Chatbot Container -->
-    <div id="chatbot" class="chatbot-container hidden">
-        <div class="chatbot-header">
-            <h4>HOMEX assistant</h4>
-            <button id="chatbot-toggle" class="chatbot-toggle">✖</button>
-        </div>
-        <div class="chatbot-body">
-            <div class="chatbot-messages" id="chatbot-messages"></div>
-            <div class="chatbot-input">
-                <input type="text" id="chatbot-input" placeholder="Nhập câu hỏi của bạn...">
-                <button id="chatbot-send">Gửi</button>
-            </div>
-        </div>
-    </div>
+	<!-- Chatbot Container -->
+	<div id="chatbot" class="chatbot-container hidden">
+		<div class="chatbot-header">
+			<h4>HOMEX assistant</h4>
+			<button id="chatbot-toggle" class="chatbot-toggle">✖</button>
+		</div>
+		<div class="chatbot-body">
+			<div class="chatbot-messages" id="chatbot-messages"></div>
+			<div class="chatbot-input">
+				<input type="text" id="chatbot-input" placeholder="Nhập câu hỏi của bạn...">
+				<button id="chatbot-send">Gửi</button>
+			</div>
+		</div>
+	</div>
 
-    <!-- Nút toggle bên ngoài -->
-    <button id="chatbot-toggle-external" class="chatbot-toggle-external">💬</button>
+	<!-- Nút toggle bên ngoài -->
+	<button id="chatbot-toggle-external" class="chatbot-toggle-external">💬</button>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const chatbotContainer = document.getElementById('chatbot');
-            const chatbotToggle = document.getElementById('chatbot-toggle');
-            const chatbotToggleExternal = document.getElementById('chatbot-toggle-external');
-            const chatbotMessages = document.getElementById('chatbot-messages');
-            const chatbotInput = document.getElementById('chatbot-input');
-            const chatbotSend = document.getElementById('chatbot-send');
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+const chatbotContainer = document.getElementById('chatbot');
+const chatbotToggle = document.getElementById('chatbot-toggle');
+const chatbotToggleExternal = document.getElementById('chatbot-toggle-external');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
 
-            // Mở chatbot khi nhấn nút toggle bên ngoài
-            chatbotToggleExternal.addEventListener('click', function () {
-                chatbotContainer.classList.remove('hidden');
-                chatbotToggleExternal.style.display = 'none'; // Ẩn nút toggle bên ngoài
-            });
+// Mở chatbot khi nhấn nút toggle bên ngoài
+chatbotToggleExternal.addEventListener('click', function () {
+chatbotContainer.classList.remove('hidden');
+chatbotToggleExternal.style.display = 'none'; // Ẩn nút toggle bên ngoài
+});
 
-            // Đóng chatbot khi nhấn nút "✖" bên trong
-            chatbotToggle.addEventListener('click', function () {
-                chatbotContainer.classList.add('hidden');
-                chatbotToggleExternal.style.display = 'flex'; // Hiện nút toggle bên ngoài
-            });
+// Đóng chatbot khi nhấn nút "✖" bên trong
+chatbotToggle.addEventListener('click', function () {
+chatbotContainer.classList.add('hidden');
+chatbotToggleExternal.style.display = 'flex'; // Hiện nút toggle bên ngoài
+});
 
-            // Gửi tin nhắn khi nhấn nút "Gửi" hoặc phím Enter
-            function sendMessage() {
-                const question = chatbotInput.value.trim();
-                if (!question) return;
+// Gửi tin nhắn khi nhấn nút "Gửi" hoặc phím Enter
+function sendMessage() {
+const question = chatbotInput.value.trim();
+if (! question) 
+return;
 
-                // Hiển thị tin nhắn của người dùng (căn phải)
-                const userMessage = document.createElement('div');
-                userMessage.className = 'user-message';
-                userMessage.innerHTML = `
+
+
+// Hiển thị tin nhắn của người dùng (căn phải)
+const userMessage = document.createElement('div');
+userMessage.className = 'user-message';
+userMessage.innerHTML = `
                     <div class="message">${question}</div>
                     <div class="avatar">U</div>
                 `;
-                chatbotMessages.appendChild(userMessage);
+chatbotMessages.appendChild(userMessage);
 
-                // Cuộn xuống dưới cùng
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+// Cuộn xuống dưới cùng
+chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-                // Xóa nội dung input
-                chatbotInput.value = '';
+// Xóa nội dung input
+chatbotInput.value = '';
 
-                // Gửi câu hỏi đến server
-                fetch('/api/chatbot', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ question })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Hiển thị tin nhắn từ bot (căn trái)
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'bot-message';
-                    botMessage.innerHTML = `
-                        <div class="avatar">🤖</div>
-                        <div class="message">${data.answer}</div>
-                    `;
-                    chatbotMessages.appendChild(botMessage);
+// Gửi câu hỏi đến server
+fetch('/api/chatbot', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify({question})
+}).then(response => response.json()).then(data => { // Hiển thị tin nhắn của bot (căn trái)
+const botMessage = document.createElement('div');
+botMessage.className = 'bot-message';
 
-                    // Cuộn xuống dưới cùng
-                    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-                });
-            }
+// Sử dụng innerHTML để hiển thị HTML thay vì textContent
+const messageDiv = document.createElement('div');
+messageDiv.className = 'message';
+messageDiv.innerHTML = data.answer;
 
-            chatbotSend.addEventListener('click', sendMessage);
+const avatarDiv = document.createElement('div');
+avatarDiv.className = 'avatar';
+avatarDiv.textContent = '🤖';
 
-            chatbotInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        });
-    </script>
+botMessage.appendChild(avatarDiv);
+botMessage.appendChild(messageDiv);
+
+chatbotMessages.appendChild(botMessage);
+
+// Cuộn xuống dưới cùng
+chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+});
+}
+
+chatbotSend.addEventListener('click', sendMessage);
+
+chatbotInput.addEventListener('keypress', function (e) {
+if (e.key === 'Enter') {
+sendMessage();
+}
+});
+});
+	</script>
 {% endblock %}
