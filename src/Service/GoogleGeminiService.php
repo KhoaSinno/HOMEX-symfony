@@ -38,7 +38,7 @@ class GoogleGeminiService
         $fullPrompt = "$systemPrompt\n\n";
         $fullPrompt .= "DANH SÁCH BÁC SĨ:\n";
 
-        // Thêm thông tin về các bác sĩ kèm link profile
+        // Thêm thông tin về các bác sĩ kèm link profile và lịch làm việc
         $limitedDoctors = array_slice($doctorDetails, 0, 10);
         foreach ($limitedDoctors as $doctor) {
             // Tạo URL cho mỗi bác sĩ
@@ -48,9 +48,43 @@ class GoogleGeminiService
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
+            // Định dạng phí khám
+            $consultationFee = number_format((float)$doctor['consultationFee'], 0, ',', '.') . ' VNĐ';
+
             $fullPrompt .= "- Bác sĩ {$doctor['name']} (ID: {$doctor['id']}, URL: {$doctorUrl}), ";
             $fullPrompt .= "Chuyên khoa: {$doctor['specialty']}, ";
-            $fullPrompt .= "Chuyên môn: {$doctor['qualification']}, Đánh giá: " . number_format($doctor['averageRating'], 1) . "/5\n";
+            $fullPrompt .= "Chuyên môn: {$doctor['qualification']}, ";
+            $fullPrompt .= "Phí khám: {$consultationFee}, ";
+            $fullPrompt .= "Đánh giá: " . number_format($doctor['averageRating'], 1) . "/5\n";
+
+            // Thêm thông tin về lịch làm việc
+            if (!empty($doctor['workSchedules'])) {
+                $fullPrompt .= "  Lịch làm việc:\n";
+                foreach ($doctor['workSchedules'] as $schedule) {
+                    $fullPrompt .= "  - {$schedule['date']} ({$schedule['dayOfWeek']}):\n";
+
+                    // Hiển thị theo buổi
+                    if (!empty($schedule['timeSlotsBySession'])) {
+                        if (!empty($schedule['timeSlotsBySession']['morning'])) {
+                            $fullPrompt .= "    + Buổi sáng: {$schedule['timeSlotsBySession']['morning']}\n";
+                        }
+
+                        if (!empty($schedule['timeSlotsBySession']['afternoon'])) {
+                            $fullPrompt .= "    + Buổi chiều: {$schedule['timeSlotsBySession']['afternoon']}\n";
+                        }
+
+                        if (!empty($schedule['timeSlotsBySession']['evening'])) {
+                            $fullPrompt .= "    + Buổi tối: {$schedule['timeSlotsBySession']['evening']}\n";
+                        }
+                    } else {
+                        // Fallback nếu không có dữ liệu phân loại theo buổi
+                        $fullPrompt .= "    + Các khung giờ: {$schedule['timeSlots']}\n";
+                    }
+                }
+            } else {
+                $fullPrompt .= "  Lịch làm việc: Vui lòng liên hệ phòng khám để biết lịch làm việc cụ thể\n";
+            }
+            $fullPrompt .= "\n";
         }
 
         $fullPrompt .= "\nDANH SÁCH CHUYÊN KHOA:\n";
