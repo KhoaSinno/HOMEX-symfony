@@ -424,26 +424,22 @@ headers: {
 'Content-Type': 'application/json'
 },
 body: JSON.stringify({question})
-}).then(response => response.json()).then(data => { // Hiển thị tin nhắn của bot (căn trái)
+}).then(response => response.json()).then(data => { // Hiển thị câu trả lời từ chatbot
 const botMessage = document.createElement('div');
-botMessage.className = 'bot-message';
+botMessage.className = 'bot-message  d-flex flex-column';
 
-// Sử dụng innerHTML để hiển thị HTML thay vì textContent
-const messageDiv = document.createElement('div');
-messageDiv.className = 'message';
-messageDiv.innerHTML = data.answer;
-
-const avatarDiv = document.createElement('div');
-avatarDiv.className = 'avatar';
-avatarDiv.textContent = '🤖';
-
-botMessage.appendChild(avatarDiv);
-botMessage.appendChild(messageDiv);
+// Sử dụng innerHTML để hiển thị nội dung HTML
+botMessage.innerHTML = data.answer;
 
 chatbotMessages.appendChild(botMessage);
 
 // Cuộn xuống dưới cùng
 chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+// Thêm xử lý cho các liên kết trong câu trả lời
+botMessage.querySelectorAll('a').forEach(link => {
+link.target = '_blank'; // Mở link trong tab mới
+});
 });
 }
 

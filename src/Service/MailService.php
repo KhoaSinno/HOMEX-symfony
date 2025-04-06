@@ -29,7 +29,7 @@ class MailService
                         <p>🔢 Số phòng khám: <strong>$clinicNumber</strong></p>
                         <p>💙 Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi.</p>
                         <hr>
-                        <p style='font-size: 14px; color: #7f8c8d;'>Nếu có thắc mắc, vui lòng liên hệ 📞 <strong>Hotline: 1900 123 456</strong>.</p>
+                        <p style='font-size: 14px; color: #7f8c8d;'>Nếu có thắc mắc, vui lòng liên hệ 📞 <strong>Hotline: 1900 8080 </strong>.</p>
                     </div>
                 ");
 
@@ -50,7 +50,7 @@ class MailService
                     <p>🙏 Chúng tôi thành thật xin lỗi vì sự bất tiện này.</p>
                     <p>🩺 Nếu bạn muốn đặt lại lịch, vui lòng truy cập trang web của chúng tôi hoặc liên hệ hotline để được hỗ trợ.</p>
                     <hr>
-                    <p style='font-size: 14px; color: #7f8c8d;'>📞 Hotline hỗ trợ: <strong>1900 123 456</strong></p>
+                    <p style='font-size: 14px; color: #7f8c8d;'>📞 Hotline hỗ trợ: <strong>1900 8080 </strong></p>
                 </div>
             ");
 

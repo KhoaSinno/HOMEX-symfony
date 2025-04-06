@@ -44,6 +44,7 @@ services:
       arguments:
           $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
           $apiKey: '%env(GOOGLE_GEMINI_API_KEY)%'
+          $urlGenerator: '@router'
     
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

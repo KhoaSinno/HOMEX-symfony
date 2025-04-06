@@ -149,7 +149,7 @@
 				</div>
 
 				<div
-					class="mt-3">
+					class="m-3">
 					<!-- Form chọn ngày -->
 					<form method="GET" action="{{ path('app_doctor_profile', { 'id': doctor.id }) }}">
 						<label>Chọn ngày khám:</label>
@@ -236,7 +236,7 @@
 		{% endif %}
 
 		<!-- Doctor Details Tab -->
-		<div class="card">
+		<div class="card  mx-3">
 			<div
 				class="card-body pt-0">
 
@@ -280,7 +280,7 @@
 		<!-- /Doctor Details Tab -->
 
 		{# Reviews #}
-		<div class="card p-4 review-list mt-4">
+		<div class="card container p-4 review-list mt-4">
 			<h3 class="mb-4 text-primary">Đánh giá từ bệnh nhân</h3>
 			{% for review in doctor.reviews %}
 				<div class="card review-card mb-3 shadow-sm">

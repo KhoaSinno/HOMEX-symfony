@@ -65,26 +65,22 @@ class ChatbotController extends AbstractController
         // Tạo prompt cho Google Gemini với hướng dẫn cụ thể
         $systemPrompt = "
             Bạn là trợ lý ảo y tế của hệ thống đặt lịch khám bệnh HOMEX.
+            
             Hướng dẫn quan trọng:
             1. Trả lời bằng tiếng Việt, với phong cách thân thiện và chuyên nghiệp.
-            2. Sử dụng định dạng HTML (không sử dụng Markdown).
-            3. Phân đoạn câu trả lời bằng thẻ <p> để dễ đọc.
-            4. Chỉ sử dụng tên tiếng Việt cho các chuyên khoa.
-            5. Khi liệt kê danh sách, sử dụng thẻ <ul> và <li>.
-            6. Làm nổi bật thông tin quan trọng bằng thẻ <strong>.
+            2. Sử dụng định dạng HTML để hiển thị nội dung (không sử dụng Markdown).
+            3. Khi đề cập đến bác sĩ, LUÔN sử dụng thẻ <a> với href để tạo liên kết đến trang bác sĩ.
+            4. Khi liệt kê danh sách, sử dụng thẻ <ul> và <li>.
+            5. Làm nổi bật thông tin quan trọng bằng thẻ <strong>.
+            6. Phân đoạn câu trả lời bằng thẻ <p>.
             
             Khi liệt kê bác sĩ, hãy theo mẫu:
             <ul>
-                <li><strong>Bác sĩ [Tên]</strong> - Chuyên khoa [Tên chuyên khoa]
+                <li><strong><a href=\"URL_PROFILE_BAC_SI\">Bác sĩ [Tên]</a></strong> - Chuyên khoa [Tên chuyên khoa]
                     <br>Chuyên môn: [Chuyên môn]
                     <br>Đánh giá: [Số] sao
                 </li>
             </ul>
-            
-            Nếu người dùng hỏi về triệu chứng bệnh:
-            1. Đưa ra thông tin tổng quan ngắn gọn
-            2. Đề xuất 2-3 bác sĩ chuyên khoa phù hợp nhất
-            3. Nhắc nhở rằng đây chỉ là thông tin tham khảo
             
             Thông tin về hệ thống HOMEX:
             - Địa chỉ: 256 Nguyễn Văn Cừ, An Hòa, Ninh Kiều, Cần Thơ
@@ -96,6 +92,7 @@ class ChatbotController extends AbstractController
             'systemPrompt' => $systemPrompt,
             'doctors' => $doctorDetails,
             'specialties' => $specialtyDetails,
+            'baseUrl' => $request->getSchemeAndHttpHost(), // Thêm base URL
             'question' => $question
         ];
 
@@ -105,7 +102,10 @@ class ChatbotController extends AbstractController
         // Trích xuất nội dung từ phản hồi
         $answer = $response['candidates'][0]['content']['parts'][0]['text'] ?? 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này. Vui lòng thử lại sau hoặc liên hệ trực tiếp qua hotline 1900 123 456.';
 
-        // Đảm bảo định dạng HTML được giữ nguyên
-        return new JsonResponse(['answer' => $answer, 'isHtml' => true]);
+        // Đánh dấu rằng phản hồi chứa HTML và an toàn để hiển thị
+        return new JsonResponse([
+            'answer' => $answer,
+            'isHtml' => true
+        ]);
     }
 }
