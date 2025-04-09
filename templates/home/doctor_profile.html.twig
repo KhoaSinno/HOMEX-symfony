@@ -195,113 +195,118 @@
 
 		<!-- Đánh giá bác sĩ -->
 		{% if app.user and app.user.roles|join(',') matches '/ROLE_PATIENT/' %}
-			<div class="card p-4 review-section mt-5">
-				<h3>Đánh giá bác sĩ</h3>
+			<div class="container">
+				<div class="card p-4 review-section mt-5">
+					<h3>Đánh giá bác sĩ</h3>
 
-				{# HIện mesage lỗi #}
-				{% if app.session.flashBag.has('error') %}
-					<div class="alert alert-danger">
-						{% for message in app.session.flashBag.get('error') %}
-							{{ message }}
-						{% endfor %}
-					</div>
-				{% endif %}
+					{# HIện mesage lỗi #}
+					{% if app.session.flashBag.has('error') %}
+						<div class="alert alert-danger">
+							{% for message in app.session.flashBag.get('error') %}
+								{{ message }}
+							{% endfor %}
+						</div>
+					{% endif %}
 
 
-				{% if app.user and app.user.roles|join(',') matches '/ROLE_PATIENT/' %}
-					<form method="POST" action="{{ path('app_submit_review', {'doctorId': doctor.id}) }}">
-						<div class="form-group">
-							<label for="rating">Đánh giá sao</label>
-							<div class="star-rating">
-								{% for i in 5..1 %}
-									<input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
-									<label for="star{{ i }}" title="{{ i }} sao">
-										<i class="fas fa-star"></i>
-									</label>
-								{% endfor %}
+					{% if app.user and app.user.roles|join(',') matches '/ROLE_PATIENT/' %}
+						<form method="POST" action="{{ path('app_submit_review', {'doctorId': doctor.id}) }}">
+							<div class="form-group">
+								<label for="rating">Đánh giá sao</label>
+								<div class="star-rating">
+									{% for i in 5..1 %}
+										<input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+										<label for="star{{ i }}" title="{{ i }} sao">
+											<i class="fas fa-star"></i>
+										</label>
+									{% endfor %}
+								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="comment">Bình luận</label>
-							<textarea name="comment" id="comment" class="form-control" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
-						</div>
-						<button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-					</form>
-				{% else %}
-					<p>Vui lòng
-						<a href="{{ path('app_login') }}">đăng nhập</a>
-						để đánh giá bác sĩ.</p>
-				{% endif %}
+							<div class="form-group">
+								<label for="comment">Bình luận</label>
+								<textarea name="comment" id="comment" class="form-control" rows="3" placeholder="Viết bình luận của bạn..."></textarea>
+							</div>
+							<button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+						</form>
+					{% else %}
+						<p>Vui lòng
+							<a href="{{ path('app_login') }}">đăng nhập</a>
+							để đánh giá bác sĩ.</p>
+					{% endif %}
+				</div>
 			</div>
 		{% endif %}
 
 		<!-- Doctor Details Tab -->
-		<div class="card  mx-3">
-			<div
-				class="card-body pt-0">
-
-				<!-- Tab Menu -->
-				<nav class="user-tabs mb-4">
-					<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
-						<li class="nav-item">
-							<a class="nav-link active" href="#doc_overview" data-toggle="tab">Giới thiệu tổng quan</a>
-						</li>
-
-					</ul>
-				</nav>
-				<!-- /Tab Menu -->
-
-				<!-- Tab Content -->
+		<div class="container">
+			<div class="card">
 				<div
-					class="tab-content pt-0">
+					class="card-body pt-0">
 
-					<!-- Overview Content -->
-					<div role="tabpanel" id="doc_overview" class="tab-pane fade show active">
-						<div class="row">
-							<div
-								class="col-md-12 col-lg-9">
+					<!-- Tab Menu -->
+					<nav class="user-tabs mb-4">
+						<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+							<li class="nav-item">
+								<a class="nav-link active" href="#doc_overview" data-toggle="tab">Giới thiệu tổng quan</a>
+							</li>
 
-								<!-- About Details -->
-								<div class="widget about-widget">
-									<h4 class="widget-title">Về bác sĩ</h4>
-									<p>{{doctor.bio | raw}}</p>
+						</ul>
+					</nav>
+					<!-- /Tab Menu -->
+
+					<!-- Tab Content -->
+					<div
+						class="tab-content pt-0">
+
+						<!-- Overview Content -->
+						<div role="tabpanel" id="doc_overview" class="tab-pane fade show active">
+							<div class="row">
+								<div
+									class="col-md-12 col-lg-9">
+
+									<!-- About Details -->
+									<div class="widget about-widget">
+										<h4 class="widget-title">Về bác sĩ</h4>
+										<p>{{doctor.bio | raw}}</p>
+									</div>
+									<!-- /About Details -->
+
+
 								</div>
-								<!-- /About Details -->
-
-
 							</div>
 						</div>
-					</div>
-					<!-- /Overview Content -->
+						<!-- /Overview Content -->
 
+					</div>
 				</div>
 			</div>
 		</div>
 		<!-- /Doctor Details Tab -->
 
 		{# Reviews #}
-		<div class="card container p-4 review-list mt-4">
-			<h3 class="mb-4 text-primary">Đánh giá từ bệnh nhân</h3>
-			{% for review in doctor.reviews %}
-				<div class="card review-card mb-3 shadow-sm">
-					<div class="card-body">
-						<div class="review-header d-flex justify-content-between align-items-center">
-							<strong class="review-patient text-dark">{{ review.patient.fullname }}</strong>
-							<span class="review-date text-muted">{{ review.createdAt|date('d/m/Y') }}</span>
+		<div class="container">
+			<div class="card  p-4 review-list mt-4">
+				<h3 class="mb-4 text-primary">Đánh giá từ bệnh nhân</h3>
+				{% for review in doctor.reviews %}
+					<div class="card review-card mb-3 shadow-sm">
+						<div class="card-body">
+							<div class="review-header d-flex justify-content-between align-items-center">
+								<strong class="review-patient text-dark">{{ review.patient.fullname }}</strong>
+								<span class="review-date text-muted">{{ review.createdAt|date('d/m/Y') }}</span>
+							</div>
+							<div class="review-rating mt-2">
+								{% for i in 1..5 %}
+									<i class="fas fa-star{% if i > review.rating %}-o{% endif %} text-warning"></i>
+								{% endfor %}
+							</div>
+							<p class="review-comment mt-3 text-secondary">{{ review.comment }}</p>
 						</div>
-						<div class="review-rating mt-2">
-							{% for i in 1..5 %}
-								<i class="fas fa-star{% if i > review.rating %}-o{% endif %} text-warning"></i>
-							{% endfor %}
-						</div>
-						<p class="review-comment mt-3 text-secondary">{{ review.comment }}</p>
 					</div>
-				</div>
-			{% else %}
-				<p class="text-muted">Chưa có đánh giá nào.</p>
-			{% endfor %}
+				{% else %}
+					<p class="text-muted">Chưa có đánh giá nào.</p>
+				{% endfor %}
+			</div>
 		</div>
-
 	</div>
 </div>
 <!-- /Page Content -->{% endblock %}{% block JSCustom %}

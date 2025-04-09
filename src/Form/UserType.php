@@ -113,7 +113,7 @@ class UserType extends AbstractType
                 ->add('consultationFee', TextType::class, [
                     'label' => 'Phí khám',
                     'required' => true,
-                    'attr' => ['class' => 'form-control', 'readonly' => true]
+                    'attr' => ['class' => 'form-control', 'readonly' => false]
                 ]);
         }
     }
