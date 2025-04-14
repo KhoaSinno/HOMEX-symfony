@@ -2,21 +2,27 @@
 
 namespace App\Controller;
 
-use App\Entity\Appointment;
-use App\Entity\Review;
 use App\Entity\Specialty;
 use App\Entity\User;
 
-use App\Entity\ScheduleWork; // Thêm entity ScheduleWork
+use App\Entity\ScheduleWork;
 use App\Service\GoogleGeminiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Parsedown;
 
 class ChatbotController extends AbstractController
 {
+    private function cleanResponse(string $response): string
+    {
+        // Loại bỏ ```html và ```
+        $cleaned = preg_replace('/```html/', '', $response);
+        $cleaned = preg_replace('/```/', '', $cleaned);
+        return trim($cleaned); // Xóa khoảng trắng thừa
+    }
+
+
     #[Route('/api/chatbot', name: 'chatbot_ask', methods: ['POST'])]
     public function ask(Request $request, GoogleGeminiService $geminiService, \Doctrine\ORM\EntityManagerInterface $entityManager): JsonResponse
     {
@@ -122,7 +128,8 @@ class ChatbotController extends AbstractController
                     'date' => $schedule->getDate()->format('d/m/Y'),
                     'dayOfWeek' => $this->getDayOfWeek($schedule->getDate()->format('N')),
                     'timeSlotsBySession' => $formattedBySession, // Thêm khung giờ đã phân loại theo buổi
-                    'timeSlots' => is_array($slotsArray) ? implode(', ', $slotsArray) : 'Chưa cập nhật' // Giữ nguyên phiên bản cũ để tương thích
+                    'timeSlots' => is_array($slotsArray) ? implode(', ', $slotsArray) : 'Chưa cập nhật'
+                    // Note: Nếu $slotsArray = ["07:00-07:10", "08:00-08:10"], => kết quả sẽ là chuỗi "07:00-07:10, 08:00-08:10"
                 ];
             }
 
@@ -259,13 +266,16 @@ class ChatbotController extends AbstractController
             'question' => $question
         ];
 
-        // Gửi câu hỏi đến Google Gemini
+        // Google Gemini 1.5 flash nhưng cững được: GoogleGeminiSẻrvice::askQuestion($question, $context)
         $response = $geminiService->askQuestion($question, $context);
 
-        // Trích xuất nội dung từ phản hồi
-        $answer = $response['candidates'][0]['content']['parts'][0]['text'] ?? 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này. Vui lòng thử lại sau hoặc liên hệ trực tiếp qua hotline 1900 8080 .';
+        // dump($response); 
+        // die();
 
-        // Đánh dấu rằng phản hồi chứa HTML và an toàn để hiển thị
+        // Truy xuất cái array nó trả về HTML nằm trong key "Text" (Tk này trả về dễ hiểu vãi). Còn mấy cái trả thêm thì hong cần quan tâm lắm
+        $answer = $this->cleanResponse($response['candidates'][0]['content']['parts'][0]['text']) ?? 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này. Vui lòng thử lại sau hoặc liên hệ trực tiếp qua hotline 1900 8080 .';
+
+        // Tips: isHtml nghĩa đánh dấu rằng phản hồi chứa HTML và an toàn để hiển thị với cơ chế của Symfony
         return new JsonResponse([
             'answer' => $answer,
             'isHtml' => true

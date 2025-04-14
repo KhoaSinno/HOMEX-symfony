@@ -1,7 +1,6 @@
 {% extends 'baseCustomer.html.twig' %}
 
-{% block title %}Trang chủ
-{% endblock %}
+{% block title %}Trang chủ{% endblock %}
 
 {% block styles %}
 	<style>
@@ -21,12 +20,10 @@
 			transition: all 0.3s ease;
 		}
 
-		/* Ẩn chatbot */
 		.chatbot-container.hidden {
 			display: none;
 		}
 
-		/* Nút toggle bên ngoài */
 		.chatbot-toggle-external {
 			position: fixed;
 			bottom: 20px;
@@ -46,7 +43,7 @@
 		}
 
 		.chatbot-header {
-			background: linear-gradient(90deg, #007bff, #00c4ff); /* Gradient cho header */
+			background: linear-gradient(90deg, #007bff, #00c4ff);
 			color: #fff;
 			padding: 12px;
 			display: flex;
@@ -65,7 +62,7 @@
 		}
 
 		.chatbot-header h4::before {
-			content: '🤖'; /* Icon cho header */
+			content: '🤖';
 			margin-right: 8px;
 		}
 
@@ -79,7 +76,7 @@
 		}
 
 		.chatbot-toggle:hover {
-			transform: scale(1.2); /* Hiệu ứng phóng to khi hover */
+			transform: scale(1.2);
 		}
 
 		.chatbot-body {
@@ -92,7 +89,6 @@
 			flex: 1;
 			overflow-y: auto;
 			padding: 10px;
-			border-bottom: 1px solid #ddd;
 			display: flex;
 			flex-direction: column;
 		}
@@ -127,11 +123,11 @@
 		}
 
 		.user-message {
-			justify-content: flex-end; /* Tin nhắn người dùng căn phải */
+			justify-content: flex-end;
 		}
 
 		.bot-message {
-			justify-content: flex-start; /* Tin nhắn bot căn trái */
+			justify-content: flex-start;
 		}
 
 		.user-message .avatar,
@@ -149,12 +145,16 @@
 		.user-message .avatar {
 			background: #007bff;
 			color: #fff;
-			order: 1; /* Avatar nằm bên phải tin nhắn */
+			order: 1;
 		}
 
 		.bot-message .avatar {
 			background: #f1f8e9;
 			color: #555;
+		}
+
+		.bot-message .avatar::before {
+			content: '🤖';
 		}
 
 		.user-message .message,
@@ -166,14 +166,13 @@
 
 		.user-message .message {
 			background: #e0f7fa;
-			order: 0; /* Tin nhắn nằm bên trái avatar */
+			order: 0;
 		}
 
 		.bot-message .message {
 			background: #f1f8e9;
 		}
 
-		/* CSS cho tin nhắn */
 		.message {
 			max-width: 80%;
 			padding: 10px 15px;
@@ -196,7 +195,6 @@
 			border-radius: 18px 18px 18px 0;
 		}
 
-		/* CSS cho định dạng HTML trong tin nhắn bot */
 		.bot-message .message ul {
 			margin: 5px 0;
 			padding-left: 20px;
@@ -213,6 +211,18 @@
 		.bot-message .message strong {
 			font-weight: bold;
 		}
+
+		@keyframes typing {
+			0% { content: '.'; }
+			33% { content: '..'; }
+			66% { content: '...'; }
+			100% { content: '.'; }
+		}
+
+		.typing::after {
+			content: '.';
+			animation: typing 1.5s infinite;
+		}
 	</style>
 {% endblock %}
 
@@ -225,8 +235,6 @@
 					<h1>Tìm kiếm bác sĩ, Đặt lịch hẹn</h1>
 					<p>Khám phá các bác sĩ, bệnh viện tốt nhất gần bạn trong thành phố.</p>
 				</div>
-
-				<!-- Search -->
 				<div class="search-box">
 					<form action="{{ path('app_search_doctor') }}" method="get" class="d-flex justify-content-center">
 						<div class="form-group search-info">
@@ -243,7 +251,6 @@
 						</button>
 					</form>
 				</div>
-				<!-- /Search -->
 			</div>
 		</div>
 	</section>
@@ -257,29 +264,20 @@
 				<p class="sub-title">Chào mừng bạn đến với hệ thống đặt lịch khám bệnh, nơi cung cấp các dịch vụ y tế đa dạng với các chuyên khoa hàng đầu.</p>
 			</div>
 			<div class="row justify-content-center">
-				<div
-					class="col-md-9">
-					<!-- Slider -->
+				<div class="col-md-9">
 					<div class="specialities-slider slider">
 						{% for specialty in specialties %}
-							<!-- Slider Item -->
 							<div class="speicality-item text-center">
 								<div class="speicality-img">
 									<a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">
 										<img src="{{ asset('uploads/specialty/' ~ specialty.image) }}" class="img-fluid" alt="{{ specialty.name | specialty_label }}">
 									</a>
-									<span>
-										<i class="fa fa-circle" aria-hidden="true"></i>
-									</span>
+									<span><i class="fa fa-circle" aria-hidden="true"></i></span>
 								</div>
-								<p>
-									<a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">{{ specialty.name | specialty_label }}</a>
-								</p>
+								<p><a href="{{ path('app_search_doctor', {'specialty': specialty.name}) }}">{{ specialty.name | specialty_label }}</a></p>
 							</div>
-							<!-- /Slider Item -->
 						{% endfor %}
 					</div>
-					<!-- /Slider -->
 				</div>
 			</div>
 		</div>
@@ -304,7 +302,6 @@
 				<div class="col-lg-8">
 					<div class="doctor-slider slider">
 						{% for doctor in doctors %}
-							<!-- Doctor Widget -->
 							<div class="profile-widget">
 								<div class="doc-img">
 									<a href="doctor-profile.html">
@@ -325,19 +322,11 @@
 												<i class="fas fa-star{% if i > doctor.getAverageRating|round(0, 'floor') %}-o{% endif %}"></i>
 											{% endfor %}
 										</span>
-										<span>({{ doctor.getAverageRating|number_format(1) }}
-											/ 5)</span>
+										<span>({{ doctor.getAverageRating|number_format(1) }} / 5)</span>
 									</p>
 									<ul class="available-info">
-										<li>
-											<i class="fas fa-map-marker-alt"></i>
-											{{ doctor.address ?? 'Newyork, USA' }}</li>
-										<li>
-											<i class="far fa-money-bill-alt"></i>
-											{{ doctor.consultationFee | currency_vnd }}
-											VNĐ
-											<i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i>
-										</li>
+										<li><i class="fas fa-map-marker-alt"></i> {{ doctor.address ?? 'Newyork, USA' }}</li>
+										<li><i class="far fa-money-bill-alt"></i> {{ doctor.consultationFee | currency_vnd }} VNĐ <i class="fas fa-info-circle" data-toggle="tooltip" title="Phí khám đã bao gồm VAT"></i></li>
 									</ul>
 									<div class="row row-sm">
 										<div class="col-12">
@@ -346,7 +335,6 @@
 									</div>
 								</div>
 							</div>
-							<!-- /Doctor Widget -->
 						{% endfor %}
 					</div>
 				</div>
@@ -374,82 +362,142 @@
 	<button id="chatbot-toggle-external" class="chatbot-toggle-external">💬</button>
 
 	<script>
+		// Định nghĩa filter specialty_label trong JavaScript để dịch tên khoa
+		const specialtyTranslations = {
+			'Urology': 'Tiết niệu',
+			'Neurology': 'Thần kinh',
+			'Orthopedic': 'Chỉnh hình',
+			'Cardiologist': 'Tim mạch',
+			'Dentist': 'Nha khoa'
+		};
+
+		// Hàm để thoát các ký tự HTML
+		function escapeHtml(unsafe) {
+			return unsafe
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
+		}
+
 		document.addEventListener('DOMContentLoaded', function () {
-const chatbotContainer = document.getElementById('chatbot');
-const chatbotToggle = document.getElementById('chatbot-toggle');
-const chatbotToggleExternal = document.getElementById('chatbot-toggle-external');
-const chatbotMessages = document.getElementById('chatbot-messages');
-const chatbotInput = document.getElementById('chatbot-input');
-const chatbotSend = document.getElementById('chatbot-send');
+			const chatbotContainer = document.getElementById('chatbot');
+			const chatbotToggle = document.getElementById('chatbot-toggle');
+			const chatbotToggleExternal = document.getElementById('chatbot-toggle-external');
+			const chatbotMessages = document.getElementById('chatbot-messages');
+			const chatbotInput = document.getElementById('chatbot-input');
+			const chatbotSend = document.getElementById('chatbot-send');
 
-// Mở chatbot khi nhấn nút toggle bên ngoài
-chatbotToggleExternal.addEventListener('click', function () {
-chatbotContainer.classList.remove('hidden');
-chatbotToggleExternal.style.display = 'none'; // Ẩn nút toggle bên ngoài
-});
+			// Hiển thị lời chào khi mở chatbot
+			chatbotToggleExternal.addEventListener('click', function () {
+				chatbotContainer.classList.remove('hidden');
+				chatbotToggleExternal.style.display = 'none';
+				if (!chatbotMessages.querySelector('.welcome-message')) {
+					const welcomeMessage = document.createElement('div');
+					welcomeMessage.className = 'bot-message welcome-message';
+					const welcomeText = "Chào bạn! Tôi là trợ lý ảo y tế của hệ thống đặt lịch khám bệnh HOMEX. Rất vui được hỗ trợ bạn hôm nay!";
+					welcomeMessage.innerHTML = `
+						<div class="avatar"></div>
+						<div class="message">${welcomeText}</div>
+					`;
+					chatbotMessages.appendChild(welcomeMessage);
+					chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+				}
+			});
 
-// Đóng chatbot khi nhấn nút "✖" bên trong
-chatbotToggle.addEventListener('click', function () {
-chatbotContainer.classList.add('hidden');
-chatbotToggleExternal.style.display = 'flex'; // Hiện nút toggle bên ngoài
-});
+			// Đóng chatbot
+			chatbotToggle.addEventListener('click', function () {
+				chatbotContainer.classList.add('hidden');
+				chatbotToggleExternal.style.display = 'flex';
+			});
 
-// Gửi tin nhắn khi nhấn nút "Gửi" hoặc phím Enter
-function sendMessage() {
-const question = chatbotInput.value.trim();
-if (! question) 
-return;
+			// Gửi tin nhắn
+			function sendMessage() {
+				const question = chatbotInput.value.trim();
+				if (!question) return;
 
+				// Hiển thị tin nhắn người dùng
+				const userMessage = document.createElement('div');
+				userMessage.className = 'user-message';
+				userMessage.innerHTML = `
+					<div class="message">${escapeHtml(question)}</div>
+					<div class="avatar">U</div>
+				`;
+				chatbotMessages.appendChild(userMessage);
+				chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
+				// Hiển thị dấu chấm chạy
+				const typingIndicator = document.createElement('div');
+				typingIndicator.className = 'bot-message';
+				typingIndicator.innerHTML = `
+					<div class="avatar"></div>
+					<div class="message typing"></div>
+				`;
+				chatbotMessages.appendChild(typingIndicator);
+				chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-// Hiển thị tin nhắn của người dùng (căn phải)
-const userMessage = document.createElement('div');
-userMessage.className = 'user-message';
-userMessage.innerHTML = `
-                    <div class="message">${question}</div>
-                    <div class="avatar">U</div>
-                `;
-chatbotMessages.appendChild(userMessage);
+				// Xóa input
+				chatbotInput.value = '';
 
-// Cuộn xuống dưới cùng
-chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+				// Gửi câu hỏi đến server
+				fetch('/api/chatbot', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ question })
+				})
+					.then(response => response.json())
+					.then(data => {
+						console.log(data)
+						// Xóa dấu chấm chạy
+						chatbotMessages.removeChild(typingIndicator);
 
-// Xóa nội dung input
-chatbotInput.value = '';
+						// Hiển thị câu trả lời
+						const botMessage = document.createElement('div');
+						botMessage.className = 'bot-message d-flex';
+						botMessage.innerHTML = `
+							<div class="avatar"></div>
+							<div class="message">${data.answer}</div>
+						`;
+						chatbotMessages.appendChild(botMessage);
+						chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-// Gửi câu hỏi đến server
-fetch('/api/chatbot', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({question})
-}).then(response => response.json()).then(data => { // Hiển thị câu trả lời từ chatbot
-const botMessage = document.createElement('div');
-botMessage.className = 'bot-message  d-flex flex-column';
+						// Xử lý liên kết
+						botMessage.querySelectorAll('a').forEach(link => {
+							link.target = '_blank';
+						});
+					})
+					.catch(error => {
+						// Xóa dấu chấm chạy
+						chatbotMessages.removeChild(typingIndicator);
 
-// Sử dụng innerHTML để hiển thị nội dung HTML
-botMessage.innerHTML = data.answer;
+						// Hiển thị thông báo lỗi
+						const errorMessage = document.createElement('div');
+						errorMessage.className = 'bot-message d-flex flex-column';
+						errorMessage.innerHTML = `
+							<div class="avatar"></div>
+							<div class="message">Xin lỗi, tôi không thể trả lời ngay lúc này. Vui lòng thử lại sau!</div>
+						`;
+						chatbotMessages.appendChild(errorMessage);
+						chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+					});
+			}
 
-chatbotMessages.appendChild(botMessage);
-
-// Cuộn xuống dưới cùng
-chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-
-// Thêm xử lý cho các liên kết trong câu trả lời
-botMessage.querySelectorAll('a').forEach(link => {
-link.target = '_blank'; // Mở link trong tab mới
-});
-});
-}
-
-chatbotSend.addEventListener('click', sendMessage);
-
-chatbotInput.addEventListener('keypress', function (e) {
-if (e.key === 'Enter') {
-sendMessage();
-}
-});
-});
+			chatbotSend.addEventListener('click', sendMessage);
+			chatbotInput.addEventListener('keypress', function (e) {
+				if (e.key === 'Enter') sendMessage();
+			});
+		});
 	</script>
+{% endblock %}
+
+{# Filter để dịch tên khoa #}
+{% block twig_filters %}
+	{% verbatim %}
+		{% filter specialty_label %}
+			{{ specialtyTranslations[value] ?? value }}
+		{% endfilter %}
+	{% endverbatim %}
 {% endblock %}
