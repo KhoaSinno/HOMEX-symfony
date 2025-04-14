@@ -55,13 +55,13 @@
 												<td>
 													<h2 class="table-avatar">
 														<a href="{{path('app_doctor_show',{'id':doctor.id})}}" class="avatar avatar-sm mr-2">
-															<img class="avatar-img" src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('admin/assets/img/specialities/specialities-01.png') }}" alt="{{ doctor.fullName }}">
+															<img class="avatar-img" src="{{ doctor.image ? asset('uploads/users/' ~ doctor.image) : asset('uploads/users/defaultUser.png') }}" alt="{{ doctor.fullName }}">
 														</a>
 														<a href="{{path('app_doctor_show',{'id':doctor.id})}}">{{ doctor.fullName }}</a>
 													</h2>
 												</td>
 
-												<td>{{ doctor.specialty.name | specialty_label }}</td>
+												<td>{{ doctor.specialty ? (doctor.specialty.name | specialty_label) : 'Chưa xác định' }}</td>
 												<td>{{ doctor.specialty.clinicNumber ?? 'Trống' }}</td>
 												<td>{{doctor.gender ? doctor.gender | gender_label : 'Trống'}}</td>
 												<td>{{ doctor.consultationFee is not null ? (doctor.consultationFee | currency_vnd) : 'Trống' }}</td>

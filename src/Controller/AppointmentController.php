@@ -82,7 +82,7 @@ class AppointmentController extends AbstractController
         if (!empty($existingAppointments)) {
             return new JsonResponse(['error' => true, 'message' => 'Không được phép đặt nhiều buổi trong ngày!'], 403);
         }
-        
+
         // Ai cho BS Test khám trời
         if ($patient->getRoles()[0] == 'ROLE_DOCTOR') {
             return new JsonResponse(['error' => true, 'message' => 'Tài khoản Bác sĩ không thể đặt lịch khám!'], 403);
@@ -154,6 +154,7 @@ class AppointmentController extends AbstractController
 
         $appointmentData = [
             'doctorId' => $doctorId,
+            'specialtyId' => $doctor->getSpecialty()->getId(),
             'appointmentDate' => $date->format('d-m-Y'),
             'appointmentTime' => $timeSlot,
             'patientFullname' => $request->request->get('patientFullname'),

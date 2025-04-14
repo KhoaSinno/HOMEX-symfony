@@ -23,8 +23,6 @@
 						{{ count }}
 						kết quả được tìm thấy cho:
 						{{ (search_specialty is iterable ? search_specialty|join(', ') : search_specialty)|capitalize|default('Tất cả chuyên khoa') }}
-						tại
-						{{ search_address|capitalize|default('Tất cả địa điểm') }}
 					</h3>
 
 				</div>

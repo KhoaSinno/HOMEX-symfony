@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UserType extends AbstractType
 {
@@ -76,7 +77,8 @@ class UserType extends AbstractType
                 'label' => 'Ngày sinh',
                 'widget' => 'single_text', // Hiển thị input dạng date
                 'required' => true,
-                'attr' => ['class' => 'form-control'],
+                'input' => 'datetime', // Chuyển đổi giá trị thành DateTime
+                'attr' => ['class' => 'form-control dateOfYear-datepicker'],
                 'format' => 'dd/MM/yyyy',
                 'html5' => false,
             ])
@@ -90,7 +92,12 @@ class UserType extends AbstractType
                     'label' => 'Chuyên khoa',
                     'placeholder' => 'Chọn chuyên khoa',
                     'required' => true,
-                    'attr' => ['class' => 'form-control']
+                    'attr' => ['class' => 'form-control'],
+                    'constraints' => [
+                        new Assert\NotBlank([
+                            'message' => 'Vui lòng chọn chuyên khoa.',
+                        ]),
+                    ],
                 ])
 
                 ->add('bio', TextareaType::class, [
@@ -113,7 +120,7 @@ class UserType extends AbstractType
                 ->add('consultationFee', TextType::class, [
                     'label' => 'Phí khám',
                     'required' => true,
-                    'attr' => ['class' => 'form-control', 'readonly' => true]
+                    'attr' => ['class' => 'form-control', 'readonly' => false]
                 ]);
         }
     }

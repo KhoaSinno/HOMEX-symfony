@@ -9,12 +9,19 @@
                 'attr': {'novalidate': 'novalidate'}
             }) }}
 
+			{# Hiển thị lỗi toàn bộ form #}
+			{% if form.vars.errors|length > 0 %}
+				<div class="alert alert-danger">
+					{{ form_errors(form) }}
+				</div>
+			{% endif %}
+
 			<div class="form-row flex-column">
 				<div
 					class="col-12 mb-3  justify-content-center align-items-center">
 					<!-- Hiển thị ảnh -->
 					<div class="col-12 d-flex flex-column justify-content-center align-items-center">
-						<img id="preview-image" src="{{ user.image ? asset('uploads/users/' ~ user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
+						<img id="preview-image" src="{{ user is defined and user.image ? asset('uploads/users/' ~ user.image) : asset('uploads/users/defaultUser.png') }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" alt="Avatar">
 						<label for="validationCustom04">Ảnh đại diện</label>
 					</div>
 					<div class="col-md-4 mb-3 text-left">
@@ -26,6 +33,8 @@
 								</span>
 							</div>
 							{{ form_widget(form.image) }}
+						</div>
+						<div class="text-danger">
 							{{ form_errors(form.image) }}
 						</div>
 					</div>
@@ -35,24 +44,29 @@
 			<div class="form-row">
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.fullname) }}
-					{{ form_widget(form.fullname) }}
-					<div class="valid-feedback">
+					<span class="text-danger">*</span>
+					{{ form_widget(form.fullname, {'attr': {'class': form_errors(form.fullname) ? 'form-control is-invalid' : 'form-control'}}) }}
+					<div class="text-danger">
 						{{ form_errors(form.fullname) }}
 					</div>
 				</div>
 
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.phoneNumber) }}
-					{{ form_widget(form.phoneNumber) }}
-					<div class="valid-feedback">
+					<span class="text-danger">*</span>
+					{{ form_widget(form.phoneNumber, {'attr': {'class': form_errors(form.phoneNumber) ? 'form-control is-invalid' : 'form-control'}}) }}
+					<div class="text-danger">
 						{{ form_errors(form.phoneNumber) }}
 					</div>
 				</div>
 
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.email) }}
-					{{ form_widget(form.email) }}
-					{{ form_errors(form.email) }}
+					<span class="text-danger">*</span>
+					{{ form_widget(form.email, {'attr': {'class': form_errors(form.email) ? 'form-control is-invalid' : 'form-control'}}) }}
+					<div class="text-danger">
+						{{ form_errors(form.email) }}
+					</div>
 				</div>
 
 			</div>
@@ -61,7 +75,7 @@
 				<div class="col-12 mb-3">
 					{{ form_label(form.address) }}
 					{{ form_widget(form.address) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.address) }}
 					</div>
 				</div>
@@ -73,7 +87,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.dateOfBirth) }}
 					{{ form_widget(form.dateOfBirth) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.dateOfBirth) }}
 					</div>
 				</div>
@@ -81,7 +95,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.gender) }}
 					{{ form_widget(form.gender) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.gender) }}
 					</div>
 				</div>
@@ -98,6 +112,8 @@
 							</span>
 						</div>
 						{{ form_widget(form.specialty) }}
+					</div>
+					<div class="text-danger">
 						{{ form_errors(form.specialty) }}
 					</div>
 				</div>
@@ -108,15 +124,15 @@
 						{{ form_widget(form.consultationFee) }}
 						<span class="input-group-text" id="basic-addon2">VNĐ</span>
 					</div>
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.consultationFee) }}
 					</div>
 				</div>
-				
+
 				<div class="col-12 mb-3">
 					{{ form_label(form.qualification) }}
 					{{ form_widget(form.qualification) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.qualification) }}
 					</div>
 				</div>
@@ -124,19 +140,10 @@
 				<div class="col-12 mb-3">
 					{{ form_label(form.bio) }}
 					{{ form_widget(form.bio, {'attr': {'id': 'bio-editor'}}) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.bio) }}
 					</div>
 				</div>
-
-				
-				{# <div class="col-12 mb-3">
-					{{ form_label(form.bio) }}
-					{{ form_widget(form.bio) }}
-					<div class="valid-feedback">
-						{{ form_errors(form.bio) }}
-					</div>
-				</div> #}
 
 			</div>
 			{# Button submit #}
@@ -152,9 +159,9 @@
 
 {% block JSCustom %}
 
-				<script>
-					CKEDITOR.replace('user_bio');
-				</script>
+	<script>
+		CKEDITOR.replace('user_bio');
+	</script>
 
 	<!-- Script hiển thị ảnh ngay khi chọn file -->
 	<script>

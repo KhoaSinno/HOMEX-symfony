@@ -15,7 +15,7 @@ class MailService
         $this->mailer = $mailer;
     }
 
-    public function sendAppointmentConfirmation(string $toEmail, string $patientName, string $appointmentDate, string $doctorName)
+    public function sendAppointmentConfirmation(string $toEmail, string $patientName, string $appointmentDate, string $doctorName, string $clinicNumber)
     {
         $email = (new Email())
             ->from(new Address('ntakhoa.work@gmail.com', 'HOMEX'))
@@ -25,9 +25,11 @@ class MailService
                     <div style='font-family: Arial, sans-serif;'>
                         <h2 style='color: #2c3e50;'>👋 Chào $patientName,</h2>
                         <p>📅 Bạn đã đặt lịch khám thành công với bác sĩ <strong>$doctorName</strong> vào ngày <strong>$appointmentDate</strong>.</p>
+                        <p>🏥 Địa chỉ khám: <strong>256 Nguyễn Văn Cừ, An Hòa, Ninh Kiều, Cần Thơ</strong></p>
+                        <p>🔢 Số phòng khám: <strong>$clinicNumber</strong></p>
                         <p>💙 Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi.</p>
                         <hr>
-                        <p style='font-size: 14px; color: #7f8c8d;'>Nếu có thắc mắc, vui lòng liên hệ 📞 <strong>Hotline: 1900 123 456</strong>.</p>
+                        <p style='font-size: 14px; color: #7f8c8d;'>Nếu có thắc mắc, vui lòng liên hệ 📞 <strong>Hotline: 1900 8080 </strong>.</p>
                     </div>
                 ");
 
@@ -48,7 +50,7 @@ class MailService
                     <p>🙏 Chúng tôi thành thật xin lỗi vì sự bất tiện này.</p>
                     <p>🩺 Nếu bạn muốn đặt lại lịch, vui lòng truy cập trang web của chúng tôi hoặc liên hệ hotline để được hỗ trợ.</p>
                     <hr>
-                    <p style='font-size: 14px; color: #7f8c8d;'>📞 Hotline hỗ trợ: <strong>1900 123 456</strong></p>
+                    <p style='font-size: 14px; color: #7f8c8d;'>📞 Hotline hỗ trợ: <strong>1900 8080 </strong></p>
                 </div>
             ");
 

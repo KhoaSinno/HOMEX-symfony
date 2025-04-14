@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -22,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'Email không được để trống')]
     private ?string $email = null;
 
     /**
@@ -40,8 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column(length: 255)]
-    private string $fullname = '';
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Họ tên không được để trống')]
+    private ?string $fullname = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Specialty $specialty = null;
@@ -53,6 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $scheduleWorks;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Số điện thoại không được để trống')]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -200,15 +204,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFullname(): string
+    public function getFullname(): ?string
     {
         return $this->fullname;
     }
 
-    public function setFullname(string $fullname): static
+    public function setFullname(?string $fullname): self
     {
         $this->fullname = $fullname;
-
         return $this;
     }
 

@@ -263,3 +263,4 @@ document.addEventListener('turbo:render', function () {
 		}, 5000);
 	});
 });
+

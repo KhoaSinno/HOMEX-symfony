@@ -171,9 +171,10 @@ class HomeController extends AbstractController
         $reviews = $doctor->getReviews();
         $averageRating = 0;
 
-        if (count($reviews) > 0) {
+        if ($reviews && count($reviews) > 0) {
             $totalRating = array_reduce($reviews->toArray(), function ($sum, $review) {
-                return $sum + $review->getRating();
+                $rating = $review->getRating();
+                return $sum + ($rating !== null ? $rating : 0); // Bỏ qua các giá trị null
             }, 0);
 
             $averageRating = $totalRating / count($reviews);
