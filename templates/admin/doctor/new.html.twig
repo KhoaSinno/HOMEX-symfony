@@ -37,3 +37,51 @@
 	</div>
 
 {% endblock %}
+
+
+{% block JSCustom %}
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/vi.js"></script>
+
+    <!-- Bootstrap Datetimepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            console.log("DOM Loaded, initializing datetimepicker...");
+
+            // Cấu hình Moment.js
+            moment.updateLocale('vi', {
+                week: {
+                    dow: 1 // Tuần bắt đầu từ Thứ Hai
+                }
+            });
+
+            // Lấy giá trị ngày tháng năm sinh hiện tại (nếu có)
+            var currentDateValue = $('#user_dateOfBirth').val();
+            var defaultDateToUse;
+            
+            if (currentDateValue && currentDateValue.trim() !== '') {
+                // Nếu có giá trị, chuyển đổi sang đối tượng moment (format DD/MM/YYYY)
+                defaultDateToUse = moment(currentDateValue, 'DD/MM/YYYY');
+            } else {
+                // Nếu không có giá trị, để trống thay vì dùng ngày hiện tại
+                defaultDateToUse = null;
+            }
+
+            // Cấu hình datetimepicker
+            $('.dateOfYear-datepicker').datetimepicker({
+                format: 'DD/MM/YYYY',
+                locale: 'vi',
+                showTodayButton: true,
+                useCurrent: false, // Quan trọng: không tự động chọn ngày hiện tại
+                sideBySide: true,
+                toolbarPlacement: 'top',
+                showClear: true,
+                showClose: true,
+                defaultDate: defaultDateToUse // Sử dụng giá trị đã có hoặc null
+            });
+        });
+    </script>
+{% endblock %}

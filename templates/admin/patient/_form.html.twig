@@ -36,7 +36,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.fullname) }}
 					{{ form_widget(form.fullname) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.fullname) }}
 					</div>
 				</div>
@@ -44,7 +44,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.phoneNumber) }}
 					{{ form_widget(form.phoneNumber) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.phoneNumber) }}
 					</div>
 				</div>
@@ -52,7 +52,9 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.email) }}
 					{{ form_widget(form.email) }}
-					{{ form_errors(form.email) }}
+					<div class="text-danger">
+						{{ form_errors(form.email) }}
+					</div>
 				</div>
 
 			</div>
@@ -61,7 +63,7 @@
 				<div class="col-12 mb-3">
 					{{ form_label(form.address) }}
 					{{ form_widget(form.address) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.address) }}
 					</div>
 				</div>
@@ -72,7 +74,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.dateOfBirth) }}
 					{{ form_widget(form.dateOfBirth) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.dateOfBirth) }}
 					</div>
 				</div>
@@ -80,7 +82,7 @@
 				<div class="col-md-4 mb-3">
 					{{ form_label(form.gender) }}
 					{{ form_widget(form.gender) }}
-					<div class="valid-feedback">
+					<div class="text-danger">
 						{{ form_errors(form.gender) }}
 					</div>
 				</div>
@@ -89,7 +91,7 @@
 			{# Button submit #}
 			<div class="form-row">
 				<button class="btn btn-primary" type="submit">
-					{{user.id is defined ? 'Cập nhật thông tin' : 'Tạo mới' }}</button>
+				{{user is defined and user.id is not null ? 'Cập nhật thông tin' : 'Tạo mới' }}</button>
 			</div>
 
 			{{ form_end(form) }}
