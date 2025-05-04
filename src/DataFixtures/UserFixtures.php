@@ -184,10 +184,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($doctor5);
         $this->addReference('doctor-david-clark', $doctor5);
 
-
-
-
-
         // Patient
         $patient = new User();
         $patient->setDel(false);

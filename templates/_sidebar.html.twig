@@ -14,7 +14,10 @@
 			<div class="profile-det-info">
 				<h3>{{ app.user.fullname ?? '' }}</h3>
 				<div class="patient-details">
+				{% if app.user.googleId != null %}
 					<h5 class="mb-0">{{ app.user.specialty | specialty_label }}</h5>
+				{% endif %}
+
 				</div>
 			</div>
 		</div>
