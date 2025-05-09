@@ -25,6 +25,7 @@ class GoogleGeminiService
         }
 
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+        // $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
         $url .= '?key=' . $this->apiKey;
 
         $systemPrompt = $context['systemPrompt'] ?? '';
@@ -101,31 +102,61 @@ class GoogleGeminiService
 
         $contentParts = [['text' => $fullPrompt]];
 
-        $response = $this->httpClient->request('POST', $url, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'contents' => [
-                    [
-                        'parts' => $contentParts,
-                    ],
-                ],
-                'generationConfig' => [
-                    'maxOutputTokens' => 1000,
-                    'temperature' => 0.3, // Giá trị thấp hơn để giảm tính ngẫu nhiên
-                    'topP' => 0.9,
-                    'topK' => 40,
-                ],
-                'safetySettings' => [
-                    [
-                        'category' => 'HARM_CATEGORY_DANGEROUS_CONTENT',
-                        'threshold' => 'BLOCK_ONLY_HIGH',
-                    ],
-                ],
-            ],
-        ]);
+        // Thêm logic thử lại khi gặp lỗi
+        $maxRetries = 3;
+        $retryCount = 0;
+        $lastException = null;
 
-        return $response->toArray();
+        while ($retryCount < $maxRetries) {
+            try {
+                $response = $this->httpClient->request('POST', $url, [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    'json' => [
+                        'contents' => [
+                            [
+                                'parts' => $contentParts,
+                            ],
+                        ],
+                        'generationConfig' => [
+                            'maxOutputTokens' => 1000,
+                            'temperature' => 0.3,
+                            'topP' => 0.9,
+                            'topK' => 40,
+                        ],
+                        'safetySettings' => [
+                            [
+                                'category' => 'HARM_CATEGORY_DANGEROUS_CONTENT',
+                                'threshold' => 'BLOCK_ONLY_HIGH',
+                            ],
+                        ],
+                    ],
+                ]);
+
+                return $response->toArray();
+            } catch (\Exception $e) {
+                $lastException = $e;
+                $retryCount++;
+
+                // Tạm dừng tăng dần trước khi thử lại
+                sleep($retryCount * 2);
+            }
+        }
+
+        // Nếu vẫn thất bại sau tất cả các lần thử lại, trả về kết quả dự phòng
+        return [
+            'candidates' => [
+                [
+                    'content' => [
+                        'parts' => [
+                            [
+                                'text' => '<p>Xin lỗi, dịch vụ chatbot hiện đang tạm thời gặp sự cố. Vui lòng thử lại sau hoặc liên hệ với chúng tôi qua hotline 1900 8080.</p>'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
     }
 }

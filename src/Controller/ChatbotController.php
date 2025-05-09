@@ -258,6 +258,53 @@ class ChatbotController extends AbstractController
     <p><strong>Lưu ý:</strong> Thông tin này chỉ mang tính chất tham khảo. Lời khuyên của tôi không thể thay thế cho chẩn đoán và điều trị của bác sĩ chuyên môn.</p>
 ";
 
+ // Thêm hướng dẫn về cách đặt lịch khám
+        $systemPrompt .= "
+    Ví dụ về cách trả lời khi người dùng hỏi về cách trả lời khi người dùng hỏi về cách đặt lịch khám:
+    
+    <p>Chào bạn! Dưới đây là hướng dẫn chi tiết để đặt lịch khám bệnh trên hệ thống HOMEX:</p>
+    
+    <ol>
+        <li><strong>Bước 1: Tìm bác sĩ phù hợp</strong>
+            <ul>
+                <li>Truy cập vào trang chủ và tìm kiếm bác sĩ theo chuyên khoa</li>
+                <li>Hoặc tìm kiếm theo tên bác sĩ nếu bạn đã biết</li>
+                <li>Xem thông tin chi tiết về bác sĩ: chuyên môn, đánh giá, chi phí khám</li>
+            </ul>
+        </li>
+        <li><strong>Bước 2: Chọn ngày và giờ khám</strong>
+            <ul>
+                <li>Nhấp vào hồ sơ của bác sĩ ở danh sách tìm kiếm bạn muốn đặt lịch</li>
+                <li>Hoặc ở trong trang chi tiết bác sĩ cũng sẽ có nút đặt lịch</li>
+                <li>Chọn ngày từ lịch hiển thị (bạn sẽ dễ dàng nhận biết lịch đó có đặt được hay không dựa vào màu sắc)</li>
+            </ul>
+        </li>
+        <li><strong>Bước 3: Điền thông tin cá nhân</strong>
+            <ul>
+                <li>Nhập thông tin cá nhân hoặc thông tin người được khám (nếu đặt cho người thân)</li>
+                <li>Điền lý do khám/chịu chứng để bác sĩ xem và đưa ra chuẩn đoán trước khi bệnh nhân đến và kiểm tra lại</li>
+            </ul>
+        </li>
+        <li><strong>Bước 4: Xác nhận và thanh toán</strong>
+            <ul>
+                <li>Kiểm tra lại thông tin đặt lịch</li>
+                <li>Thanh toán phí khám qua MoMo (Có thể mất thêm chi phí)</li>
+                <li>Nhận email xác nhận với đầy đủ thông tin lịch hẹn</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <p><strong>Lưu ý quan trọng:</strong></p>
+    <ul>
+        <li>Đến trước giờ hẹn 15 phút để hoàn tất thủ tục</li>
+        <li>Mang theo giấy tờ tùy thân và bảo hiểm y tế (nếu có)</li>
+        <li>Nếu cần hủy lịch, vui lòng thực hiện trước ít nhất 2 giờ để được hoàn tiền</li>
+        <li>Nếu cần hỗ trợ đặt lịch, hãy gọi Hotline: <strong>1900 8080</strong></li>
+    </ul>
+    
+    <p>Bạn có thể <a href='/search-doctor'>bắt đầu tìm kiếm bác sĩ</a> ngay bây giờ hoặc cho tôi biết nếu bạn cần tìm bác sĩ theo chuyên khoa cụ thể!</p>
+";
+
         $context = [
             'systemPrompt' => $systemPrompt,
             'doctors' => $doctorDetails,
