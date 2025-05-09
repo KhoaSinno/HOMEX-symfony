@@ -103,7 +103,7 @@ class GoogleGeminiService
         $contentParts = [['text' => $fullPrompt]];
 
         // Thêm logic thử lại khi gặp lỗi
-        $maxRetries = 3;
+        $maxRetries = 5;
         $retryCount = 0;
         $lastException = null;
 

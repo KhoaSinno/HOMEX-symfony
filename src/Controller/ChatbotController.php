@@ -7,6 +7,7 @@ use App\Entity\User;
 
 use App\Entity\ScheduleWork;
 use App\Service\GoogleGeminiService;
+use App\Twig\AppExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ChatbotController extends AbstractController
 {
+     private $appExtension;
+    
+    // Thêm constructor để inject AppExtension
+    public function __construct(AppExtension $appExtension)
+    {
+        $this->appExtension = $appExtension;
+    }
+    
     private function cleanResponse(string $response): string
     {
         // Loại bỏ ```html và ```
@@ -32,6 +41,10 @@ class ChatbotController extends AbstractController
         // Lấy dữ liệu từ hệ thống để làm context
         $doctors = $entityManager->getRepository(User::class)->findByRole('ROLE_DOCTOR');
         $specialties = $entityManager->getRepository(Specialty::class)->findAll();
+        // Chuyển danh sách chuyên khoa với name là tiếng anh sang tiếng việt bằng cách sử dụng appExtension
+        foreach ($specialties as $specialty) {
+            $specialty->setName($this->appExtension->mappingSpecialty($specialty->getName()));
+        }
 
         // Lấy ngày hiện tại
         $today = new \DateTime('now', new \DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -260,7 +273,7 @@ class ChatbotController extends AbstractController
 
  // Thêm hướng dẫn về cách đặt lịch khám
         $systemPrompt .= "
-    Ví dụ về cách trả lời khi người dùng hỏi về cách trả lời khi người dùng hỏi về cách đặt lịch khám:
+    Cách trả lời khi người dùng hỏi về cách trả lời khi người dùng hỏi về cách đặt lịch khám, nội dung giữ nguyên giống bên dưới:
     
     <p>Chào bạn! Dưới đây là hướng dẫn chi tiết để đặt lịch khám bệnh trên hệ thống HOMEX:</p>
     
